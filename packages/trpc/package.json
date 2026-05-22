@@ -1,0 +1,23 @@
+{
+  "name": "@repo/trpc",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "dotenv-cli": "^11.0.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@clerk/backend": "^3.4.11",
+    "@clerk/express": "^2.1.19",
+    "@repo/services": "workspace:*",
+    "@tanstack/react-query": "^5.90.16",
+    "@trpc/client": "^11.8.1",
+    "@trpc/react-query": "^11.8.1",
+    "@trpc/server": "^11.8.1",
+    "dotenv": "^17.2.3",
+    "trpc-to-openapi": "^3.1.0",
+    "zod": "^4.3.5"
+  }
+}
