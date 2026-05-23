@@ -1,44 +1,39 @@
-import { TypeOf, z } from "zod";
+import { z } from "zod";
 
 export const createFormInput = z.object({
   title: z.string().describe("title of the form"),
   description: z.string().describe("description of the form").nullable().optional(),
 });
 
-const fieldTypeEnum = z.enum([
-  "text",
-  "textarea",
-  "email",
-  "number",
-  "phone",
-  "select",
-  "radio",
-  "checkbox",
-  "date",
-  "file",
-]);
-
-export const createFormFieldInput = z.object({
+export const updateFormInput = z.object({
   formId: z.string(),
+  title: z.string().optional(),
+  description: z.string().optional(),
+  isPublished: z
+    .preprocess((val) => {
+      if (typeof val !== "boolean") {
+        return undefined;
+      }
 
-  label: z.string().min(1).max(100),
-
-  type: fieldTypeEnum,
-
-  required: z.boolean().optional().default(false),
-
-  order: z.number().int().min(0),
-
-  placeholder: z.string().max(100).optional(),
-
-  helperText: z.string().max(200).optional(),
-
-  minLength: z.number().int().min(0).optional(),
-  maxLength: z.number().int().min(1).optional(),
-
-  minValue: z.number().optional(),
-  maxValue: z.number().optional(),
+      return val;
+    }, z.boolean())
+    .optional(),
 });
 
+export const deleteFormInput = z.object({
+  formId: z.string().describe("id of the form"),
+});
+
+export const getFormByIdInput = z.object({
+  formId: z.string().describe("id of the form")
+})
+
+export const getSingleFormDetailsInput = z.object({
+  formId: z.string().describe("id of the form")
+})
+
 export type CreateFormInputType = z.infer<typeof createFormInput>;
-export type CreateFormFieldInputType = z.infer<typeof createFormFieldInput>
+export type UpdateFormInputType = z.infer<typeof updateFormInput>;
+export type DeleteFormInputType = z.infer<typeof deleteFormInput>;
+export type GetFormByIdInputType = z.infer<typeof getFormByIdInput>;
+export type GetSingleFormDetailsInputType = z.infer<typeof getSingleFormDetailsInput>;

@@ -6,7 +6,9 @@ export const formResponsesTable = pgTable("form_responses", {
 
   formId: uuid("form_id")
     .notNull()
-    .references(() => formsTable.id),
+    .references(() => formsTable.id, {
+      onDelete: "cascade",
+    }),
 
   submittedAt: timestamp("submitted_at").defaultNow().notNull(),
 

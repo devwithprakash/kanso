@@ -1,10 +1,15 @@
 import { protectedProcedure, publicProcedure, router } from "../../trpc";
 import { generatePath } from "../../utils/path-generator";
 import {
-  createFormFieldInputModel,
-  createFormFieldOutputModel,
   createFormInputModel,
   createFormOutputModel,
+  deleteFormInputModel,
+  deleteFormOutputModel,
+  getAllFormsOutputModel,
+  getSingleFormDetailsInputModel,
+  getSingleFormDetailsOutputModel,
+  updateFormInputModel,
+  updateFormOutputModel,
 } from "./model";
 import { formService } from "../../services";
 
@@ -12,7 +17,7 @@ const TAGS = ["Form"];
 const getPath = generatePath("/form");
 
 export const formRouter = router({
-  createForm: protectedProcedure
+  create: protectedProcedure
     .meta({
       openapi: {
         method: "POST",
@@ -31,45 +36,76 @@ export const formRouter = router({
       return form;
     }),
 
-  createFormField: publicProcedure
+  update: publicProcedure
     .meta({
       openapi: {
-        method: "POST",
-        path: getPath("/create-form-field"),
+        method: "PATCH",
+        path: getPath("/update"),
         tags: TAGS,
       },
     })
-    .input(createFormFieldInputModel)
-    .output(createFormFieldOutputModel)
+    .input(updateFormInputModel)
+    .output(updateFormOutputModel)
     .mutation(async ({ input }) => {
-      const {
-        formId,
-        order,
-        label,
-        required,
-        type,
-        helperText,
-        maxLength,
-        maxValue,
-        minLength,
-        minValue,
-        placeholder,
-      } = input;
+      console.log(input);
+      const { formId, title, description, isPublished } = input;
 
-      const insertedFormField = await formService.createFormField({
-        formId,
-        order,
-        label,
-        required,
-        type,
-        helperText,
-        maxLength,
-        maxValue,
-        minLength,
-        minValue,
-        placeholder,
-      });
+      const updatedForm = await formService.updateForm({ formId, title, description, isPublished });
 
-      return insertedFormField;
+      return updatedForm;
+    }),
+
+  delete: publicProcedure
+    .meta({
+      openapi: {
+        method: "DELETE",
+        path: getPath("/delete/{formId}"),
+        tags: TAGS,
+      },
+    })
+    .input(deleteFormInputModel)
+    .output(deleteFormOutputModel)
+    .mutation(async ({ input }) => {
+      const { formId } = input;
+
+      const deletedForm = await formService.deleteForm({ formId });
+
+      return deletedForm;
+    }),
+
+  getAll: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: getPath("/get"),
+        tags: TAGS,
+      },
+    })
+    .output(getAllFormsOutputModel)
+    .query(async ({ ctx }) => {
+      const userId = ctx.userId;
+
+      const result = await formService.getAllForms(userId);
+
+      return result;
+    }),
+
+  getById: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: getPath("/get/{formId}"),
+        tags: TAGS,
+      },
+    })
+    .input(getSingleFormDetailsInputModel)
+    .output(getSingleFormDetailsOutputModel)
+    .query(async ({ input, ctx }) => {
+      const { formId } = input;
+      const userId = ctx.userId;
+
+      const form = await formService.getSingleFormDetails({ formId }, userId);
+
+      return form;
     }),
 });

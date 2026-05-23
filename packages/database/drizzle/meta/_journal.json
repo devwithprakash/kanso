@@ -8,6 +8,20 @@
       "when": 1779470205025,
       "tag": "0000_smart_wolfpack",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1779523417168,
+      "tag": "0001_bent_guardian",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1779524474723,
+      "tag": "0002_oval_arachne",
+      "breakpoints": true
     }
   ]
 }

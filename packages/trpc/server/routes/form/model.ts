@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+// create form schema
 export const createFormInputModel = z.object({
   title: z.string().describe("title of the form"),
   description: z.string().describe("description of the form").nullable().optional(),
@@ -10,66 +11,122 @@ export const createFormOutputModel = z.object({
   description: z.string().describe("description of the form").nullable().optional(),
 });
 
-export const fieldTypeEnum = z.enum([
-  "text",
-  "textarea",
-  "email",
-  "number",
-  "phone",
-  "select",
-  "radio",
-  "checkbox",
-  "date",
-  "file",
-]);
-
-export const createFormFieldInputModel = z.object({
+// update form schema
+export const updateFormInputModel = z.object({
   formId: z.string(),
+  title: z.string().optional(),
+  description: z.string().optional(),
+  isPublished: z
+    .preprocess((val) => {
+      if (typeof val !== "boolean") {
+        return undefined;
+      }
 
-  label: z.string().min(1).max(100),
-
-  type: fieldTypeEnum,
-
-  order: z.number().int().min(0),
-
-  required: z.boolean().default(false),
-
-  placeholder: z.string().max(100).optional(),
-
-  helperText: z.string().max(200).optional(),
-
-  minLength: z.number().int().optional(),
-  maxLength: z.number().int().optional(),
-
-  minValue: z.number().optional(),
-  maxValue: z.number().optional(),
+      return val;
+    }, z.boolean())
+    .optional(),
 });
 
-export const createFormFieldOutputModel = z.object({
+export const updateFormOutputModel = z.object({
   id: z.string(),
+  title: z.string(),
+  description: z.string().nullable(),
+  isPublished: z.boolean(),
+  createdBy: z.string(),
+  slug: z.string(),
+  createdAt: z.date(),
+  updatedAt: z.date().nullable(),
+});
 
-  formId: z.string().uuid(),
+// delete from schema
+export const deleteFormInputModel = z.object({
+  formId: z.string().describe("id of the form"),
+});
+
+export const deleteFormOutputModel = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string().nullable(),
+  isPublished: z.boolean(),
+  createdBy: z.string(),
+  slug: z.string(),
+  createdAt: z.date(),
+  updatedAt: z.date().nullable(),
+});
+
+// get all forms schema
+export const getAllFormsOutputModel = z.array(
+  z.object({
+    id: z.string(),
+    title: z.string(),
+    description: z.string().nullable(),
+
+    slug: z.string(),
+    isPublished: z.boolean(),
+    createdBy: z.string(),
+
+    createdAt: z.date(),
+    updatedAt: z.date().nullable(),
+  }),
+);
+
+// get form details by id schema
+
+export const getSingleFormDetailsInputModel = z.object({
+  formId: z.string().describe("id of the form"),
+});
+
+export const fieldOptionModel = z.object({
+  id: z.string(),
+  fieldId: z.string(),
+  value: z.string(),
+  label: z.string(),
+  order: z.number().int(),
+});
+
+export const formFieldModel = z.object({
+  id: z.string(),
+  formId: z.string(),
 
   label: z.string(),
+  type: z.enum([
+    "text",
+    "textarea",
+    "email",
+    "number",
+    "phone",
+    "select",
+    "radio",
+    "checkbox",
+    "date",
+    "file",
+  ]),
 
-  type: fieldTypeEnum,
-
-  order: z.number(),
-
+  order: z.number().int(),
   required: z.boolean(),
 
+  helperText: z.string().nullable().optional(),
   placeholder: z.string().nullable().optional(),
 
-  helperText: z.string().nullable().optional(),
-
-  minLength: z.number().nullable().optional(),
-
-  maxLength: z.number().nullable().optional(),
-
-  minValue: z.number().nullable().optional(),
-
-  maxValue: z.number().nullable().optional(),
+  minLength: z.number().int().nullable(),
+  maxLength: z.number().int().nullable(),
+  minValue: z.number().nullable(),
+  maxValue: z.number().nullable(),
 
   createdAt: z.date().optional(),
-  updateAt: z.date().optional(),
+  updatedAt: z.date().optional().nullable(),
+
+  fieldOptions: z.array(fieldOptionModel),
+});
+
+export const getSingleFormDetailsOutputModel = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string().nullable().optional(),
+  slug: z.string(),
+  isPublished: z.boolean(),
+  formFields: z.array(formFieldModel),
+  createdBy: z.string(),
+  createdAt: z.date(),
+  updatedAt: z.date().nullable().optional(),
 });

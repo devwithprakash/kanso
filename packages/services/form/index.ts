@@ -1,14 +1,18 @@
-import db, { desc, eq, like } from "@repo/database";
+import db, { and, eq, like } from "@repo/database";
 import {
-  createFormFieldInput,
-  CreateFormFieldInputType,
   createFormInput,
   CreateFormInputType,
+  deleteFormInput,
+  DeleteFormInputType,
+  getSingleFormDetailsInput,
+  GetSingleFormDetailsInputType,
+  updateFormInput,
+  UpdateFormInputType,
 } from "./model";
-import { formsTable } from "../../database/models/form";
-import { usersTable } from "@repo/database/models/user";
-import { formFieldsTable } from "@repo/database/models/form-field";
 import { throwTRPCError } from "../../trpc/server/utils/trpc-error";
+
+import { formsTable, formsRelations } from "@repo/database/models/form";
+import { usersTable } from "@repo/database/models/user";
 
 function generateSlug(title: string) {
   return title
@@ -74,45 +78,82 @@ const createForm = async (payload: CreateFormInputType, userId: string) => {
   return form[0];
 };
 
-const createFormField = async (payload: CreateFormFieldInputType) => {
-  const {
-    formId,
-    label,
-    order,
-    required,
-    type,
-    helperText,
-    maxLength,
-    maxValue,
-    minLength,
-    minValue,
-    placeholder,
-  } = await createFormFieldInput.parseAsync(payload);
+const updateForm = async (payload: UpdateFormInputType) => {
+  const { formId, title, description, isPublished } = await updateFormInput.parseAsync(payload);
 
   const result = await db
-    .insert(formFieldsTable)
-    .values({
-      formId,
-      label,
-      type,
-      order,
-      placeholder,
-      required,
-      helperText,
-      minLength,
-      maxLength,
-      minValue,
-      maxValue,
+    .update(formsTable)
+    .set({
+      title,
+      description,
+      isPublished,
     })
+    .where(eq(formsTable.id, formId))
     .returning();
 
-  const insertedFormField = result[0];
+  const updatedForm = result[0];
 
-  if (!insertedFormField) {
-    throwTRPCError("INTERNAL_SERVER_ERROR", "Failed to create form field");
+  if (!updatedForm) {
+    throwTRPCError("NOT_FOUND", "Form not found");
   }
 
-  return insertedFormField
+  return updatedForm;
 };
 
-export { createForm, createFormField };
+const deleteForm = async (payload: DeleteFormInputType) => {
+  const { formId } = await deleteFormInput.parseAsync(payload);
+
+  const result = await db.delete(formsTable).where(eq(formsTable.id, formId)).returning();
+
+  const deletedForm = result[0];
+
+  if (!deletedForm) {
+    throwTRPCError("NOT_FOUND", "Form not found");
+  }
+
+  return deletedForm;
+};
+
+const getAllForms = async (userId: string) => {
+  const dbUser = await db.select().from(usersTable).where(eq(usersTable.clerkUserId, userId));
+
+  const user = dbUser[0];
+
+  if (!user) {
+    throwTRPCError("NOT_FOUND", "User not found");
+  }
+
+  const result = await db.select().from(formsTable).where(eq(formsTable.createdBy, user.id));
+
+  return result;
+};
+
+const getSingleFormDetails = async (payload: GetSingleFormDetailsInputType, userId: string) => {
+  const { formId } = await getSingleFormDetailsInput.parseAsync(payload);
+
+  const dbUser = await db.select().from(usersTable).where(eq(usersTable.clerkUserId, userId));
+  const user = dbUser[0];
+
+  if (!user) {
+    throwTRPCError("NOT_FOUND", "User not found");
+  }
+
+  const form = await db.query.formsTable.findFirst({
+    where: and(eq(formsTable.id, formId), eq(formsTable.createdBy, user.id)),
+    with: {
+      formFields: {
+        with: {
+          fieldOptions: true,
+        },
+      },
+    },
+  });
+
+  if (!form) {
+    throwTRPCError("NOT_FOUND", "Form not found");
+  }
+
+  return form;
+};
+
+export { createForm, updateForm, deleteForm, getAllForms, getSingleFormDetails };
