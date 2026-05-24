@@ -1,7 +1,14 @@
 import { formFieldService } from "../../services";
 import { publicProcedure, router } from "../../trpc";
 import { generatePath } from "../../utils/path-generator";
-import { formFieldInputModel, formFieldOutputModel } from "../form-field/model";
+import {
+  deleteFormFieldInputModel,
+  deleteFormFieldOutputModel,
+  formFieldInputModel,
+  formFieldOutputModel,
+  updateFormFieldInputModel,
+  updateFormFieldOutputModel,
+} from "../form-field/model";
 
 const TAGS = ["Form Fields"];
 const getPath = generatePath("/form-field");
@@ -49,5 +56,40 @@ export const formFieldRouter = router({
       });
 
       return insertedFormField;
+    }),
+
+  update: publicProcedure
+    .meta({
+      openapi: {
+        method: "PATCH",
+        path: getPath("/update"),
+        tags: TAGS,
+      },
+    })
+    .input(updateFormFieldInputModel)
+    .output(updateFormFieldOutputModel)
+    .mutation(async ({ input }) => {
+      const data = input;
+
+      const result = await formFieldService.updateFormField(data);
+
+      return result;
+    }),
+
+  delete: publicProcedure
+    .meta({
+      openapi: {
+        method: "DELETE",
+        path: getPath("/delete/{formFieldId}"),
+      },
+    })
+    .input(deleteFormFieldInputModel)
+    .output(deleteFormFieldOutputModel)
+    .mutation(async ({ input }) => {
+      const { formFieldId } = input;
+
+      const deletedFormField = await formFieldService.deleteFormField(formFieldId);
+
+      return deletedFormField;
     }),
 });
