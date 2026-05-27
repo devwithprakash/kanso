@@ -21,7 +21,7 @@ const openApiDocument = generateOpenApiDocument(serverRouter, {
 
 app.use(
   cors({
-    origin: env.CORS_ORIGIN,
+    origin: env.CORS_ORIGIN.split(",").map((s) => s.trim()),
     credentials: true,
   }),
 );
