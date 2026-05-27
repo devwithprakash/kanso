@@ -2,7 +2,6 @@ import { z } from "zod";
 
 const envSchema = z.object({
   CLERK_SECRET_KEY: z.string(),
-  CLERK_AUTHORIZED_PARTY: z.string()
 });
 
 function createEnv(env: NodeJS.ProcessEnv) {

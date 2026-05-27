@@ -6,9 +6,10 @@ import { createClerkClient } from "@clerk/backend";
 import { usersTable } from "@repo/database/models/user";
 
 import { userInput, type UserInputType } from "./model";
+import { env } from "../env";
 
 const clerkClient = createClerkClient({
-  secretKey: process.env.CLERK_SECRET_KEY!,
+  secretKey: env.CLERK_SECRET_KEY,
 });
 
 const USER_SELECT_FIELDS = {
