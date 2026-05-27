@@ -58,7 +58,7 @@ export default function FormsPage() {
       await deleteMutation.mutateAsync({ formId });
       router.push("/dashboard/forms");
     } catch (error) {
-      console.error("Failed to delete form");
+      console.error("Failed to delete form", error);
     }
   };
 

@@ -8,8 +8,8 @@ import { cn } from "@/lib/utils";
 import { CreateFormDialog } from "../form-builder/create-form-dialog";
 import { useCreateForm } from "@/hooks/form/use-forms";
 import { useMe } from "@/hooks/auth/use-me";
-import { useEffect } from "react";
 import { useClerk } from "@clerk/nextjs";
+import Image from "next/image";
 
 const navItems = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
@@ -29,11 +29,10 @@ export function DashboardSidebar() {
     signOut();
   };
 
-  const { submitForm, isLoading } = useCreateForm();
+  const { submitForm } = useCreateForm();
 
   return (
     <>
-      {/* Desktop Sidebar */}
       <aside className="hidden lg:flex fixed inset-y-0 left-0 z-50 w-64 flex-col bg-card border-r border-border">
         {/* Logo */}
         <div className="flex h-16 items-center gap-2 px-6 border-b border-border">
@@ -45,7 +44,6 @@ export function DashboardSidebar() {
           </Link>
         </div>
 
-        {/* Navigation */}
         <nav className="flex-1 px-4 py-6 space-y-1">
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -73,14 +71,15 @@ export function DashboardSidebar() {
 
         <CreateFormDialog onSubmit={submitForm} />
 
-        {/* User Section */}
         <div className="p-4 border-t border-border">
           <div className="flex items-center gap-3">
             <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center">
-              <img
-                src={me?.imageUrl!}
+              <Image
+                src={me?.imageUrl ?? "/default-avatar.png"}
                 alt={me?.fullName ?? "User avatar"}
-                className=" rounded-full object-cover"
+                width={40}
+                height={40}
+                className="rounded-full object-cover"
               />
             </div>
             <div className="flex-1 min-w-0">
@@ -95,7 +94,6 @@ export function DashboardSidebar() {
         </div>
       </aside>
 
-      {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-50 h-16 bg-card border-b border-border flex items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
@@ -112,7 +110,6 @@ export function DashboardSidebar() {
         </Link>
       </div>
 
-      {/* Mobile Bottom Navigation */}
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border flex items-center justify-around py-2">
         {navItems.map((item) => {
           const Icon = item.icon;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { ArrowLeft, Download, Inbox, Loader2, AlertCircle, Calendar, Eye } from "lucide-react";
+import { ArrowLeft, Download, Inbox, Loader2, AlertCircle, Calendar } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useGetFormResponse } from "@/hooks/response/use-response";
@@ -90,7 +90,7 @@ export default function FormResponsesPage() {
               <thead>
                 <tr className="border-b border-border/50 bg-secondary/30 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   <th className="p-4 w-[240px] min-w-[200px]">Submission Date</th>
-                  {fields.map((field: any) => (
+                  {fields.map((field) => (
                     <th key={field.id} className="p-4 min-w-[220px] max-w-[350px]">
                       {field.label}
                     </th>
@@ -116,7 +116,7 @@ export default function FormResponsesPage() {
                       </div>
                     </td>
 
-                    {fields.map((field: any) => {
+                    {fields.map((field) => {
                       const matchingAnswer = resp.answers.find((ans) => ans.fieldId === field.id);
                       return (
                         <td

@@ -22,8 +22,6 @@ import {
   Calendar,
   FileUp,
   Globe,
-  GlobeLock,
-  EyeOff,
   Link2,
   Lock,
 } from "lucide-react";
@@ -57,6 +55,9 @@ type BackendFieldType =
   | "date"
   | "file";
 
+type VisibilityType = "public" | "unlisted" | "private";
+type ThemeType = "light" | "dark" | "minimal" | "gradient";
+
 interface FormField {
   id: string;
   formId: string;
@@ -71,6 +72,13 @@ interface FormField {
   minValue?: number;
   maxValue?: number;
   options?: FormFieldOption[];
+  fieldOptions?: FormFieldOption[]; // backend alias
+}
+
+interface VisibilityOption {
+  id: VisibilityType;
+  label: string;
+  icon: React.ElementType;
 }
 
 const fieldTypes = [
@@ -142,6 +150,12 @@ const defaultFieldData: Record<BackendFieldType, Partial<FormField>> = {
   file: { label: "Document Workspace Upload" },
 };
 
+const visibilityOptions: VisibilityOption[] = [
+  { id: "public", label: "Public", icon: Globe },
+  { id: "unlisted", label: "Unlisted", icon: Link2 },
+  { id: "private", label: "Private", icon: Lock },
+];
+
 export function FormBuilder() {
   const params = useParams();
   const formId = params.formId as string;
@@ -149,13 +163,13 @@ export function FormBuilder() {
   const [formName, setFormName] = useState("");
   const [formDescription, setFormDescription] = useState("");
   const [isPublished, setIsPublished] = useState(false);
-  const [theme, setTheme] = useState<"light" | "dark" | "minimal" | "gradient">("light");
+  const [theme, setTheme] = useState<ThemeType>("light");
   const [fields, setFields] = useState<FormField[]>([]);
   const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isMobileSettingsOpen, setIsMobileSettingsOpen] = useState(false);
   const [isMobileAddFieldsOpen, setIsMobileAddFieldsOpen] = useState(false);
-  const [visibility, setVisibility] = useState<"public" | "unlisted" | "private">("private");
+  const [visibility, setVisibility] = useState<VisibilityType>("private");
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const { form, isLoading } = useGetForm(formId);
@@ -167,11 +181,11 @@ export function FormBuilder() {
       setFormName(form.title);
       setFormDescription(form.description || "");
       setIsPublished(form.isPublished);
-      setTheme(form.theme as "light" | "dark" | "minimal" | "gradient");
+      setTheme(form.theme as ThemeType);
       if (form.formFields) {
         setFields(form.formFields as FormField[]);
       }
-      setVisibility(form.visibility);
+      setVisibility(form.visibility as VisibilityType);
     }
   }, [form]);
 
@@ -195,7 +209,7 @@ export function FormBuilder() {
         required: false,
         order: fields.length,
         options: defaultFieldData[type]?.options
-          ? JSON.parse(JSON.stringify(defaultFieldData[type].options))
+          ? (JSON.parse(JSON.stringify(defaultFieldData[type].options)) as FormFieldOption[])
           : undefined,
       };
 
@@ -260,8 +274,6 @@ export function FormBuilder() {
             : undefined,
       }));
 
-      console.log("Saving configurations...", payload);
-
       await syncFieldsMutation.mutateAsync(payload);
 
       await Promise.all([
@@ -273,7 +285,6 @@ export function FormBuilder() {
           isPublished,
           visibility,
         }),
-
         syncFieldsMutation.mutateAsync(payload),
       ]);
     } catch (err) {
@@ -393,7 +404,7 @@ export function FormBuilder() {
 
         {["select", "radio", "checkbox"].includes(field.type) &&
           (() => {
-            const fieldOptions = field.options || (field as any).fieldOptions || [];
+            const fieldOptions: FormFieldOption[] = field.options ?? field.fieldOptions ?? [];
 
             return (
               <div className="space-y-2">
@@ -408,7 +419,7 @@ export function FormBuilder() {
                     className="h-7 text-[11px] text-primary hover:bg-primary/10 px-2 gap-1"
                     onClick={() => {
                       const nextIndex = fieldOptions.length;
-                      const newOption = {
+                      const newOption: FormFieldOption = {
                         label: `Option ${nextIndex + 1}`,
                         value: `option_${nextIndex + 1}`,
                         order: nextIndex,
@@ -423,7 +434,7 @@ export function FormBuilder() {
 
                 <div className="space-y-1.5 max-h-60 overflow-y-auto pr-1 pb-1">
                   {fieldOptions.length > 0 ? (
-                    fieldOptions.map((option: any, idx: number) => (
+                    fieldOptions.map((option: FormFieldOption, idx: number) => (
                       <div key={idx} className="flex items-center gap-1.5 group/option">
                         <div className="text-[10px] text-muted-foreground font-mono w-4 text-right select-none">
                           {idx + 1}.
@@ -456,10 +467,10 @@ export function FormBuilder() {
                           disabled={fieldOptions.length <= 1}
                           onClick={() => {
                             const updatedOptions = fieldOptions.filter(
-                              (_: any, i: number) => i !== idx,
+                              (_: FormFieldOption, i: number) => i !== idx,
                             );
                             updateField(field.id, {
-                              options: updatedOptions.map((opt: any, i: number) => ({
+                              options: updatedOptions.map((opt: FormFieldOption, i: number) => ({
                                 ...opt,
                                 order: i,
                               })),
@@ -556,23 +567,18 @@ export function FormBuilder() {
                       : "bg-background text-foreground shadow-sm",
                   )}
                 >
-                  {/* ... icons logic ... */}
                   {visibility.charAt(0).toUpperCase() + visibility.slice(1)}
                   <ChevronDown className="h-3 w-3 opacity-70 ml-1" />
                 </button>
               </PopoverTrigger>
 
               <PopoverContent className="w-40 p-1" align="end">
-                {[
-                  { id: "public", label: "Public", icon: Globe },
-                  { id: "unlisted", label: "Unlisted", icon: Link2 },
-                  { id: "private", label: "Private", icon: Lock },
-                ].map((item) => (
+                {visibilityOptions.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => {
-                      setVisibility(item.id as any);
-                      setIsPopoverOpen(false); // This forces the popup to close
+                      setVisibility(item.id);
+                      setIsPopoverOpen(false);
                     }}
                     className={cn(
                       "w-full flex items-center gap-2 px-2 py-1.5 text-xs rounded-sm hover:bg-muted transition-colors",

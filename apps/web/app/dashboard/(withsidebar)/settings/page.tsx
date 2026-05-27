@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useMe } from "@/hooks/auth/use-me";
 import { useClerk } from "@clerk/nextjs";
+import Image from "next/image";
 
 export default function SettingsPage() {
   const { me } = useMe();
@@ -44,10 +45,12 @@ export default function SettingsPage() {
           {/* Profile Avatar */}
           <div className="flex flex-col items-center gap-4">
             <div className="h-24 w-24 rounded-full bg-primary/10 flex items-center justify-center">
-              <img
-                src={me?.imageUrl!}
+              <Image
+                src={me?.imageUrl || "/avatar.png"}
                 alt={me?.fullName ?? "User avatar"}
-                className="w-22 h-22 rounded-full object-cover"
+                width={88}
+                height={88}
+                className="rounded-full object-cover"
               />
             </div>
           </div>

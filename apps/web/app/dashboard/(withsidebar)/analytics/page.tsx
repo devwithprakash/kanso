@@ -4,11 +4,8 @@ import dynamic from "next/dynamic";
 import {
   Users,
   Calendar,
-  ArrowUpRight,
   Loader2,
   AlertCircle,
-  Layers,
-  CheckCircle2,
   FileText,
   TrendingUp,
   Eye,
@@ -21,10 +18,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useDashboardAnalytics, useFormAnalytics } from "@/hooks/analytics/use-analytics";
-import { useAuth } from "@clerk/nextjs";
 import { motion } from "framer-motion";
 
-// Lazy-loaded analytics charts mapping live global dashboard tracking trends
 const AnalyticsCharts = dynamic(
   () =>
     import("../../../../components/dashboard/analytics-charts").then((mod) => mod.AnalyticsCharts),
@@ -40,9 +35,8 @@ const AnalyticsCharts = dynamic(
 );
 
 export default function AnalyticsPage() {
-  const { userId } = useAuth();
 
-  // Pass extracted userId context into your custom analytics state hook wrapper
+
   const { data: analytics, error, isLoading } = useDashboardAnalytics();
   const { data: chartAnalytics } = useFormAnalytics();
 
@@ -102,7 +96,7 @@ export default function AnalyticsPage() {
 
   return (
     <div className="space-y-8 pb-12 animate-in fade-in duration-300">
-      {/* Page Header */}
+
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="font-serif text-2xl sm:text-3xl text-foreground">Workspace Analytics</h1>
@@ -126,7 +120,6 @@ export default function AnalyticsPage() {
         </div>
       </div>
 
-      {/* Global Metrics Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => {
           const Icon = stat.icon;

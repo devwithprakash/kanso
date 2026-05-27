@@ -7,7 +7,6 @@ import {
   BarChart3, 
   Palette, 
   Share2, 
-  Shield 
 } from "lucide-react"
 
 const features = [

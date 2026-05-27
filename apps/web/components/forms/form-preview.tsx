@@ -1,84 +1,98 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { motion } from "framer-motion"
-import {
-  ArrowLeft,
-  Star,
-  CheckCircle2,
-  Upload,
-  Calendar,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Switch } from "@/components/ui/switch"
+import { useState } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { ArrowLeft, Star, CheckCircle2, Upload } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 
 interface FormField {
-  id: string
-  type: string
-  label: string
-  placeholder?: string
-  required: boolean
-  options?: string[]
+  id: string;
+  type: string;
+  label: string;
+  placeholder?: string;
+  required: boolean;
+  options?: string[];
 }
 
 interface FormData {
-  id: string
-  name: string
-  description?: string
-  fields: FormField[]
+  id: string;
+  name: string;
+  description?: string;
+  fields: FormField[];
 }
 
 interface FormPreviewProps {
-  form: FormData
-  isPreview?: boolean
+  form: FormData;
+  isPreview?: boolean;
 }
 
-export function FormPreview({ form, isPreview = false }: FormPreviewProps) {
-  const [submitted, setSubmitted] = useState(false)
-  const [formValues, setFormValues] = useState<Record<string, any>>({})
-  const [errors, setErrors] = useState<Record<string, string>>({})
+type FormValue = string | string[] | number | boolean | File | null;
 
-  const updateValue = (fieldId: string, value: any) => {
-    setFormValues((prev) => ({ ...prev, [fieldId]: value }))
+export function FormPreview({ form, isPreview = false }: FormPreviewProps) {
+  const [submitted, setSubmitted] = useState(false);
+  const [formValues, setFormValues] = useState<Record<string, FormValue>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const updateValue = (fieldId: string, value: FormValue) => {
+    setFormValues((prev) => ({ ...prev, [fieldId]: value }));
     if (errors[fieldId]) {
       setErrors((prev) => {
-        const newErrors = { ...prev }
-        delete newErrors[fieldId]
-        return newErrors
-      })
+        const newErrors = { ...prev };
+        delete newErrors[fieldId];
+        return newErrors;
+      });
     }
-  }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    // Validate required fields
-    const newErrors: Record<string, string> = {}
+    e.preventDefault();
+
+    const newErrors: Record<string, string> = {};
     form.fields.forEach((field) => {
       if (field.required && !formValues[field.id]) {
-        newErrors[field.id] = "This field is required"
+        newErrors[field.id] = "This field is required";
       }
-    })
+    });
 
     if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-      return
+      setErrors(newErrors);
+      return;
     }
 
-    // Submit form
-    setSubmitted(true)
-  }
+    setSubmitted(true);
+  };
+
+  const getStringValue = (fieldId: string): string => {
+    const val = formValues[fieldId];
+    return typeof val === "string" ? val : "";
+  };
+
+  const getArrayValue = (fieldId: string): string[] => {
+    const val = formValues[fieldId];
+    return Array.isArray(val) ? val : [];
+  };
+
+  const getNumberValue = (fieldId: string): number => {
+    const val = formValues[fieldId];
+    return typeof val === "number" ? val : 0;
+  };
+
+  const getBooleanValue = (fieldId: string): boolean => {
+    const val = formValues[fieldId];
+    return typeof val === "boolean" ? val : false;
+  };
 
   if (submitted) {
     return (
@@ -98,20 +112,19 @@ export function FormPreview({ form, isPreview = false }: FormPreviewProps) {
           <Button
             variant="outline"
             onClick={() => {
-              setSubmitted(false)
-              setFormValues({})
+              setSubmitted(false);
+              setFormValues({});
             }}
           >
             Submit another response
           </Button>
         </motion.div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Preview Banner */}
       {isPreview && (
         <div className="fixed top-0 left-0 right-0 z-50 bg-primary text-primary-foreground py-2 px-4 text-center text-sm">
           <span>Preview Mode — </span>
@@ -122,7 +135,6 @@ export function FormPreview({ form, isPreview = false }: FormPreviewProps) {
       )}
 
       <div className={`mx-auto max-w-2xl px-4 py-8 ${isPreview ? "pt-16" : ""}`}>
-        {/* Back Link */}
         {isPreview && (
           <Link
             href={`/dashboard/forms/${form.id}`}
@@ -138,15 +150,11 @@ export function FormPreview({ form, isPreview = false }: FormPreviewProps) {
           animate={{ opacity: 1, y: 0 }}
           className="bg-card rounded-2xl border border-border/50 shadow-lg shadow-primary/5 overflow-hidden"
         >
-          {/* Form Header */}
           <div className="p-6 sm:p-8 border-b border-border/50 bg-gradient-to-b from-secondary/30 to-transparent">
             <h1 className="font-serif text-2xl sm:text-3xl text-foreground">{form.name}</h1>
-            {form.description && (
-              <p className="text-muted-foreground mt-2">{form.description}</p>
-            )}
+            {form.description && <p className="text-muted-foreground mt-2">{form.description}</p>}
           </div>
 
-          {/* Form Fields */}
           <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-6">
             {form.fields.map((field, index) => (
               <motion.div
@@ -163,7 +171,7 @@ export function FormPreview({ form, isPreview = false }: FormPreviewProps) {
                 {field.type === "text" && (
                   <Input
                     placeholder={field.placeholder}
-                    value={formValues[field.id] || ""}
+                    value={getStringValue(field.id)}
                     onChange={(e) => updateValue(field.id, e.target.value)}
                     className={errors[field.id] ? "border-destructive" : ""}
                   />
@@ -173,7 +181,7 @@ export function FormPreview({ form, isPreview = false }: FormPreviewProps) {
                   <Input
                     type="email"
                     placeholder={field.placeholder}
-                    value={formValues[field.id] || ""}
+                    value={getStringValue(field.id)}
                     onChange={(e) => updateValue(field.id, e.target.value)}
                     className={errors[field.id] ? "border-destructive" : ""}
                   />
@@ -183,7 +191,7 @@ export function FormPreview({ form, isPreview = false }: FormPreviewProps) {
                   <Input
                     type="tel"
                     placeholder={field.placeholder}
-                    value={formValues[field.id] || ""}
+                    value={getStringValue(field.id)}
                     onChange={(e) => updateValue(field.id, e.target.value)}
                     className={errors[field.id] ? "border-destructive" : ""}
                   />
@@ -193,7 +201,7 @@ export function FormPreview({ form, isPreview = false }: FormPreviewProps) {
                   <Input
                     type="number"
                     placeholder={field.placeholder}
-                    value={formValues[field.id] || ""}
+                    value={getStringValue(field.id)}
                     onChange={(e) => updateValue(field.id, e.target.value)}
                     className={errors[field.id] ? "border-destructive" : ""}
                   />
@@ -202,7 +210,7 @@ export function FormPreview({ form, isPreview = false }: FormPreviewProps) {
                 {field.type === "textarea" && (
                   <Textarea
                     placeholder={field.placeholder}
-                    value={formValues[field.id] || ""}
+                    value={getStringValue(field.id)}
                     onChange={(e) => updateValue(field.id, e.target.value)}
                     rows={4}
                     className={errors[field.id] ? "border-destructive" : ""}
@@ -220,7 +228,7 @@ export function FormPreview({ form, isPreview = false }: FormPreviewProps) {
                       >
                         <Star
                           className={`h-8 w-8 transition-colors ${
-                            star <= (formValues[field.id] || 0)
+                            star <= getNumberValue(field.id)
                               ? "fill-primary text-primary"
                               : "text-border hover:text-primary/50"
                           }`}
@@ -232,7 +240,7 @@ export function FormPreview({ form, isPreview = false }: FormPreviewProps) {
 
                 {field.type === "select" && (
                   <Select
-                    value={formValues[field.id] || ""}
+                    value={getStringValue(field.id)}
                     onValueChange={(value) => updateValue(field.id, value)}
                   >
                     <SelectTrigger className={errors[field.id] ? "border-destructive" : ""}>
@@ -254,7 +262,7 @@ export function FormPreview({ form, isPreview = false }: FormPreviewProps) {
                       <label
                         key={option}
                         className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
-                          formValues[field.id] === option
+                          getStringValue(field.id) === option
                             ? "border-primary bg-primary/5"
                             : "border-border/50 hover:border-border"
                         }`}
@@ -263,16 +271,16 @@ export function FormPreview({ form, isPreview = false }: FormPreviewProps) {
                           type="radio"
                           name={field.id}
                           value={option}
-                          checked={formValues[field.id] === option}
+                          checked={getStringValue(field.id) === option}
                           onChange={(e) => updateValue(field.id, e.target.value)}
                           className="sr-only"
                         />
-                        <div className={`h-4 w-4 rounded-full border-2 flex items-center justify-center ${
-                          formValues[field.id] === option
-                            ? "border-primary"
-                            : "border-border"
-                        }`}>
-                          {formValues[field.id] === option && (
+                        <div
+                          className={`h-4 w-4 rounded-full border-2 flex items-center justify-center ${
+                            getStringValue(field.id) === option ? "border-primary" : "border-border"
+                          }`}
+                        >
+                          {getStringValue(field.id) === option && (
                             <div className="h-2 w-2 rounded-full bg-primary" />
                           )}
                         </div>
@@ -284,48 +292,54 @@ export function FormPreview({ form, isPreview = false }: FormPreviewProps) {
 
                 {field.type === "checkbox" && (
                   <div className="space-y-2">
-                    {field.options?.map((option) => (
-                      <label
-                        key={option}
-                        className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
-                          (formValues[field.id] || []).includes(option)
-                            ? "border-primary bg-primary/5"
-                            : "border-border/50 hover:border-border"
-                        }`}
-                      >
-                        <input
-                          type="checkbox"
-                          value={option}
-                          checked={(formValues[field.id] || []).includes(option)}
-                          onChange={(e) => {
-                            const current = formValues[field.id] || []
-                            if (e.target.checked) {
-                              updateValue(field.id, [...current, option])
-                            } else {
-                              updateValue(field.id, current.filter((v: string) => v !== option))
-                            }
-                          }}
-                          className="sr-only"
-                        />
-                        <div className={`h-4 w-4 rounded border-2 flex items-center justify-center ${
-                          (formValues[field.id] || []).includes(option)
-                            ? "border-primary bg-primary"
-                            : "border-border"
-                        }`}>
-                          {(formValues[field.id] || []).includes(option) && (
-                            <CheckCircle2 className="h-3 w-3 text-primary-foreground" />
-                          )}
-                        </div>
-                        <span className="text-sm text-foreground">{option}</span>
-                      </label>
-                    ))}
+                    {field.options?.map((option) => {
+                      const checked = getArrayValue(field.id).includes(option);
+                      return (
+                        <label
+                          key={option}
+                          className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
+                            checked
+                              ? "border-primary bg-primary/5"
+                              : "border-border/50 hover:border-border"
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            value={option}
+                            checked={checked}
+                            onChange={(e) => {
+                              const current = getArrayValue(field.id);
+                              if (e.target.checked) {
+                                updateValue(field.id, [...current, option]);
+                              } else {
+                                updateValue(
+                                  field.id,
+                                  current.filter((v) => v !== option),
+                                );
+                              }
+                            }}
+                            className="sr-only"
+                          />
+                          <div
+                            className={`h-4 w-4 rounded border-2 flex items-center justify-center ${
+                              checked ? "border-primary bg-primary" : "border-border"
+                            }`}
+                          >
+                            {checked && (
+                              <CheckCircle2 className="h-3 w-3 text-primary-foreground" />
+                            )}
+                          </div>
+                          <span className="text-sm text-foreground">{option}</span>
+                        </label>
+                      );
+                    })}
                   </div>
                 )}
 
                 {field.type === "date" && (
                   <Input
                     type="date"
-                    value={formValues[field.id] || ""}
+                    value={getStringValue(field.id)}
                     onChange={(e) => updateValue(field.id, e.target.value)}
                     className={errors[field.id] ? "border-destructive" : ""}
                   />
@@ -333,7 +347,7 @@ export function FormPreview({ form, isPreview = false }: FormPreviewProps) {
 
                 {field.type === "toggle" && (
                   <Switch
-                    checked={formValues[field.id] || false}
+                    checked={getBooleanValue(field.id)}
                     onCheckedChange={(checked) => updateValue(field.id, checked)}
                   />
                 )}
@@ -348,9 +362,9 @@ export function FormPreview({ form, isPreview = false }: FormPreviewProps) {
                       type="file"
                       className="hidden"
                       onChange={(e) => {
-                        const file = e.target.files?.[0]
+                        const file = e.target.files?.[0];
                         if (file) {
-                          updateValue(field.id, file.name)
+                          updateValue(field.id, file.name);
                         }
                       }}
                     />
@@ -361,7 +375,7 @@ export function FormPreview({ form, isPreview = false }: FormPreviewProps) {
                   <Input
                     type="url"
                     placeholder={field.placeholder || "https://example.com"}
-                    value={formValues[field.id] || ""}
+                    value={getStringValue(field.id)}
                     onChange={(e) => updateValue(field.id, e.target.value)}
                     className={errors[field.id] ? "border-destructive" : ""}
                   />
@@ -383,14 +397,16 @@ export function FormPreview({ form, isPreview = false }: FormPreviewProps) {
             </div>
           </form>
 
-          {/* Footer */}
           <div className="p-4 border-t border-border/50 text-center">
-            <Link href="/" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+            <Link
+              href="/"
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
               Powered by FormZen
             </Link>
           </div>
         </motion.div>
       </div>
     </div>
-  )
+  );
 }

@@ -14,7 +14,7 @@ import { useDeleteForm, useGetAllForms } from "@/hooks/form/use-forms";
 import { useDashboardAnalytics } from "@/hooks/analytics/use-analytics";
 
 export default function DashboardPage() {
-  const { data: recentForms, error, isLoading } = useGetAllForms();
+  const { data: recentForms } = useGetAllForms();
 
   const { deleteMutation } = useDeleteForm();
   const { data: analytics } = useDashboardAnalytics();

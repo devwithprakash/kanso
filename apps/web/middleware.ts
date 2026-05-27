@@ -1,7 +1,7 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-// 1. Define all routes that do not require authentication
+// Routes accessible to everyone (logged in or out)
 const isPublicRoute = createRouteMatcher([
   "/",
   "/sign-in(.*)",
@@ -13,10 +13,7 @@ const isPublicRoute = createRouteMatcher([
 export default clerkMiddleware(async (auth, req) => {
   const { userId } = await auth();
 
-  if (userId && req.nextUrl.pathname === "/") {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
-  }
-
+  // Logged-out users hitting protected routes → sign-in
   if (!userId && !isPublicRoute(req)) {
     return NextResponse.redirect(new URL("/sign-in", req.url));
   }

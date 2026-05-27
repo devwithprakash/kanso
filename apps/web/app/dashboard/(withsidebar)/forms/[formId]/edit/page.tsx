@@ -32,7 +32,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const visualThemes = [
+type Theme = "light" | "dark" | "minimal" | "gradient";
+type Visibility = "public" | "private" | "unlisted";
+
+type ThemeOption = {
+  id: Theme;
+  name: string;
+  bg: string;
+  primary: string;
+  description: string;
+};
+
+const visualThemes: ThemeOption[] = [
   {
     id: "light",
     name: "FormZen Light",
@@ -74,7 +85,7 @@ export default function FormSettingsPage() {
   );
   const [isPublished, setIsPublished] = useState(true);
   const [theme, setTheme] = useState<"light" | "dark" | "minimal" | "gradient">("light");
-  const [visibility, setVisibility] = useState<"public" | "private" | "unlisted">("unlisted");
+  const [visibility, setVisibility] = useState<Visibility>("unlisted");
   const [isSaving, setIsSaving] = useState(false);
 
   const { updateFormMutation } = useUpdateForm();
@@ -216,7 +227,7 @@ export default function FormSettingsPage() {
               {visualThemes.map((vTheme) => (
                 <div
                   key={vTheme.id}
-                  onClick={() => setTheme(vTheme.id as any)}
+                  onClick={() => setTheme(vTheme.id)}
                   className={cn(
                     "border rounded-xl p-4 cursor-pointer text-left transition-all hover:shadow-md flex flex-col justify-between h-36 bg-card",
                     theme === vTheme.id
@@ -277,13 +288,11 @@ export default function FormSettingsPage() {
         </div>
 
         <div className="space-y-6">
-          {/* Publication Status & Visibility Card */}
           <motion.div
             initial={{ opacity: 0, x: 15 }}
             animate={{ opacity: 1, x: 0 }}
             className="bg-card border border-border/50 rounded-xl p-5 shadow-sm space-y-6"
           >
-            {/* Publication Status */}
             <div className="space-y-4">
               <div>
                 <h4 className="font-medium text-sm text-foreground">Form Publication Status</h4>
@@ -313,12 +322,11 @@ export default function FormSettingsPage() {
               </div>
             </div>
 
-            {/* Visibility Dropdown */}
             <div className="pt-2 border-t border-border/40">
               <Label className="text-sm font-medium text-foreground mb-2 block">
                 Form Visibility
               </Label>
-              <Select value={visibility} onValueChange={(val: any) => setVisibility(val)}>
+              <Select value={visibility} onValueChange={(val: Visibility) => setVisibility(val)}>
                 <SelectTrigger className="w-full bg-background">
                   <SelectValue placeholder="Select visibility" />
                 </SelectTrigger>
@@ -331,7 +339,6 @@ export default function FormSettingsPage() {
             </div>
           </motion.div>
 
-          {/* Move Danger Zone here for better mobile stacking */}
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
