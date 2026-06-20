@@ -16,7 +16,6 @@ export const formsTable = pgTable("forms", {
   visibility: formVisibilityEnum("visibility").default("private").notNull(),
 
   slug: varchar("slug").unique().notNull(),
-  isPublished: boolean("is_published").default(false).notNull(),
 
   createdBy: uuid("created_by")
     .notNull()

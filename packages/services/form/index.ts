@@ -80,7 +80,7 @@ const createForm = async (payload: CreateFormInputType, userId: string) => {
 };
 
 const updateForm = async (payload: UpdateFormInputType, userId: string) => {
-  const { formId, title, description, isPublished, theme, visibility } =
+  const { formId, title, description, theme, visibility } =
     await updateFormInput.parseAsync(payload);
 
   const [dbUser] = await db.select().from(usersTable).where(eq(usersTable.clerkUserId, userId));
@@ -94,7 +94,6 @@ const updateForm = async (payload: UpdateFormInputType, userId: string) => {
     .set({
       title,
       description,
-      isPublished,
       theme,
       visibility,
       updatedAt: new Date(),

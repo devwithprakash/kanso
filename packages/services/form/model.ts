@@ -12,15 +12,6 @@ export const updateFormInput = z.object({
   description: z.string().optional(),
   theme: z.enum(["light", "dark", "minimal", "gradient"]),
   visibility: z.enum(["public", "private", "unlisted"]),
-  isPublished: z
-    .preprocess((val) => {
-      if (typeof val !== "boolean") {
-        return undefined;
-      }
-
-      return val;
-    }, z.boolean())
-    .optional(),
 });
 
 export const deleteFormInput = z.object({

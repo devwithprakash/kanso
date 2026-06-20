@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
@@ -47,21 +47,7 @@ export function HeroSection() {
             </motion.div>
 
             <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl leading-[1.15] tracking-tight text-foreground">
-              Build{" "}
-              <span className="relative inline-block min-w-[200px] sm:min-w-[280px] text-primary font-medium overflow-hidden vertical-align-middle">
-                <AnimatePresence mode="wait">
-                  <motion.span
-                    key={words[index]}
-                    initial={{ y: 30, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: -30, opacity: 0 }}
-                    transition={{ duration: 0.4, ease: "easeInOut" }}
-                    className="absolute left-0 top-0 block"
-                  >
-                    {words[index]}
-                  </motion.span>
-                </AnimatePresence>
-              </span>
+              Build <span className="text-primary font-medium">beautiful</span>
               <br />
               forms in minutes
             </h1>

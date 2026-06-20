@@ -12,7 +12,6 @@ export const createFormOutputModel = z.object({
   title: z.string(),
   description: z.string().nullable(),
   theme: z.string(),
-  isPublished: z.boolean(),
   visibility: z.enum(["public", "private", "unlisted"]),
   createdBy: z.string(),
   slug: z.string(),
@@ -27,15 +26,6 @@ export const updateFormInputModel = z.object({
   description: z.string().optional(),
   theme: z.enum(["light", "dark", "minimal", "gradient"]),
   visibility: z.enum(["public", "private", "unlisted"]),
-  isPublished: z
-    .preprocess((val) => {
-      if (typeof val !== "boolean") {
-        return undefined;
-      }
-
-      return val;
-    }, z.boolean())
-    .optional(),
 });
 
 export const updateFormOutputModel = z.object({
@@ -44,7 +34,6 @@ export const updateFormOutputModel = z.object({
   description: z.string().nullable(),
   theme: z.enum(["light", "dark", "minimal", "gradient"]),
   visibility: z.enum(["public", "private", "unlisted"]),
-  isPublished: z.boolean(),
   createdBy: z.string(),
   slug: z.string(),
   createdAt: z.date(),
@@ -62,7 +51,6 @@ export const deleteFormOutputModel = z.object({
   description: z.string().nullable(),
   theme: z.enum(["light", "dark", "minimal", "gradient"]),
   visibility: z.enum(["public", "private", "unlisted"]),
-  isPublished: z.boolean(),
   createdBy: z.string(),
   slug: z.string(),
   createdAt: z.date(),
@@ -82,7 +70,6 @@ export const getAllFormsOutputModel = z.array(
     visibility: z.enum(["public", "private", "unlisted"]),
 
     slug: z.string(),
-    isPublished: z.boolean(),
     createdBy: z.string(),
 
     createdAt: z.date(),
@@ -146,7 +133,6 @@ export const getFormByIdOutputModel = z.object({
   theme: string(),
   visibility: z.enum(["public", "private", "unlisted"]),
   slug: z.string(),
-  isPublished: z.boolean(),
   formFields: z.array(formFieldModel),
   createdBy: z.string(),
   createdAt: z.date(),
@@ -161,7 +147,6 @@ export const allFormSchema = z.object({
   description: z.string().optional(),
   theme: z.string(),
   visibility: z.enum(["public", "private", "unlisted"]),
-  isPublished: z.boolean(),
   slug: z.string(),
   createdBy: z.string(),
   createdAt: z.date(),
@@ -181,7 +166,6 @@ export const getFormBySlugOutputModel = z.object({
   theme: z.string(),
   visibility: z.enum(["public", "private", "unlisted"]),
   slug: z.string(),
-  isPublished: z.boolean(),
   formFields: z.array(formFieldModel),
   createdBy: z.string(),
   createdAt: z.date(),
@@ -199,7 +183,6 @@ export const getAllPublicFormOutputModel = z.array(
     visibility: z.enum(["public", "private", "unlisted"]),
 
     slug: z.string(),
-    isPublished: z.boolean(),
     createdBy: z.string(),
 
     createdAt: z.date(),

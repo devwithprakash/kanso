@@ -6,9 +6,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Show, useClerk } from "@clerk/nextjs";
-import { useMe } from "@/hooks/auth/use-me";
 
-const DOCS_URL = process.env.NEXT_PUBLIC_API_DOCS_URL as string;
+const DOCS_URL = process.env.NEXT_PUBLIC_API_DOCS_URL ?? "#";
 
 const navLinks = [
   { href: "#features", label: "Features" },
@@ -21,10 +20,6 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
 
   const { signOut } = useClerk();
-
-  const { me } = useMe();
-
-  console.log(me?.fullName);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,7 +38,7 @@ export function Navbar() {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 transform-gpu ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
           ? "bg-background/70 backdrop-blur-md border-b border-border/40 py-0"
           : "bg-transparent border-b border-transparent py-2"
@@ -60,55 +55,50 @@ export function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 {link.label}
               </Link>
             ))}
           </div>
 
+
           <div className="hidden md:flex items-center gap-3">
             <Show when="signed-out">
-              <Link
-                href="/sign-in"
-                className="rounded-md bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-zinc-200"
-              >
-                Log In
+              <Link href="/sign-in">
+                <Button variant="ghost" size="sm">
+                  Log In
+                </Button>
               </Link>
             </Show>
-
             <Show when="signed-in">
-              <button
+              <Button
+                className="cursor-pointer"
+                variant="ghost"
+                size="sm"
                 onClick={() => signOut()}
-                className="rounded-md bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-zinc-200"
               >
                 Log Out
-              </button>
+              </Button>
             </Show>
-
             <Link href="/dashboard">
-              <Button className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 text-sm font-medium px-6 shadow-sm">
+              <Button size="sm" className="rounded-full cursor-pointer px-6">
                 Get Started Free
               </Button>
             </Link>
           </div>
 
           <button
-            className="md:hidden p-2 rounded-lg hover:bg-secondary/50 transition-colors"
+            className="md:hidden p-2 rounded-lg hover:bg-secondary transition-colors"
             onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle structural menu"
+            aria-label="Toggle menu"
           >
-            {isOpen ? (
-              <X className="h-5 w-5 text-foreground" />
-            ) : (
-              <Menu className="h-5 w-5 text-foreground" />
-            )}
+            {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
       </div>
@@ -119,36 +109,27 @@ export function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="md:hidden bg-card/95 backdrop-blur-lg border-b border-border/50 overflow-hidden"
+            className="md:hidden bg-background border-b border-border overflow-hidden"
           >
-            <div className="px-6 py-6 space-y-5">
-              <div className="flex flex-col gap-4">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-
-              <div className="flex flex-col gap-2.5 pt-5 border-t border-border/40">
-                <Link href="/dashboard" onClick={() => setIsOpen(false)}>
-                  <Button
-                    variant="outline"
-                    className="justify-center text-sm font-medium w-full rounded-full border-border"
-                  >
-                    Sign in
+            <div className="px-6 py-6 space-y-4">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="block text-base font-medium text-muted-foreground hover:text-foreground"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
+              <div className="pt-4 flex flex-col gap-3 border-t border-border">
+                <Link href="/sign-in" onClick={() => setIsOpen(false)}>
+                  <Button variant="outline" className="w-full">
+                    Sign In
                   </Button>
                 </Link>
                 <Link href="/dashboard" onClick={() => setIsOpen(false)}>
-                  <Button className="rounded-full bg-primary text-primary-foreground text-sm font-medium w-full shadow-sm">
-                    Get Started Free
-                  </Button>
+                  <Button className="w-full">Get Started Free</Button>
                 </Link>
               </div>
             </div>

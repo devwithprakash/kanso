@@ -1,15 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import {
-  Users,
-  Calendar,
-  Loader2,
-  AlertCircle,
-  FileText,
-  TrendingUp,
-  Eye,
-} from "lucide-react";
+import { Users, Calendar, Loader2, AlertCircle, FileText, TrendingUp, Eye } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -35,8 +27,6 @@ const AnalyticsCharts = dynamic(
 );
 
 export default function AnalyticsPage() {
-
-
   const { data: analytics, error, isLoading } = useDashboardAnalytics();
   const { data: chartAnalytics } = useFormAnalytics();
 
@@ -96,7 +86,6 @@ export default function AnalyticsPage() {
 
   return (
     <div className="space-y-8 pb-12 animate-in fade-in duration-300">
-
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="font-serif text-2xl sm:text-3xl text-foreground">Workspace Analytics</h1>
@@ -106,7 +95,7 @@ export default function AnalyticsPage() {
         </div>
         <div className="flex items-center gap-3">
           <Select defaultValue="30d">
-            <SelectTrigger className="w-[140px] bg-card border-border/50">
+            <SelectTrigger className="w-[170px] bg-card border-border/50">
               <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
               <SelectValue />
             </SelectTrigger>
@@ -140,12 +129,10 @@ export default function AnalyticsPage() {
               </div>
               <p className="font-serif text-2xl text-foreground">{stat.value}</p>
               <p className="text-sm text-muted-foreground mt-1">{stat.label}</p>
-              <p className="text-xs text-primary mt-2">{stat.change}</p>
             </motion.div>
           );
         })}
       </div>
-
 
       <AnalyticsCharts
         responsesOverTime={chartAnalytics?.responsesOverTime ?? []}

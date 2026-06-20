@@ -1,13 +1,7 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { 
-  Layers, 
-  Zap, 
-  BarChart3, 
-  Palette, 
-  Share2, 
-} from "lucide-react"
+import { motion } from "framer-motion";
+import { Layers, Zap, BarChart3, Palette, Share2 } from "lucide-react";
 
 const features = [
   {
@@ -19,7 +13,8 @@ const features = [
   {
     icon: BarChart3,
     title: "Powerful Analytics",
-    description: "Track submission rates, form drops, and user field behavior with custom real-time metrics.",
+    description:
+      "Track submission rates, form drops, and user field behavior with custom real-time metrics.",
     className: "col-span-1",
   },
   {
@@ -31,7 +26,8 @@ const features = [
   {
     icon: Layers,
     title: "Drag & Drop Builder",
-    description: "Build beautiful layouts with our intuitive visual editor. No coding required—just drag, drop, and launch.",
+    description:
+      "Build beautiful layouts with our intuitive visual editor. No coding required—just drag, drop, and launch.",
     className: "md:col-span-2 lg:col-span-2 bg-gradient-to-br from-card to-primary/5",
   },
   {
@@ -40,14 +36,13 @@ const features = [
     description: "Match your identity perfectly with design themes and typography overrides.",
     className: "md:col-span-1 lg:col-span-1",
   },
-]
+];
 
 export function FeaturesGrid() {
   return (
     <section id="features" className="py-24 bg-secondary/30">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        
-        {/* Section Header */}
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -55,7 +50,9 @@ export function FeaturesGrid() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="text-sm text-primary font-medium tracking-wider uppercase">Features</span>
+          <span className="text-sm text-primary font-medium tracking-wider uppercase">
+            Features
+          </span>
           <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-foreground mt-3 tracking-tight">
             Everything you need to build amazing forms
           </h2>
@@ -64,11 +61,10 @@ export function FeaturesGrid() {
           </p>
         </motion.div>
 
-        {/* New Staggered Bento Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-[minmax(180px,auto)]">
           {features.map((feature, index) => {
-            const Icon = feature.icon
-            
+            const Icon = feature.icon;
+
             return (
               <motion.div
                 key={feature.title}
@@ -95,10 +91,10 @@ export function FeaturesGrid() {
                   </p>
                 </div>
               </motion.div>
-            )
+            );
           })}
         </div>
       </div>
     </section>
-  )
+  );
 }

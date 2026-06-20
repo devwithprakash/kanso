@@ -21,14 +21,18 @@ const USER_SELECT_FIELDS = {
 export const upsertUserByClerkId = async (payload: UserInputType) => {
   const { clerkUserId } = await userInput.parseAsync(payload);
 
-  const [existingUser] = await db
-    .select()
-    .from(usersTable)
-    .where(eq(usersTable.clerkUserId, clerkUserId))
-    .limit(1);
+  try {
+    const [existingUser] = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.clerkUserId, clerkUserId))
+      .limit(1);
 
-  if (existingUser) {
-    return existingUser;
+    if (existingUser) {
+      return existingUser;
+    }
+  } catch (error) {
+    console.log(error);
   }
 
   const clerkUser = await clerkClient.users.getUser(clerkUserId);

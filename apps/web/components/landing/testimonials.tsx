@@ -1,31 +1,34 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Star } from "lucide-react"
+import { motion } from "framer-motion";
+import { Star } from "lucide-react";
 
 const testimonials = [
   {
-    content: "FormZen has completely changed how we collect customer feedback. The forms are beautiful and the response rate increased by 40%.",
+    content:
+      "FormZen has completely changed how we collect customer feedback. The forms are beautiful and the response rate increased by 40%.",
     author: "Sarah Chen",
     role: "Head of Product",
     company: "Bloom",
     rating: 5,
   },
   {
-    content: "Finally, a form builder that doesn&apos;t make me cringe. Our surveys look professional and our customers actually complete them.",
+    content:
+      "Finally, a form builder that doesn&apos;t make me cringe. Our surveys look professional and our customers actually complete them.",
     author: "Marcus Johnson",
     role: "Founder & CEO",
     company: "Mindful Labs",
     rating: 5,
   },
   {
-    content: "The analytics dashboard alone is worth it. We can see exactly where people drop off and optimize our forms accordingly.",
+    content:
+      "The analytics dashboard alone is worth it. We can see exactly where people drop off and optimize our forms accordingly.",
     author: "Emily Tanaka",
     role: "Growth Lead",
     company: "Craft Studio",
     rating: 5,
   },
-]
+];
 
 export function Testimonials() {
   return (
@@ -38,7 +41,9 @@ export function Testimonials() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-           <span className="text-sm text-primary font-medium tracking-wider uppercase">Testimonials</span>
+          <span className="text-sm text-primary font-medium tracking-wider uppercase">
+            Testimonials
+          </span>
           <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-foreground mt-3 text-balance">
             Loved by teams everywhere
           </h2>
@@ -72,14 +77,10 @@ export function Testimonials() {
               {/* Author */}
               <div className="flex items-center gap-3 pt-4 border-t border-border/50">
                 <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <span className="font-serif text-primary">
-                    {testimonial.author.charAt(0)}
-                  </span>
+                  <span className="font-serif text-primary">{testimonial.author.charAt(0)}</span>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-foreground">
-                    {testimonial.author}
-                  </p>
+                  <p className="text-sm font-medium text-foreground">{testimonial.author}</p>
                   <p className="text-xs text-muted-foreground">
                     {testimonial.role} at {testimonial.company}
                   </p>
@@ -90,5 +91,5 @@ export function Testimonials() {
         </div>
       </div>
     </section>
-  )
+  );
 }

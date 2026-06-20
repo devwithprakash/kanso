@@ -19,13 +19,11 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-6 pb-20 lg:pb-0">
-      {/* Page Header */}
       <div>
         <h1 className="font-serif text-2xl sm:text-3xl text-foreground">Settings</h1>
         <p className="text-muted-foreground mt-1">Manage your account settings.</p>
       </div>
 
-      {/* Profile Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -42,7 +40,6 @@ export default function SettingsPage() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-6">
-          {/* Profile Avatar */}
           <div className="flex flex-col items-center gap-4">
             <div className="h-24 w-24 rounded-full bg-primary/10 flex items-center justify-center">
               <Image
@@ -55,7 +52,6 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* Profile Form */}
           <div className="flex-1 space-y-4">
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
@@ -99,14 +95,8 @@ export default function SettingsPage() {
             </div>
           </div>
         </div>
-
-        <div className="flex justify-end gap-3 pt-6 mt-6 border-t border-border/50">
-          <Button variant="outline">Cancel</Button>
-          <Button className="bg-primary text-primary-foreground">Save Changes</Button>
-        </div>
       </motion.div>
 
-      {/* Logout Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

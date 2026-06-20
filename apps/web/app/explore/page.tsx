@@ -67,7 +67,7 @@ export default function ExplorePage() {
                       <span className="text-[10px] font-bold bg-secondary px-2 py-1 rounded-md uppercase tracking-wider text-muted-foreground">
                         {form.theme} theme
                       </span>
-                      {form.isPublished && (
+                      {form.visibility === "public" && (
                         <span className="text-[10px] text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full font-medium">
                           Live
                         </span>

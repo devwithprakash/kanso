@@ -1,4 +1,4 @@
-import "dotenv/config"
+import "dotenv/config";
 import express from "express";
 import { logger } from "@repo/logger";
 import cors from "cors";
@@ -21,7 +21,7 @@ const openApiDocument = generateOpenApiDocument(serverRouter, {
 
 app.use(
   cors({
-    origin: env.CORS_ORIGIN.split(",").map((s) => s.trim()),
+    origin: [env.CORS_ORIGIN, "http://localhost:3000"],
     credentials: true,
   }),
 );
@@ -36,7 +36,7 @@ app.get("/", (req, res) => {
 app.get("/health", (req, res) => {
   return res.json({ message: "Streamyst server is healthy", healthy: true });
 });
-  
+
 logger.debug(`openapi.json: ${env.BASE_URL}/openapi.json`);
 app.get("/openapi.json", (req, res) => {
   return res.json(openApiDocument);

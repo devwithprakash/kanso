@@ -1,99 +1,56 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { motion } from "framer-motion"
+import Link from "next/link";
 
-const footerLinks = {
-  product: [
-    { label: "Features", href: "#features" },
-    { label: "Pricing", href: "/pricing" },
-    { label: "Templates", href: "#" },
-    { label: "Integrations", href: "#" },
-  ],
-  company: [
-    { label: "About", href: "#" },
-    { label: "Blog", href: "#" },
-    { label: "Careers", href: "#" },
-    { label: "Press", href: "#" },
-  ],
-  resources: [
-    { label: "Documentation", href: "#" },
-    { label: "Help Center", href: "#" },
-    { label: "API Reference", href: "#" },
-    { label: "Status", href: "#" },
-  ],
-  legal: [
-    { label: "Privacy", href: "#" },
-    { label: "Terms", href: "#" },
-    { label: "Security", href: "#" },
-    { label: "GDPR", href: "#" },
-  ],
-}
+const links = [
+  { label: "Features", href: "#features" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "Docs", href: "/docs" },
+  { label: "Login", href: "/sign-in" },
+];
 
 export function Footer() {
   return (
-    <footer className="py-16 border-t border-border/50">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 lg:gap-12">
-          {/* Brand */}
-          <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-serif text-lg">F</span>
-              </div>
-              <span className="font-serif text-xl text-foreground">FormZen</span>
-            </Link>
-            <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
-              Beautiful forms that people actually want to fill out.
-            </p>
-          </div>
+    <footer className="border-t border-border/50">
+      <div className="mx-auto max-w-7xl px-6 py-10">
+        <div className="flex flex-col items-center text-center">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
+              <span className="font-serif text-lg text-primary-foreground">
+                F
+              </span>
+            </div>
+
+            <span className="font-serif text-2xl text-foreground">
+              FormZen
+            </span>
+          </Link>
+
+          <p className="mt-4 max-w-md text-sm text-muted-foreground">
+            Beautiful forms that people actually want to fill out.
+          </p>
 
           {/* Links */}
-          {Object.entries(footerLinks).map(([category, links]) => (
-            <div key={category}>
-              <h4 className="font-medium text-foreground capitalize mb-4">
-                {category}
-              </h4>
-              <ul className="space-y-3">
-                {links.map((link) => (
-                  <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
-        {/* Bottom */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="mt-16 pt-8 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-4"
-        >
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} FormZen. All rights reserved.
-          </p>
-          <div className="flex items-center gap-6">
-            {["Twitter", "GitHub", "LinkedIn"].map((social) => (
+          <nav className="mt-8 flex flex-wrap items-center justify-center gap-8">
+            {links.map((link) => (
               <Link
-                key={social}
-                href="#"
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                key={link.label}
+                href={link.href}
+                className="text-sm text-muted-foreground transition-colors hover:text-primary"
               >
-                {social}
+                {link.label}
               </Link>
             ))}
-          </div>
-        </motion.div>
+          </nav>
+
+          <div className="mt-10 h-px w-24 bg-border" />
+
+          <p className="mt-6 text-xs text-muted-foreground">
+            © {new Date().getFullYear()} FormZen. All rights reserved.
+          </p>
+        </div>
       </div>
     </footer>
-  )
+  );
 }
