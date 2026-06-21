@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Sparkles, ArrowUpRight, Calendar as CalendarIcon } from "lucide-react";
+import {
+  Search,
+  Sparkles,
+  ArrowUpRight,
+  Calendar as CalendarIcon,
+  ExternalLink,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/landing/navbar";
 import { useGetAllPublicForms } from "@/hooks/form/use-forms";
@@ -27,15 +33,20 @@ export default function ExplorePage() {
     <>
       <Navbar />
       <div className="min-h-screen bg-background pt-24 pb-16">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8 space-y-8">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8 space-y-4">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-border/40 pb-8">
-            <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-medium text-primary mb-3">
-                <Sparkles className="h-3 w-3" /> Community Hub
+            <div className="space-y-3">
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                <Sparkles className="h-3 w-3" />
+                Community Hub
               </div>
-              <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
+
+              <h1 className="font-serif text-3xl font-bold tracking-tight sm:text-4xl">
                 Explore Public Forms
               </h1>
+              <p className="text-muted-foreground font-serif">
+                Explore, submit, and interact with forms created by others.
+              </p>
             </div>
           </div>
 
@@ -64,9 +75,6 @@ export default function ExplorePage() {
                 >
                   <div className="flex-1">
                     <div className="flex justify-between items-start mb-3">
-                      <span className="text-[10px] font-bold bg-secondary px-2 py-1 rounded-md uppercase tracking-wider text-muted-foreground">
-                        {form.theme} theme
-                      </span>
                       {form.visibility === "public" && (
                         <span className="text-[10px] text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full font-medium">
                           Live
@@ -89,10 +97,10 @@ export default function ExplorePage() {
                     <Button
                       size="sm"
                       variant="outline"
-                      className="rounded-xl text-xs h-8"
+                      className="rounded-x cursor-pointer text-xs h-8"
                       onClick={() => window.open(`/forms/${form.slug}`, "_blank")}
                     >
-                      View <ArrowUpRight className="ml-1 h-3 w-3" />
+                      <ExternalLink className="ml-1 h-3 w-3" /> Fill Form
                     </Button>
                   </div>
                 </motion.div>
