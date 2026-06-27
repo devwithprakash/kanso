@@ -19,17 +19,16 @@ function Nav() {
   return (
     <header
       className={cn(
-        "sticky z-50 mx-auto w-full max-w-5xl px-4 transition-all duration-500",
-        scrolled ? "top-3" : "top-4",
+        "fixed left-1/2 top-4 z-50 w-full max-w-6xl -translate-x-1/2 px-4 transition-all duration-500",
+        scrolled && "top-3",
       )}
     >
       <nav
         className={cn(
-          "group flex items-center justify-between rounded-full border px-3 py-2 transition-all duration-500",
+          "flex items-center justify-between rounded-full border backdrop-blur-xl px-3 py-2 transition-all duration-500",
           scrolled
-            ? "border-border bg-background/90 shadow-[0_8px_32px_-12px_rgba(40,60,40,0.25)] backdrop-blur-xl"
-            : "border-border/70 bg-background/70 shadow-[0_1px_0_rgba(0,0,0,0.02),0_8px_24px_-12px_rgba(40,60,40,0.15)] backdrop-blur-md",
-          "hover:shadow-[0_1px_0_rgba(0,0,0,0.02),0_16px_40px_-12px_rgba(40,60,40,0.25)] hover:border-border",
+            ? "bg-background/90 border-border shadow-xl"
+            : "bg-background/70 border-border/70 shadow-lg",
         )}
       >
         <a
@@ -475,7 +474,7 @@ export default function Index() {
       <div className="pt-4">
         <Nav />
       </div>
-      <main>
+      <main className="pt-20">
         <Hero />
         <Features />
         <Pricing />
