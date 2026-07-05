@@ -2,78 +2,9 @@
 
 import * as React from "react";
 import { ArrowRight, Zap, BarChart3, Share2, LayoutGrid, Palette, Check } from "lucide-react";
-import { cn } from "@/lib/utils";
+import {Nav} from "@/components/landing/navbar"
 
 const serif = { fontFamily: "'Fraunces', Georgia, serif" } as const;
-
-function Nav() {
-  const [scrolled, setScrolled] = React.useState(false);
-
-  React.useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  return (
-    <header
-      className={cn(
-        "fixed left-1/2 top-4 z-50 w-full max-w-6xl -translate-x-1/2 px-4 transition-all duration-500",
-        scrolled && "top-3",
-      )}
-    >
-      <nav
-        className={cn(
-          "flex items-center justify-between rounded-full border backdrop-blur-xl px-3 py-2 transition-all duration-500",
-          scrolled
-            ? "bg-background/90 border-border shadow-xl"
-            : "bg-background/70 border-border/70 shadow-lg",
-        )}
-      >
-        <a
-          href="/"
-          className="flex items-center gap-2 pl-2 transition-transform duration-300 hover:scale-105"
-        >
-          <span
-            className="grid h-7 w-7 place-items-center rounded-md bg-primary text-primary-foreground text-[13px] font-semibold transition-transform duration-500 group-hover:rotate-[8deg]"
-            style={serif}
-          >
-            K
-          </span>
-          <span className="text-sm font-medium tracking-tight text-foreground">Kanso</span>
-        </a>
-        <ul className="hidden items-center gap-1 md:flex">
-          {["Features", "Explore", "Pricing", "API Docs"].map((l) => (
-            <li key={l}>
-              <a
-                href={`#${l.toLowerCase().replace(/\s+/g, "-")}`}
-                className="rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-all duration-300 hover:bg-primary/10 hover:text-primary"
-              >
-                {l}
-              </a>
-            </li>
-          ))}
-        </ul>
-        <div className="flex items-center gap-1.5">
-          <a
-            href="#login"
-            className="hidden rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-colors duration-300 hover:text-foreground sm:inline-flex"
-          >
-            Log in
-          </a>
-          <a
-            href="#start"
-            className="group/btn inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground transition-all duration-300 hover:bg-primary/90 hover:gap-2.5 hover:shadow-[0_8px_20px_-8px_rgba(40,60,40,0.4)]"
-          >
-            Get Started
-            <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover/btn:translate-x-0.5" />
-          </a>
-        </div>
-      </nav>
-    </header>
-  );
-}
 
 function Hero() {
   const fields = ["Short Text", "Email", "Multiple Choice", "Rating", "Date", "File Upload"];

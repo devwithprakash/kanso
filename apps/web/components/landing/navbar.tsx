@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { ArrowRight, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Show, useClerk } from "@clerk/nextjs";
+import { cn } from "@/lib/utils";
 
 const DOCS_URL = process.env.NEXT_PUBLIC_API_DOCS_URL ?? "#";
 
@@ -15,127 +16,73 @@ const navLinks = [
   { href: "/pricing", label: "Pricing" },
   { href: DOCS_URL, label: "API Docs" },
 ];
-export function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+const serif = { fontFamily: "'Fraunces', Georgia, serif" } as const;
 
-  const { signOut } = useClerk();
+export function Nav() {
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 10) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <motion.nav
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-background/70 backdrop-blur-md border-b border-border/40 py-0"
-          : "bg-transparent border-b border-transparent py-2"
-      }`}
+    <header
+      className={cn(
+        "fixed left-1/2 top-4 z-50 w-full max-w-6xl -translate-x-1/2 px-4 transition-all duration-500",
+        scrolled && "top-3",
+      )}
     >
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
-              <span className="text-primary-foreground font-serif text-lg font-medium">F</span>
-            </div>
-            <span className="font-serif text-xl font-semibold tracking-tight text-foreground">
-              FormZen
-            </span>
-          </Link>
-
-          <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-
-
-          <div className="hidden md:flex items-center gap-3">
-            <Show when="signed-out">
-              <Link href="/sign-in">
-                <Button variant="ghost" size="sm">
-                  Log In
-                </Button>
-              </Link>
-            </Show>
-            <Show when="signed-in">
-              <Button
-                className="cursor-pointer"
-                variant="ghost"
-                size="sm"
-                onClick={() => signOut()}
-              >
-                Log Out
-              </Button>
-            </Show>
-            <Link href="/dashboard">
-              <Button size="sm" className="rounded-full cursor-pointer px-6">
-                Get Started Free
-              </Button>
-            </Link>
-          </div>
-
-          <button
-            className="md:hidden p-2 rounded-lg hover:bg-secondary transition-colors"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle menu"
-          >
-            {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-        </div>
-      </div>
-
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-background border-b border-border overflow-hidden"
-          >
-            <div className="px-6 py-6 space-y-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="block text-base font-medium text-muted-foreground hover:text-foreground"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <div className="pt-4 flex flex-col gap-3 border-t border-border">
-                <Link href="/sign-in" onClick={() => setIsOpen(false)}>
-                  <Button variant="outline" className="w-full">
-                    Sign In
-                  </Button>
-                </Link>
-                <Link href="/dashboard" onClick={() => setIsOpen(false)}>
-                  <Button className="w-full">Get Started Free</Button>
-                </Link>
-              </div>
-            </div>
-          </motion.div>
+      <nav
+        className={cn(
+          "flex items-center justify-between rounded-full border backdrop-blur-xl px-3 py-2 transition-all duration-500",
+          scrolled
+            ? "bg-background/90 border-border shadow-xl"
+            : "bg-background/70 border-border/70 shadow-lg",
         )}
-      </AnimatePresence>
-    </motion.nav>
+      >
+        <a
+          href="/"
+          className="flex items-center gap-2 pl-2 transition-transform duration-300 hover:scale-105"
+        >
+          <span
+            className="grid h-7 w-7 place-items-center rounded-md bg-primary text-primary-foreground text-[13px] font-semibold transition-transform duration-500 group-hover:rotate-[8deg]"
+            style={serif}
+          >
+            K
+          </span>
+          <span className="text-sm font-medium tracking-tight text-foreground">Kanso</span>
+        </a>
+        <ul className="hidden items-center gap-1 md:flex">
+          {["Features", "Explore", "Pricing", "API Docs"].map((l) => (
+            <li key={l}>
+              <a
+                href={`#${l.toLowerCase().replace(/\s+/g, "-")}`}
+                className="rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-all duration-300 hover:bg-primary/10 hover:text-primary"
+              >
+                {l}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <div className="flex items-center gap-1.5">
+          <a
+            href="#login"
+            className="hidden rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-colors duration-300 hover:text-foreground sm:inline-flex"
+          >
+            Log in
+          </a>
+          <a
+            href="#start"
+            className="group/btn inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground transition-all duration-300 hover:bg-primary/90 hover:gap-2.5 hover:shadow-[0_8px_20px_-8px_rgba(40,60,40,0.4)]"
+          >
+            Get Started
+            <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover/btn:translate-x-0.5" />
+          </a>
+        </div>
+      </nav>
+    </header>
   );
 }
