@@ -9,94 +9,123 @@ import { ArrowRight } from "lucide-react";
 
 const words = ["beautiful", "intuitive", "engaging"];
 
-export function HeroSection() {
-  const [index, setIndex] = useState(0);
+const serif = { fontFamily: "'Fraunces', Georgia, serif" } as const;
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setIndex((prevIndex) => (prevIndex + 1) % words.length);
-    }, 2500);
-    return () => clearInterval(timer);
-  }, []);
-
+function Field({ label, filled }: { label: string; filled?: boolean }) {
   return (
-    <section className="relative min-h-screen pt-24 pb-16 overflow-hidden flex items-center">
-      <div className="absolute inset-0 bg-gradient-to-b from-secondary/40 via-background to-background" />
+    <label className="block">
+      <span className="text-xs text-foreground">{label}</span>
+      <div
+        className={`mt-1.5 h-9 rounded-md border bg-background px-3 ${
+          filled ? "border-primary/60 ring-2 ring-primary/15" : "border-border"
+        }`}
+      />
+    </label>
+  );
+}
 
-      <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
-
-      <div className="relative mx-auto max-w-7xl px-6 lg:px-8 w-full z-10">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="flex flex-col justify-center"
+export function Hero() {
+  const fields = ["Short Text", "Email", "Multiple Choice", "Rating", "Date", "File Upload"];
+  return (
+    <section className="relative px-4 pt-16 pb-24 md:pt-20 md:pb-28">
+      <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
+        <span className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-3 py-1 text-xs text-muted-foreground">
+          <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+          Trusted by 10,000+ teams worldwide
+        </span>
+        <h1
+          className="mt-6 text-balance text-5xl leading-[1.05] tracking-[-0.02em] text-foreground md:text-7xl"
+          style={serif}
+        >
+          Less <em className="not-italic text-primary">friction.</em>
+          <br className="hidden sm:block" /> More responses.
+        </h1>
+        <p className="mt-6 max-w-xl text-pretty text-base leading-relaxed text-muted-foreground md:text-lg">
+          Thoughtfully designed forms that feel effortless to complete and powerful to manage.
+        </p>
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <a
+            href="#start"
+            className="group inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-all duration-300 hover:bg-primary/90 hover:shadow-[0_12px_28px_-12px_rgba(40,60,40,0.45)]"
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.1, duration: 0.5 }}
-              className="inline-flex self-start items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-medium text-primary mb-6 shadow-sm"
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-              </span>
-              Trusted by 10,000+ teams worldwide
-            </motion.div>
-
-            <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl leading-[1.15] tracking-tight text-foreground">
-              Build <span className="text-primary font-medium">beautiful</span>
-              <br />
-              forms in minutes
-            </h1>
-
-            <p className="mt-6 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-lg">
-              Create stunning forms with our intuitive drag-and-drop builder. Collect responses,
-              analyze data, and integrate seamlessly with your favorite tools.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 mt-8">
-              <Link href="/dashboard" className="relative group">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-primary/60 rounded-full blur opacity-30 group-hover:opacity-60 transition duration-1000 group-hover:duration-200" />
-
-                <Button
-                  size="lg"
-                  className="relative rounded-full bg-primary text-primary-foreground hover:bg-primary/90 px-8 gap-2 w-full sm:w-auto shadow-md"
-                >
-                  Start Building Free
-                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                </Button>
-              </Link>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, x: 20 }}
-            animate={{ opacity: 1, scale: 1, x: 0 }}
-            whileHover={{ y: -10 }}
-            transition={{
-              duration: 0.8,
-              ease: "easeOut",
-              delay: 0.2,
-              y: { duration: 2, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" },
-            }}
-            className="relative"
+            Start Building Free
+            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+          </a>
+          <a
+            href="#showcase"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
           >
-            <div className="absolute inset-0 bg-primary/20 rounded-[2rem] blur-3xl opacity-30" />
+            See it in action
+          </a>
+        </div>
+        <p className="mt-5 text-xs text-muted-foreground">
+          No credit card required · Free forever plan
+        </p>
+      </div>
 
-            <div className="relative rounded-[2rem] bg-card/60 backdrop-blur-sm shadow-[0_20px_50px_-10px_rgba(0,0,0,0.15)] overflow-hidden">
-              <Image
-                src="/images/main-hero-img.png"
-                alt="FormZen form builder interface showcase"
-                width={800}
-                height={600}
-                className="w-full h-auto rounded-[2rem] object-cover"
-                priority
-              />
+      {/* Integrated builder preview */}
+      <div id="showcase" className="mx-auto mt-16 max-w-5xl">
+        <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-[0_30px_80px_-40px_rgba(40,60,40,0.25)]">
+          <div className="flex items-center justify-between border-b border-border bg-background px-4 py-2.5">
+            <div className="flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-full bg-[oklch(0.78_0.13_30)]" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[oklch(0.84_0.13_85)]" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[oklch(0.78_0.1_150)]" />
             </div>
-          </motion.div>
+            <span className="rounded-md bg-secondary px-2 py-0.5 text-[11px] text-muted-foreground">
+              app.kanso.io/forms/abcdef
+            </span>
+            <span className="w-16" />
+          </div>
+          <div className="grid grid-cols-12">
+            <aside className="col-span-12 border-b border-border p-5 md:col-span-3 md:border-b-0 md:border-r">
+              <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                Fields
+              </p>
+              <ul className="mt-4 space-y-1.5">
+                {fields.map((f) => (
+                  <li
+                    key={f}
+                    className="flex items-center gap-2 rounded-md border border-border bg-background px-2.5 py-1.5 text-xs text-foreground"
+                  >
+                    <span className="h-1 w-1 rounded-full bg-primary/60" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </aside>
+            <div className="col-span-12 p-6 md:col-span-9">
+              <div className="rounded-xl border border-border bg-background p-5 text-left">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h3 className="text-lg text-foreground" style={serif}>
+                      Customer Feedback Survey
+                    </h3>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Help us improve — takes under a minute.
+                    </p>
+                  </div>
+                  <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-primary">
+                    Live draft
+                  </span>
+                </div>
+                <div className="mt-5 grid gap-4 md:grid-cols-2">
+                  <Field label="Full Name *" filled />
+                  <Field label="Email Address *" />
+                </div>
+                <div className="mt-4">
+                  <p className="text-xs text-foreground">How satisfied are you with our service?</p>
+                  <div className="mt-1.5 flex gap-1 text-primary">
+                    {"★★★★☆".split("").map((s, i) => (
+                      <span key={i} className={i < 4 ? "" : "text-muted-foreground/40"}>
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

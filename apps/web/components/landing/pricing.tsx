@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { motion } from "framer-motion"
-import { Check } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const plans = [
   {
@@ -52,100 +52,142 @@ const plans = [
     ],
     highlighted: false,
   },
-]
+];
+
+const serif = { fontFamily: "'Fraunces', Georgia, serif" } as const;
 
 export function Pricing() {
+  const tiers = [
+    {
+      name: "Free",
+      tagline: "Perfect for getting started",
+      price: "$0",
+      period: "/month",
+      features: [
+        "Up to 3 forms",
+        "100 responses/month",
+        "Basic analytics",
+        "Email notifications",
+        "Kanso branding",
+      ],
+      cta: "Get Started Free",
+    },
+    {
+      name: "Pro",
+      tagline: "For growing teams",
+      price: "$29",
+      period: "/month",
+      featured: true,
+      features: [
+        "Unlimited forms",
+        "10,000 responses/month",
+        "Advanced analytics",
+        "Custom branding",
+        "File uploads",
+        "Priority support",
+        "Integrations",
+      ],
+      cta: "Start Free Trial",
+    },
+    {
+      name: "Enterprise",
+      tagline: "For large organizations",
+      price: "Custom",
+      period: "",
+      features: [
+        "Unlimited everything",
+        "Custom integrations",
+        "SSO & SAML",
+        "Dedicated support",
+        "SLA guarantee",
+        "Custom contracts",
+        "On-premise option",
+      ],
+      cta: "Contact Sales",
+    },
+  ];
+
   return (
-    <section id="pricing" className="py-24">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-           <span className="text-sm text-primary font-medium tracking-wider uppercase">Pricing</span>
-          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-foreground mt-3 text-balance">
+    <section id="pricing" className="bg-secondary/40 px-4 py-24 md:py-32">
+      <div className="mx-auto max-w-6xl">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+            Pricing
+          </p>
+          <h2
+            className="mt-4 text-4xl tracking-[-0.02em] text-foreground md:text-5xl"
+            style={serif}
+          >
             Simple, transparent pricing
           </h2>
-          <p className="mt-4 text-muted-foreground max-w-2xl mx-auto">
+          <p className="mx-auto mt-4 max-w-md text-sm text-muted-foreground md:text-base">
             Start free and scale as you grow. No hidden fees, no surprises.
           </p>
-        </motion.div>
+        </div>
 
-        <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
-          {plans.map((plan, index) => (
-            <motion.div
-              key={plan.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              className={`
-                relative rounded-2xl p-6 lg:p-8 border transition-all duration-300
-                ${plan.highlighted 
-                  ? "bg-primary text-primary-foreground border-primary shadow-xl shadow-primary/20 scale-105" 
-                  : "bg-card border-border/50 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
-                }
-              `}
+        <div className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-3">
+          {tiers.map((t) => (
+            <div
+              key={t.name}
+              className={`relative flex flex-col rounded-2xl border p-7 ${
+                t.featured
+                  ? "border-primary bg-primary text-primary-foreground shadow-[0_30px_80px_-40px_rgba(40,60,40,0.45)]"
+                  : "border-border bg-card text-foreground"
+              }`}
             >
-              {plan.highlighted && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="bg-secondary text-secondary-foreground text-xs font-medium px-3 py-1 rounded-full">
-                    Most Popular
-                  </span>
-                </div>
+              {t.featured && (
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-foreground px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-background">
+                  Most Popular
+                </span>
               )}
-
-              <div className="mb-6">
-                <h3 className={`font-serif text-xl ${plan.highlighted ? "text-primary-foreground" : "text-foreground"}`}>
-                  {plan.name}
-                </h3>
-                <p className={`text-sm mt-1 ${plan.highlighted ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
-                  {plan.description}
-                </p>
-              </div>
-
-              <div className="mb-6">
-                <span className={`font-serif text-4xl ${plan.highlighted ? "text-primary-foreground" : "text-foreground"}`}>
-                  {plan.price}
+              <h3 className="text-xl" style={serif}>
+                {t.name}
+              </h3>
+              <p
+                className={`mt-1 text-sm ${t.featured ? "text-primary-foreground/75" : "text-muted-foreground"}`}
+              >
+                {t.tagline}
+              </p>
+              <div className="mt-6 flex items-end gap-1">
+                <span className="text-4xl tracking-tight" style={serif}>
+                  {t.price}
                 </span>
-                <span className={`text-sm ${plan.highlighted ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
-                  {plan.period}
-                </span>
+                {t.period && (
+                  <span
+                    className={`pb-1.5 text-sm ${t.featured ? "text-primary-foreground/75" : "text-muted-foreground"}`}
+                  >
+                    {t.period}
+                  </span>
+                )}
               </div>
-
-              <ul className="space-y-3 mb-8">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-center gap-3">
-                    <div className={`h-5 w-5 rounded-full flex items-center justify-center ${
-                      plan.highlighted ? "bg-primary-foreground/20" : "bg-primary/10"
-                    }`}>
-                      <Check className={`h-3 w-3 ${plan.highlighted ? "text-primary-foreground" : "text-primary"}`} />
-                    </div>
-                    <span className={`text-sm ${plan.highlighted ? "text-primary-foreground/90" : "text-muted-foreground"}`}>
-                      {feature}
+              <ul className="mt-6 space-y-2.5 text-sm">
+                {t.features.map((f) => (
+                  <li key={f} className="flex items-start gap-2">
+                    <Check
+                      className={`mt-0.5 h-4 w-4 shrink-0 ${t.featured ? "text-primary-foreground" : "text-primary"}`}
+                    />
+                    <span
+                      className={t.featured ? "text-primary-foreground/90" : "text-foreground/90"}
+                    >
+                      {f}
                     </span>
                   </li>
                 ))}
               </ul>
-
-              <Link href={plan.price === "Custom" ? "#" : "/dashboard"}>
-                <Button
-                  className={`w-full rounded-full ${
-                    plan.highlighted
-                      ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90"
-                      : "bg-primary text-primary-foreground hover:bg-primary/90"
-                  }`}
-                >
-                  {plan.price === "Custom" ? "Contact Sales" : plan.price === "$0" ? "Get Started Free" : "Start Free Trial"}
-                </Button>
-              </Link>
-            </motion.div>
+              <a
+                href="#start"
+                className={`mt-8 inline-flex items-center justify-center rounded-full px-4 py-2.5 text-sm font-medium transition-colors ${
+                  t.featured
+                    ? "bg-background text-foreground hover:bg-background/90"
+                    : "bg-primary text-primary-foreground hover:bg-primary/90"
+                }`}
+              >
+                {t.cta}
+              </a>
+            </div>
           ))}
         </div>
       </div>
     </section>
-  )
+  );
 }

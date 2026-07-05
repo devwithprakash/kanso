@@ -9,47 +9,35 @@ const links = [
   { label: "Login", href: "/sign-in" },
 ];
 
+const serif = { fontFamily: "'Fraunces', Georgia, serif" } as const;
+
 export function Footer() {
   return (
-    <footer className="border-t border-border/50">
-      <div className="mx-auto max-w-7xl px-6 py-10">
-        <div className="flex flex-col items-center text-center">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
-              <span className="font-serif text-lg text-primary-foreground">
-                F
-              </span>
-            </div>
-
-            <span className="font-serif text-2xl text-foreground">
-              FormZen
-            </span>
-          </Link>
-
-          <p className="mt-4 max-w-md text-sm text-muted-foreground">
-            Beautiful forms that people actually want to fill out.
-          </p>
-
-          {/* Links */}
-          <nav className="mt-8 flex flex-wrap items-center justify-center gap-8">
-            {links.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                className="text-sm text-muted-foreground transition-colors hover:text-primary"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-
-          <div className="mt-10 h-px w-24 bg-border" />
-
-          <p className="mt-6 text-xs text-muted-foreground">
-            © {new Date().getFullYear()} FormZen. All rights reserved.
-          </p>
+    <footer className="px-4 py-16">
+      <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
+        <div className="flex items-center gap-2">
+          <span
+            className="grid h-8 w-8 place-items-center rounded-md bg-primary text-primary-foreground text-sm font-semibold"
+            style={serif}
+          >
+            K
+          </span>
+          <span className="text-base font-medium text-foreground">Kanso</span>
         </div>
+        <p className="mt-3 max-w-sm text-sm text-muted-foreground">
+          Less friction. More responses.
+        </p>
+        <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+          {["Features", "Pricing", "Docs", "Login"].map((l) => (
+            <li key={l}>
+              <a href={`#${l.toLowerCase()}`} className="transition-colors hover:text-foreground">
+                {l}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-10 h-px w-full max-w-md bg-border" />
+        <p className="mt-5 text-xs text-muted-foreground">© 2026 Kanso. All rights reserved.</p>
       </div>
     </footer>
   );
