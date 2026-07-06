@@ -219,7 +219,7 @@ export default function FormsPage() {
                       form.visibility,
                     )}`}
                   >
-                    {form.visibility}
+                    {form.visibility[0]?.toUpperCase() + form.visibility.slice(1)}
                   </span>
                   <span className="text-xs text-muted-foreground/80">
                     Created{" "}

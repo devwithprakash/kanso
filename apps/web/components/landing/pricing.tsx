@@ -1,9 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { motion } from "framer-motion";
 import { Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 const plans = [
   {
@@ -175,7 +172,7 @@ export function Pricing() {
                 ))}
               </ul>
               <a
-                href="#start"
+                href="/sign-up"
                 className={`mt-8 inline-flex items-center justify-center rounded-full px-4 py-2.5 text-sm font-medium transition-colors ${
                   t.featured
                     ? "bg-background text-foreground hover:bg-background/90"

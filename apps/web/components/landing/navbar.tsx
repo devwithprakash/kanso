@@ -1,21 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Show, useClerk } from "@clerk/nextjs";
+import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const DOCS_URL = process.env.NEXT_PUBLIC_API_DOCS_URL ?? "#";
 
 const navLinks = [
-  { href: "#features", label: "Features" },
+  { href: "/#features", label: "Features" },
   { href: "/explore", label: "Explore" },
   { href: "/pricing", label: "Pricing" },
-  { href: DOCS_URL, label: "API Docs" },
+  { href: DOCS_URL, label: "API Docs", external: true },
 ];
+
 const serif = { fontFamily: "'Fraunces', Georgia, serif" } as const;
 
 export function Nav() {
@@ -43,7 +41,7 @@ export function Nav() {
             : "bg-background/70 border-border/70 shadow-lg",
         )}
       >
-        <a
+        <Link
           href="/"
           className="flex items-center gap-2 pl-2 transition-transform duration-300 hover:scale-105"
         >
@@ -54,33 +52,44 @@ export function Nav() {
             K
           </span>
           <span className="text-sm font-medium tracking-tight text-foreground">Kanso</span>
-        </a>
+        </Link>
         <ul className="hidden items-center gap-1 md:flex">
-          {["Features", "Explore", "Pricing", "API Docs"].map((l) => (
-            <li key={l}>
-              <a
-                href={`#${l.toLowerCase().replace(/\s+/g, "-")}`}
-                className="rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-all duration-300 hover:bg-primary/10 hover:text-primary"
-              >
-                {l}
-              </a>
+          {navLinks.map((link) => (
+            <li key={link.label}>
+              {link.external ? (
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-all duration-300 hover:bg-primary/10 hover:text-primary"
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <Link
+                  href={link.href}
+                  className="rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-all duration-300 hover:bg-primary/10 hover:text-primary"
+                >
+                  {link.label}
+                </Link>
+              )}
             </li>
           ))}
         </ul>
         <div className="flex items-center gap-1.5">
-          <a
-            href="#login"
+          <Link
+            href="/sign-in"
             className="hidden rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-colors duration-300 hover:text-foreground sm:inline-flex"
           >
             Log in
-          </a>
-          <a
-            href="#start"
+          </Link>
+          <Link
+            href="/sign-up"
             className="group/btn inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground transition-all duration-300 hover:bg-primary/90 hover:gap-2.5 hover:shadow-[0_8px_20px_-8px_rgba(40,60,40,0.4)]"
           >
             Get Started
             <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover/btn:translate-x-0.5" />
-          </a>
+          </Link>
         </div>
       </nav>
     </header>

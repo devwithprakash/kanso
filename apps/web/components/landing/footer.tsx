@@ -2,10 +2,13 @@
 
 import Link from "next/link";
 
+const DOCS_URL = process.env.NEXT_PUBLIC_API_DOCS_URL ?? "#";
+
 const links = [
-  { label: "Features", href: "#features" },
+  { label: "Features", href: "/#features" },
+  { label: "Explore", href: "/explore" },
   { label: "Pricing", href: "/pricing" },
-  { label: "Docs", href: "/docs" },
+  { label: "Docs", href: DOCS_URL, external: true },
   { label: "Login", href: "/sign-in" },
 ];
 
@@ -28,11 +31,22 @@ export function Footer() {
           Less friction. More responses.
         </p>
         <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
-          {["Features", "Pricing", "Docs", "Login"].map((l) => (
-            <li key={l}>
-              <a href={`#${l.toLowerCase()}`} className="transition-colors hover:text-foreground">
-                {l}
-              </a>
+          {links.map((link) => (
+            <li key={link.label}>
+              {link.external ? (
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="transition-colors hover:text-foreground"
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <Link href={link.href} className="transition-colors hover:text-foreground">
+                  {link.label}
+                </Link>
+              )}
             </li>
           ))}
         </ul>

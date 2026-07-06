@@ -16,7 +16,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "FormZen — Beautiful Form Builder for Modern Teams",
+  title: "FormZen",
   description:
     "Create stunning forms in minutes. Drag-and-drop builder, powerful analytics, and seamless integrations.",
 };

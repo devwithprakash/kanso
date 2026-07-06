@@ -1,48 +1,12 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Layers, Zap, BarChart3, Palette, Share2, LayoutGrid } from "lucide-react";
-
-const features = [
-  {
-    icon: Zap,
-    title: "Smart Logic",
-    description: "Create dynamic forms with complex conditional logic and branching parameters.",
-    className: "col-span-1",
-  },
-  {
-    icon: BarChart3,
-    title: "Powerful Analytics",
-    description:
-      "Track submission rates, form drops, and user field behavior with custom real-time metrics.",
-    className: "col-span-1",
-  },
-  {
-    icon: Share2,
-    title: "Easy Sharing",
-    description: "Distribute instantly via raw links, embedded iframes, or automated QR codes.",
-    className: "col-span-1",
-  },
-  {
-    icon: Layers,
-    title: "Drag & Drop Builder",
-    description:
-      "Build beautiful layouts with our intuitive visual editor. No coding required—just drag, drop, and launch.",
-    className: "md:col-span-2 lg:col-span-2 bg-gradient-to-br from-card to-primary/5",
-  },
-  {
-    icon: Palette,
-    title: "Custom Branding",
-    description: "Match your identity perfectly with design themes and typography overrides.",
-    className: "md:col-span-1 lg:col-span-1",
-  },
-];
+import { Zap, BarChart3, Palette, Share2, LayoutGrid } from "lucide-react";
 
 const serif = { fontFamily: "'Fraunces', Georgia, serif" } as const;
 
 export function Features() {
   return (
-    <section id="features" className="px-4 py-24 md:py-32">
+    <section id="features" className="px-4 pt-24 pb:16 md:pt-32 md:pb:16">
       <div className="mx-auto max-w-6xl">
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
@@ -59,9 +23,7 @@ export function Features() {
           </p>
         </div>
 
-        {/* Bento grid */}
         <div className="mt-14 grid auto-rows-[14rem] grid-cols-1 gap-4 md:grid-cols-3 md:grid-rows-2">
-          {/* Big feature */}
           <div className="group relative col-span-1 row-span-1 overflow-hidden rounded-3xl border border-border bg-card p-7 transition-all duration-500 hover:border-primary/40 md:col-span-2">
             <div className="grid h-10 w-10 place-items-center rounded-xl bg-secondary text-primary">
               <LayoutGrid className="h-5 w-5" />
@@ -75,7 +37,6 @@ export function Features() {
             </p>
           </div>
 
-          {/* Analytics */}
           <div className="group relative overflow-hidden rounded-3xl border border-border bg-card p-6 transition-colors hover:border-primary/40">
             <div className="grid h-9 w-9 place-items-center rounded-lg bg-secondary text-primary">
               <BarChart3 className="h-4 w-4" />
@@ -92,7 +53,6 @@ export function Features() {
             </div>
           </div>
 
-          {/* Smart Logic */}
           <div className="group rounded-3xl border border-border bg-card p-6 transition-colors hover:border-primary/40">
             <div className="grid h-9 w-9 place-items-center rounded-lg bg-secondary text-primary">
               <Zap className="h-4 w-4" />
@@ -103,7 +63,6 @@ export function Features() {
             </p>
           </div>
 
-          {/* Sharing */}
           <div className="group rounded-3xl border border-border bg-card p-6 transition-colors hover:border-primary/40">
             <div className="grid h-9 w-9 place-items-center rounded-lg bg-secondary text-primary">
               <Share2 className="h-4 w-4" />
@@ -114,7 +73,6 @@ export function Features() {
             </p>
           </div>
 
-          {/* Branding */}
           <div className="group relative overflow-hidden rounded-3xl border border-border bg-card p-6 transition-colors hover:border-primary/40">
             <div className="grid h-9 w-9 place-items-center rounded-lg bg-secondary text-primary">
               <Palette className="h-4 w-4" />

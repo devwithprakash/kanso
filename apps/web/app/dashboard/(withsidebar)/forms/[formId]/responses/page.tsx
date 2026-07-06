@@ -6,10 +6,19 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useGetFormResponse } from "@/hooks/response/use-response";
 import { useGetForm } from "@/hooks/form/use-forms";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 export default function FormResponsesPage() {
   const params = useParams();
   const formId = params.formId as string;
+  const [selectedResponse, setSelectedResponse] = useState<(typeof responses)[number] | null>(null);
 
   const { data, error, isLoading } = useGetFormResponse(formId);
   const { form } = useGetForm(formId);
@@ -84,58 +93,100 @@ export default function FormResponsesPage() {
           </p>
         </div>
       ) : (
-        <div className="rounded-xl border border-border/50 bg-card overflow-hidden shadow-sm w-full max-w-full min-w-0">
-          <div className="overflow-x-auto w-full block whitespace-nowrap ">
-            <table className="w-full text-left border-collapse table-auto">
-              <thead>
-                <tr className="border-b border-border/50 bg-secondary/30 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  <th className="p-4 w-[240px] min-w-[200px]">Submission Date</th>
-                  {fields.map((field) => (
-                    <th key={field.id} className="p-4 min-w-[220px] max-w-[350px]">
-                      {field.label}
-                    </th>
-                  ))}
-                  <th className="p-4 w-[60px] text-right bg-secondary/30" />
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-dash divide-border/40 text-sm">
-                {responses.map((resp) => (
-                  <tr key={resp.id} className="hover:bg-secondary/10 transition-colors group">
-                    <td className="p-4 align-top">
-                      {/* <div className="font-mono text-xs text-foreground font-medium truncate max-w-[180px]">
-                        {resp.id}
-                      </div> */}
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
-                        <Calendar className="h-3 w-3" />
-                        {new Date(resp.submittedAt).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </div>
-                    </td>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-full min-w-0">
+          {responses.map((resp) => {
+            const preview = fields
+              .map((field) => resp.answers.find((ans) => ans.fieldId === field.id))
+              .filter((ans) => ans?.value)
+              .slice(0, 2);
 
-                    {fields.map((field) => {
-                      const matchingAnswer = resp.answers.find((ans) => ans.fieldId === field.id);
-                      return (
-                        <td
-                          key={field.id}
-                          className="p-4 align-top text-muted-foreground min-w-[220px] max-w-[350px] whitespace-normal break-words"
-                        >
-                          {matchingAnswer?.value || (
-                            <span className="text-muted-foreground/30 italic text-xs">Empty</span>
-                          )}
-                        </td>
-                      );
+            return (
+              <button
+                key={resp.id}
+                onClick={() => setSelectedResponse(resp)}
+                className="text-left rounded-xl border border-border/50 bg-card p-4 shadow-sm hover:border-border hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group"
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Calendar className="h-3 w-3" />
+                    {new Date(resp.submittedAt).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
                     })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                  </div>
+                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground/60 group-hover:text-foreground transition-colors">
+                    View →
+                  </span>
+                </div>
+
+                <div className="space-y-2">
+                  {preview.length > 0 ? (
+                    preview.map((ans, i) => {
+                      const field = fields.find((f) => f.id === ans!.fieldId);
+                      return (
+                        <div key={i} className="min-w-0">
+                          <p className="text-[11px] text-muted-foreground/70 truncate">
+                            {field?.label}
+                          </p>
+                          <p className="text-sm text-foreground truncate">{ans!.value}</p>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <span className="text-muted-foreground/30 italic text-xs">Empty</span>
+                  )}
+                </div>
+
+                {fields.length > preview.length && (
+                  <p className="text-[11px] text-muted-foreground/60 mt-3">
+                    +{fields.length - preview.length} more field
+                    {fields.length - preview.length > 1 ? "s" : ""}
+                  </p>
+                )}
+              </button>
+            );
+          })}
         </div>
       )}
+
+      <Dialog open={!!selectedResponse} onOpenChange={(open) => !open && setSelectedResponse(null)}>
+        <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-serif text-xl">Submission details</DialogTitle>
+            <DialogDescription className="flex items-center gap-1.5 text-xs">
+              <Calendar className="h-3 w-3" />
+              {selectedResponse &&
+                new Date(selectedResponse.submittedAt).toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 pt-2">
+            {fields.map((field) => {
+              const matchingAnswer = selectedResponse?.answers.find(
+                (ans) => ans.fieldId === field.id,
+              );
+              return (
+                <div key={field.id} className="border-b border-border/40 pb-3 last:border-0">
+                  <p className="text-xs font-medium text-muted-foreground mb-1">{field.label}</p>
+                  <p className="text-sm text-foreground whitespace-pre-wrap break-words">
+                    {matchingAnswer?.value || (
+                      <span className="text-muted-foreground/30 italic">Empty</span>
+                    )}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

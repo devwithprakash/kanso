@@ -10,7 +10,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Navbar } from "@/components/landing/navbar";
+import { Nav } from "@/components/landing/navbar";
 import { useGetAllPublicForms } from "@/hooks/form/use-forms";
 
 export default function ExplorePage() {
@@ -31,7 +31,7 @@ export default function ExplorePage() {
 
   return (
     <>
-      <Navbar />
+      <Nav />
       <div className="min-h-screen bg-background pt-24 pb-16">
         <div className="mx-auto max-w-7xl px-6 lg:px-8 space-y-4">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-border/40 pb-8">
