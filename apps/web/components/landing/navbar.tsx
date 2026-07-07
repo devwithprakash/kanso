@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useUser, UserButton } from "@clerk/nextjs";
 
 const DOCS_URL = process.env.NEXT_PUBLIC_API_DOCS_URL ?? "#";
 
@@ -11,13 +12,14 @@ const navLinks = [
   { href: "/#features", label: "Features" },
   { href: "/explore", label: "Explore" },
   { href: "/pricing", label: "Pricing" },
-  { href: DOCS_URL, label: "API Docs", external: true },
 ];
 
 const serif = { fontFamily: "'Fraunces', Georgia, serif" } as const;
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
+
+  const { isSignedIn } = useUser();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -56,41 +58,45 @@ export function Nav() {
         <ul className="hidden items-center gap-1 md:flex">
           {navLinks.map((link) => (
             <li key={link.label}>
-              {link.external ? (
-                <a
-                  href={link.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-all duration-300 hover:bg-primary/10 hover:text-primary"
-                >
-                  {link.label}
-                </a>
-              ) : (
-                <Link
-                  href={link.href}
-                  className="rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-all duration-300 hover:bg-primary/10 hover:text-primary"
-                >
-                  {link.label}
-                </Link>
-              )}
+              <Link
+                href={link.href}
+                className="rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-all duration-300 hover:bg-primary/10 hover:text-primary"
+              >
+                {link.label}
+              </Link>
             </li>
           ))}
+
+          {isSignedIn && (
+            <li>
+              <Link
+                href={"/dashboard"}
+                className="rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-all duration-300 hover:bg-primary/10 hover:text-primary"
+              >
+                Dashboard
+              </Link>
+            </li>
+          )}
         </ul>
-        <div className="flex items-center gap-1.5">
-          <Link
-            href="/sign-in"
-            className="hidden rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-colors duration-300 hover:text-foreground sm:inline-flex"
-          >
-            Log in
-          </Link>
-          <Link
-            href="/sign-up"
-            className="group/btn inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground transition-all duration-300 hover:bg-primary/90 hover:gap-2.5 hover:shadow-[0_8px_20px_-8px_rgba(40,60,40,0.4)]"
-          >
-            Get Started
-            <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover/btn:translate-x-0.5" />
-          </Link>
-        </div>
+        {isSignedIn ? (
+          <UserButton />
+        ) : (
+          <div className="flex items-center gap-1.5">
+            <Link
+              href="/sign-in"
+              className="hidden rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-colors duration-300 hover:text-foreground sm:inline-flex"
+            >
+              Log in
+            </Link>
+            <Link
+              href="/sign-up"
+              className="group/btn inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground transition-all duration-300 hover:bg-primary/90 hover:gap-2.5 hover:shadow-[0_8px_20px_-8px_rgba(40,60,40,0.4)]"
+            >
+              Get Started
+              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover/btn:translate-x-0.5" />
+            </Link>
+          </div>
+        )}
       </nav>
     </header>
   );

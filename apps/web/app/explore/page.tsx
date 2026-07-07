@@ -32,8 +32,8 @@ export default function ExplorePage() {
   return (
     <>
       <Nav />
-      <div className="min-h-screen bg-background pt-24 pb-16">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8 space-y-4">
+      <div className="min-h-screen not-[]: bg-background pt-24 pb-16">
+        <div className="mx-auto w-full max-w-6xl px-6 lg:px-8 space-y-4">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-border/40 pb-8">
             <div className="space-y-3">
               <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
