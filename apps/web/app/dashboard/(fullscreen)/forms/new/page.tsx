@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { TopBar } from "@/components/dashboard/topbar";
 
 const serif = { fontFamily: "'Fraunces', Georgia, serif" } as const;
 
@@ -242,78 +243,9 @@ export default function FormEditPage() {
   );
 }
 
-function TopBar() {
-  return (
-    <header className="fixed inset-x-0 top-3 z-40 mx-auto w-full max-w-5xl px-4">
-      <nav className="flex items-center justify-between rounded-full border border-border/70 bg-background/70 px-3 py-2 backdrop-blur-md backdrop-saturate-150 shadow-[0_1px_0_rgba(0,0,0,0.02),0_8px_24px_-12px_rgba(40,60,40,0.15)]">
-        <Link href="/" className="flex items-center gap-2 pl-2">
-          <span
-            className="grid h-7 w-7 place-items-center rounded-md bg-primary text-primary-foreground text-[13px] font-semibold"
-            style={serif}
-          >
-            K
-          </span>
-          <span className="text-sm font-medium tracking-tight">Kanso</span>
-        </Link>
-        <div className="flex items-center gap-2">
-          <button className="hidden sm:inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
-            <Eye className="h-3.5 w-3.5" /> Preview
-          </button>
-          <button className="rounded-full bg-primary px-3.5 py-1.5 text-sm font-medium text-primary-foreground hover:-translate-y-px transition-transform">
-            Save
-          </button>
-        </div>
-      </nav>
-    </header>
-  );
-}
 
-function Stepper({ step, onGo }: { step: StepIdx; onGo: (s: StepIdx) => void }) {
-  return (
-    <ol className="mx-auto flex w-full max-w-3xl items-center gap-1 sm:gap-2">
-      {STEPS.map((label, i) => {
-        const done = i < step;
-        const active = i === step;
-        return (
-          <React.Fragment key={label}>
-            <li className="flex min-w-0 items-center gap-2">
-              <button
-                onClick={() => i <= step && onGo(i as StepIdx)}
-                className={cn(
-                  "grid h-7 w-7 shrink-0 place-items-center rounded-full border text-xs font-medium transition-all",
-                  active &&
-                    "border-primary bg-primary text-primary-foreground shadow-[0_0_0_4px_oklch(0.42_0.045_150/0.15)]",
-                  done && "border-primary/60 bg-primary/10 text-primary",
-                  !active && !done && "border-border bg-background text-muted-foreground",
-                )}
-              >
-                {done ? <Check className="h-3.5 w-3.5" /> : i + 1}
-              </button>
-              <span
-                className={cn(
-                  "hidden sm:inline text-sm truncate",
-                  active
-                    ? "font-medium text-foreground"
-                    : done
-                      ? "text-foreground/80"
-                      : "text-muted-foreground",
-                )}
-              >
-                {label}
-              </span>
-            </li>
-            {i < STEPS.length - 1 && (
-              <li
-                aria-hidden
-                className={cn("h-px flex-1", i < step ? "bg-primary/50" : "bg-border")}
-              />
-            )}
-          </React.Fragment>
-        );
-      })}
-    </ol>
-  );
-}
+
+
 
 /* ---------- Steps ---------- */
 
