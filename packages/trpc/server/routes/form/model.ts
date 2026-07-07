@@ -1,10 +1,12 @@
 import { string, z } from "zod";
 
+const themeOptions = z.enum(["clean-zen", "cyber-sunset", "cherry-blossom", "forest-state"]);
+
 // create form schema
 export const createFormInputModel = z.object({
   title: z.string().describe("title of the form"),
   description: z.string().describe("description of the form").nullable().optional(),
-  theme: z.enum(["light", "dark", "minimal", "gradient"]),
+  theme: themeOptions,
 });
 
 export const createFormOutputModel = z.object({
@@ -24,7 +26,7 @@ export const updateFormInputModel = z.object({
   formId: z.string(),
   title: z.string().optional(),
   description: z.string().optional(),
-  theme: z.enum(["light", "dark", "minimal", "gradient"]),
+  theme: themeOptions,
   visibility: z.enum(["public", "private", "unlisted"]),
 });
 
@@ -32,7 +34,7 @@ export const updateFormOutputModel = z.object({
   id: z.string(),
   title: z.string(),
   description: z.string().nullable(),
-  theme: z.enum(["light", "dark", "minimal", "gradient"]),
+  theme: themeOptions,
   visibility: z.enum(["public", "private", "unlisted"]),
   createdBy: z.string(),
   slug: z.string(),
@@ -49,7 +51,7 @@ export const deleteFormOutputModel = z.object({
   id: z.string(),
   title: z.string(),
   description: z.string().nullable(),
-  theme: z.enum(["light", "dark", "minimal", "gradient"]),
+  theme: themeOptions,
   visibility: z.enum(["public", "private", "unlisted"]),
   createdBy: z.string(),
   slug: z.string(),
@@ -66,7 +68,7 @@ export const getAllFormsOutputModel = z.array(
 
     responseCount: z.number(),
 
-    theme: z.enum(["light", "dark", "minimal", "gradient"]),
+    theme: themeOptions,
     visibility: z.enum(["public", "private", "unlisted"]),
 
     slug: z.string(),
@@ -179,7 +181,7 @@ export const getAllPublicFormOutputModel = z.array(
     title: z.string(),
     description: z.string().nullable(),
 
-    theme: z.enum(["light", "dark", "minimal", "gradient"]),
+    theme: themeOptions,
     visibility: z.enum(["public", "private", "unlisted"]),
 
     slug: z.string(),

@@ -14,6 +14,7 @@ import {
   ExternalLink,
   BarChart3,
   Settings,
+  Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,8 +32,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CreateFormDialog } from "@/components/form-builder/create-form-dialog";
-import { useCreateForm, useDeleteForm, useGetAllForms } from "@/hooks/form/use-forms";
+import { useDeleteForm, useGetAllForms } from "@/hooks/form/use-forms";
 import { useRouter } from "next/navigation";
 import { FormCardSkeleton } from "@/components/dashboard/form-card-skeleton";
 import { NoForms } from "@/components/dashboard/no-forms";
@@ -42,7 +42,6 @@ export default function FormsPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const router = useRouter();
 
-  const { submitForm } = useCreateForm();
   const { data: forms, isLoading } = useGetAllForms();
   const { deleteMutation } = useDeleteForm();
 
@@ -93,7 +92,12 @@ export default function FormsPage() {
           <p className="text-muted-foreground mt-1">Manage and organize all your forms.</p>
         </div>
 
-        <CreateFormDialog onSubmit={submitForm} />
+        <Link href={"/dashboard/forms/new"}>
+          <Button className="rounded-lg cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90 gap-2">
+            <Plus className="h-4 w-4" />
+            Create Form
+          </Button>
+        </Link>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4">
@@ -242,7 +246,9 @@ export default function FormsPage() {
             </motion.div>
           ))
         ) : (
-          <NoForms />
+          <div className="col-span-full">
+            <NoForms />
+          </div>
         )}
       </div>
     </div>

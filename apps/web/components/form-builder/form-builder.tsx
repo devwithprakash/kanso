@@ -24,6 +24,13 @@ import {
   Globe,
   Link2,
   Lock,
+  Eye,
+  UploadCloud,
+  Copy,
+  Check,
+  QrCode,
+  Settings2,
+  CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -56,7 +63,6 @@ type BackendFieldType =
   | "file";
 
 type VisibilityType = "public" | "unlisted" | "private";
-type ThemeType = "light" | "dark" | "minimal" | "gradient";
 
 interface FormField {
   id: string;
@@ -156,6 +162,42 @@ const visibilityOptions: VisibilityOption[] = [
   { id: "private", label: "Private", icon: Lock },
 ];
 
+type ThemeType = "cherry-blossom" | "cyber-sunset" | "clean-zen" | "forest-state";
+
+interface ThemeOption {
+  id: ThemeType;
+  label: string;
+  description: string;
+  swatch: string[]; // gradient stops used for the preview dot
+}
+
+const themeOptions: ThemeOption[] = [
+  {
+    id: "clean-zen",
+    label: "Cherry Blossom",
+    description: "Soft pink, warm and inviting",
+    swatch: ["#FFD1DC", "#FF8FA3", "#C2185B"],
+  },
+  {
+    id: "cyber-sunset",
+    label: "Cyber Sunset",
+    description: "Neon gradient, bold and modern",
+    swatch: ["#FF6B6B", "#C44BC4", "#4834D4"],
+  },
+  {
+    id: "cherry-blossom",
+    label: "Clean & Zen",
+    description: "Minimal, calm, distraction-free",
+    swatch: ["#F5F5F0", "#D8D4C8", "#8A8578"],
+  },
+  {
+    id: "forest-state",
+    label: "Forest State",
+    description: "Deep greens, earthy and grounded",
+    swatch: ["#A8D5A0", "#4F7942", "#2C4A2E"],
+  },
+];
+
 export function FormBuilder() {
   const params = useParams();
   const formId = params.formId as string;
@@ -163,7 +205,8 @@ export function FormBuilder() {
   const [formName, setFormName] = useState("");
   const [formDescription, setFormDescription] = useState("");
   const [isPublished, setIsPublished] = useState(false);
-  const [theme, setTheme] = useState<ThemeType>("light");
+  const [theme, setTheme] = useState<ThemeType>("clean-zen");
+  const [isThemePopoverOpen, setIsThemePopoverOpen] = useState(false);
   const [fields, setFields] = useState<FormField[]>([]);
   const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -171,10 +214,24 @@ export function FormBuilder() {
   const [isMobileAddFieldsOpen, setIsMobileAddFieldsOpen] = useState(false);
   const [visibility, setVisibility] = useState<VisibilityType>("private");
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
 
   const { form, isLoading } = useGetForm(formId);
   const { syncFieldsMutation } = useSyncFormFields();
   const { updateFormMutation } = useUpdateForm();
+
+  const publicFormUrl =
+    typeof window !== "undefined" ? `${window.location.origin}/form/${formId}` : "";
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(publicFormUrl);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 1500);
+    } catch (err) {
+      console.error("Failed to copy link:", err);
+    }
+  };
 
   useEffect(() => {
     if (form) {
@@ -248,8 +305,9 @@ export function FormBuilder() {
     setFields(reorderedFields.map((field, index) => ({ ...field, order: index })));
   };
 
-  const handleSave = async () => {
+  const handleSave = async (options?: { publish?: boolean }) => {
     setIsSaving(true);
+    const nextIsPublished = options?.publish ?? isPublished;
     try {
       const payload = fields.map((field) => ({
         id: field.id,
@@ -282,16 +340,24 @@ export function FormBuilder() {
           title: formName,
           theme,
           description: formDescription,
-          isPublished,
+          isPublished: nextIsPublished,
           visibility,
         }),
         syncFieldsMutation.mutateAsync(payload),
       ]);
+
+      if (options?.publish) {
+        setIsPublished(true);
+      }
     } catch (err) {
       console.error("Failed to compile layout parameters configurations payload structure:", err);
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handlePreview = () => {
+    window.open(`/form/${formId}`, "_blank", "noopener,noreferrer");
   };
 
   const getFieldIcon = (type: BackendFieldType) => {
@@ -518,6 +584,119 @@ export function FormBuilder() {
     );
   };
 
+  const renderFormSettingsContent = () => {
+    return (
+      <div className="space-y-6 text-left">
+        <div>
+          <Label className="text-xs text-muted-foreground">Form Title</Label>
+          <Input
+            value={formName}
+            onChange={(e) => setFormName(e.target.value)}
+            placeholder="Untitled form"
+            className="mt-1.5 bg-background"
+            maxLength={100}
+          />
+        </div>
+
+        <div>
+          <Label className="text-xs text-muted-foreground">Description</Label>
+          <Textarea
+            value={formDescription}
+            onChange={(e) => setFormDescription(e.target.value)}
+            placeholder="What is this form for?"
+            className="mt-1.5 bg-background text-sm h-20 resize-none"
+            maxLength={300}
+          />
+        </div>
+
+        <div className="pt-4 border-t border-border/50">
+          <Label className="text-xs text-muted-foreground">Share Link</Label>
+          <div className="mt-1.5 flex items-center gap-1.5">
+            <Input value={publicFormUrl} readOnly className="bg-background text-xs h-9 truncate" />
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              className="h-9 w-9 shrink-0"
+              onClick={handleCopyLink}
+            >
+              {isCopied ? (
+                <Check className="h-3.5 w-3.5 text-primary" />
+              ) : (
+                <Copy className="h-3.5 w-3.5" />
+              )}
+            </Button>
+          </div>
+          {!isPublished && (
+            <p className="text-[11px] text-muted-foreground mt-1.5">
+              Publish this form to make the link live.
+            </p>
+          )}
+        </div>
+
+        <div className="pt-4 border-t border-border/50">
+          <Label className="text-xs text-muted-foreground flex items-center gap-1.5 mb-2">
+            <QrCode className="h-3.5 w-3.5" />
+            QR Code
+          </Label>
+          <div className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border/50 bg-secondary/20">
+            {publicFormUrl && (
+              <img
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(
+                  publicFormUrl,
+                )}`}
+                alt="QR code linking to this form"
+                width={140}
+                height={140}
+                className="rounded-lg bg-white p-2"
+              />
+            )}
+            <p className="text-[11px] text-muted-foreground text-center">
+              Scan to open the form on any device.
+            </p>
+          </div>
+        </div>
+
+        <div className="pt-4 border-t border-border/50">
+          <Label className="text-xs text-muted-foreground mb-2 block">Theme</Label>
+          <div className="grid grid-cols-2 gap-2.5">
+            {themeOptions.map((opt) => {
+              const isActive = theme === opt.id;
+              return (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => setTheme(opt.id)}
+                  className={cn(
+                    "relative flex flex-col items-center gap-2.5 pt-4 pb-3 px-3 rounded-2xl border bg-background transition-all",
+                    isActive
+                      ? "border-primary ring-2 ring-primary/40"
+                      : "border-border/50 hover:border-border",
+                  )}
+                >
+                  {isActive && (
+                    <span className="absolute top-1.5 right-1.5 h-4 w-4 rounded-full bg-primary flex items-center justify-center">
+                      <CheckCircle2 className="h-4 w-4 text-primary-foreground fill-primary" />
+                    </span>
+                  )}
+
+                  <span
+                    className="h-6 w-14 rounded-full"
+                    style={{ background: `linear-gradient(90deg, ${opt.swatch.join(", ")})` }}
+                  />
+
+                  <span className="text-[11px] font-medium text-foreground leading-tight text-center">
+                    {opt.label}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   if (isLoading) {
     return (
       <div className="fixed inset-0 bg-background flex items-center justify-center">
@@ -543,18 +722,19 @@ export function FormBuilder() {
         </div>
 
         <div className="flex items-center gap-2">
-          {selectedField && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="lg:hidden h-8 w-8 p-0"
-              onClick={() => setIsMobileSettingsOpen(true)}
-            >
-              <SlidersHorizontal className="h-3.5 w-3.5" />
-              <span className="sr-only">Properties</span>
-            </Button>
-          )}
+          {/* in the header, replace the old conditional button with: */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="lg:hidden h-8 w-8 p-0"
+            onClick={() => setIsMobileSettingsOpen(true)}
+          >
+            <SlidersHorizontal className="h-3.5 w-3.5" />
+            <span className="sr-only">Settings</span>
+          </Button>
 
+
+          {/* Visibility: Public / Unlisted / Private */}
           <div className="flex items-center gap-0.5 p-0.5 bg-muted/50 rounded-md border border-border/40 h-8">
             <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
               <PopoverTrigger asChild>
@@ -593,14 +773,38 @@ export function FormBuilder() {
             </Popover>
           </div>
 
+          {/* Preview */}
           <Button
+            variant="outline"
             size="sm"
             className="h-8 gap-1.5 px-3 text-xs font-medium"
-            onClick={handleSave}
+            onClick={handlePreview}
+          >
+            <Eye className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Preview</span>
+          </Button>
+
+          {/* Save draft */}
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 gap-1.5 px-3 text-xs font-medium"
+            onClick={() => handleSave()}
             disabled={isSaving || !formName}
           >
             <Save className="h-3.5 w-3.5" />
             {isSaving ? "Saving…" : "Save"}
+          </Button>
+
+          {/* Publish */}
+          <Button
+            size="sm"
+            className="h-8 gap-1.5 px-3 text-xs font-medium"
+            onClick={() => handleSave({ publish: true })}
+            disabled={isSaving || !formName}
+          >
+            <UploadCloud className="h-3.5 w-3.5" />
+            {isPublished ? "Published" : "Publish"}
           </Button>
         </div>
       </header>
@@ -768,31 +972,27 @@ export function FormBuilder() {
           </div>
         </main>
 
-        <aside className="w-72 border-l border-border bg-card overflow-y-auto hidden lg:block shrink-0">
+        <aside className="w-72 xl:w-80 border-l border-border bg-card overflow-y-auto hidden lg:block shrink-0">
           {selectedField ? (
             <div className="p-5">
               <div className="flex items-center justify-between mb-4 border-b pb-2">
-                <h3 className="font-semibold text-foreground text-xs uppercase tracking-wider">
-                  Field Options Properties
-                </h3>
-                <Button
-                  variant="ghost"
-                  size="sm"
+                <button
                   onClick={() => setSelectedFieldId(null)}
-                  className="h-7 text-[11px]"
+                  className="flex items-center gap-1.5 text-xs font-semibold text-foreground uppercase tracking-wider hover:text-primary transition-colors"
                 >
-                  Dismiss
-                </Button>
+                  <ArrowLeft className="h-3.5 w-3.5" />
+                  Field Options
+                </button>
               </div>
               {renderFieldSettingsContent(selectedField)}
             </div>
           ) : (
-            <div className="p-5 h-full flex flex-col items-center justify-center text-center text-muted-foreground">
-              <Type className="h-5 w-5 mb-1.5 opacity-40" />
-              <p className="text-xs font-medium">No active selection context</p>
-              <p className="text-[11px] max-w-[180px] mt-0.5">
-                Click canvas input elements to configure parameters.
-              </p>
+            <div className="p-5">
+              <div className="flex items-center gap-1.5 mb-4 border-b pb-2 text-foreground text-xs font-semibold uppercase tracking-wider">
+                <Settings2 className="h-3.5 w-3.5 text-primary" />
+                Form Settings
+              </div>
+              {renderFormSettingsContent()}
             </div>
           )}
         </aside>
@@ -830,18 +1030,44 @@ export function FormBuilder() {
         <SheetContent side="bottom" className="h-[85vh] rounded-t-2xl">
           <SheetHeader className="text-left border-b pb-2 mb-3">
             <SheetTitle className="text-xs font-semibold flex items-center gap-1.5">
-              <SlidersHorizontal className="h-3.5 w-3.5 text-primary" /> Properties Panel
+              {selectedField ? (
+                <>
+                  <SlidersHorizontal className="h-3.5 w-3.5 text-primary" /> Field Options
+                </>
+              ) : (
+                <>
+                  <Settings2 className="h-3.5 w-3.5 text-primary" /> Form Settings
+                </>
+              )}
             </SheetTitle>
           </SheetHeader>
           <div className="overflow-y-auto h-[72vh] pb-8">
-            {selectedField ? (
-              renderFieldSettingsContent(selectedField)
-            ) : (
-              <p className="text-xs text-center pt-4 text-muted-foreground">Empty entry context.</p>
-            )}
+            {selectedField
+              ? renderFieldSettingsContent(selectedField)
+              : renderFormSettingsContent()}
           </div>
         </SheetContent>
       </Sheet>
+
+      {/* add just before the closing </div> of the outer "fixed inset-0" wrapper, after the two <Sheet> blocks */}
+      <div className="lg:hidden fixed bottom-0 inset-x-0 border-t border-border bg-card/95 backdrop-blur-sm px-4 py-3 flex gap-2 z-20">
+        <Button
+          variant="outline"
+          className="flex-1 h-10 gap-1.5 text-xs font-medium"
+          onClick={() => setIsMobileAddFieldsOpen(true)}
+        >
+          <Plus className="h-4 w-4" />
+          Add Field
+        </Button>
+        <Button
+          variant="outline"
+          className="flex-1 h-10 gap-1.5 text-xs font-medium"
+          onClick={() => setIsMobileSettingsOpen(true)}
+        >
+          <Settings2 className="h-4 w-4" />
+          {selectedField ? "Field Options" : "Form Settings"}
+        </Button>
+      </div>
     </div>
   );
 }

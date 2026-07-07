@@ -3,7 +3,7 @@ import { usersTable } from "./user";
 import { relations } from "drizzle-orm";
 import { formFieldsTable } from "./form-field";
 
-export const formThemeEnum = pgEnum("form_theme", ["light", "dark", "minimal", "gradient"]);
+export const formThemeEnum = pgEnum("form_theme", ["clean-zen", "cyber-sunset", "cherry-blossom", "forest-state"]);
 export const formVisibilityEnum = pgEnum("visibility", ["public", "unlisted", "private"]);
 
 export const formsTable = pgTable("forms", {
@@ -12,7 +12,7 @@ export const formsTable = pgTable("forms", {
   title: varchar("title", { length: 50 }).notNull(),
   description: varchar("description", { length: 500 }),
 
-  theme: formThemeEnum("theme").default("light").notNull(),
+  theme: formThemeEnum("theme").default("clean-zen").notNull(),
   visibility: formVisibilityEnum("visibility").default("private").notNull(),
 
   slug: varchar("slug").unique().notNull(),

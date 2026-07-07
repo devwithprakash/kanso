@@ -29,7 +29,7 @@ export function CreateFormDialog({ onSubmit }: CreateFormDialogProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formTitle, setFormTitle] = useState("");
   const [formDescription, setFormDescription] = useState("");
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState("clean-zen");
 
   const handleCreate = async () => {
     await onSubmit(formTitle, formDescription, theme);
@@ -40,7 +40,7 @@ export function CreateFormDialog({ onSubmit }: CreateFormDialogProps) {
   const resetForm = () => {
     setFormTitle("");
     setFormDescription("");
-    setTheme("light");
+    setTheme("clean-zen");
   };
 
   const handleCancel = () => {
@@ -87,10 +87,10 @@ export function CreateFormDialog({ onSubmit }: CreateFormDialogProps) {
                 <SelectValue placeholder="Select a theme" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="light">FormZen Light</SelectItem>
-                <SelectItem value="dark">Forest Slate</SelectItem>
-                <SelectItem value="minimal">Sakura</SelectItem>
-                <SelectItem value="gradient">Cyber Sunset</SelectItem>
+                <SelectItem value="clean-zen">Clean Zen</SelectItem>
+                <SelectItem value="cyber-sunset">Cyber Sunset</SelectItem>
+                <SelectItem value="cherry-blossum">Cherry Blossum</SelectItem>
+                <SelectItem value="forest-slate">Forset Slate</SelectItem>
               </SelectContent>
             </Select>
           </div>

@@ -1,5 +1,5 @@
 {
-  "id": "6347ca29-56af-4239-94b1-5dc80f01f68d",
+  "id": "6f92ee07-e607-4c20-91a5-c67d552cd784",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -99,7 +99,7 @@
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
-          "default": "'light'"
+          "default": "'clean-zen'"
         },
         "visibility": {
           "name": "visibility",
@@ -114,13 +114,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": true
-        },
-        "is_published": {
-          "name": "is_published",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": false
         },
         "created_by": {
           "name": "created_by",
@@ -485,10 +478,10 @@
       "name": "form_theme",
       "schema": "public",
       "values": [
-        "light",
-        "dark",
-        "minimal",
-        "gradient"
+        "clean-zen",
+        "cyber-sunset",
+        "cherry-blossom",
+        "forest-state"
       ]
     },
     "public.visibility": {
