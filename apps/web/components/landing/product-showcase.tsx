@@ -70,7 +70,7 @@ export function ProductShowcase() {
               </div>
               <div className="flex-1 flex justify-center">
                 <div className="px-5 py-0.5 rounded-full bg-background border border-border/30 text-[11px] text-muted-foreground tracking-wide max-w-xs sm:max-w-none truncate">
-                  app.formzen.io/forms/abc/edit
+                  app.kanso.io/forms/abc/edit
                 </div>
               </div>
             </div>

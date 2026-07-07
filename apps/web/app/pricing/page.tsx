@@ -3,7 +3,7 @@ import { Footer } from "@/components/landing/footer";
 import { PricingContent } from "@/components/pricing/pricing-content";
 
 export const metadata = {
-  title: "Pricing — FormZen",
+  title: "Pricing — Kanso",
   description: "Simple, transparent pricing. Start free and scale as you grow.",
 };
 

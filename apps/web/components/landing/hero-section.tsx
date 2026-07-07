@@ -1,174 +1,117 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
 
 const serif = { fontFamily: "'Fraunces', Georgia, serif" } as const;
 
-function Field({ label, filled }: { label: string; filled?: boolean }) {
-  return (
-    <label className="block">
-      <span className="text-xs text-foreground">{label}</span>
-      <div
-        className={`mt-1.5 h-9 rounded-md border bg-background px-3 ${
-          filled ? "border-primary/60 ring-2 ring-primary/15" : "border-border"
-        }`}
-      />
-    </label>
-  );
-}
+const STAT_ITEMS = [
+  { value: "10K+", label: "Teams worldwide" },
+  { value: "2M+", label: "Responses collected" },
+  { value: "99.9%", label: "Uptime SLA" },
+];
 
 export function Hero() {
-  const fields = ["Short Text", "Email", "Multiple Choice", "Rating", "Date", "File Upload"];
   return (
-    <section className="relative px-4 pt-16 pb-16 md:pt-20">
-      <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
-        <span className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-3 py-1 text-xs text-muted-foreground">
-          <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-          Trusted by 10,000+ teams worldwide
-        </span>
-        <h1
-          className="mt-6 text-balance text-5xl leading-[1.05] tracking-[-0.02em] text-foreground md:text-7xl"
-          style={serif}
+    <section className="relative overflow-hidden px-4 pt-28 pb-24 md:pt-36 md:pb-32">
+      {/* Background ambient blobs */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10"
+      >
+        <div className="absolute -top-32 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-primary/8 blur-[120px]" />
+        <div className="absolute top-40 -right-24 h-80 w-80 rounded-full bg-secondary/60 blur-[80px]" />
+        <div className="absolute bottom-0 -left-24 h-72 w-72 rounded-full bg-primary/6 blur-[80px]" />
+      </div>
+
+      <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
+        {/* Badge */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
         >
-          Less <em className="not-italic text-primary">friction.</em>
-          <br className="hidden sm:block" /> More responses.
-        </h1>
-        <p className="mt-6 max-w-xl text-pretty text-base leading-relaxed text-muted-foreground md:text-lg">
-          Thoughtfully designed forms that feel effortless to complete and powerful to manage.
-        </p>
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/8 px-4 py-1.5 text-xs font-medium text-primary">
+            <Sparkles className="h-3 w-3" />
+            The modern form builder for SaaS teams
+          </span>
+        </motion.div>
+
+        {/* Headline */}
+        <motion.h1
+          className="mt-7 text-balance text-5xl leading-[1.04] tracking-[-0.025em] text-foreground md:text-7xl"
+          style={serif}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+        >
+          Build forms your{" "}
+          <em className="not-italic text-primary">users love</em>{" "}
+          to fill.
+        </motion.h1>
+
+        {/* Sub-headline */}
+        <motion.p
+          className="mt-6 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground md:text-lg"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          Kanso lets you drag, drop, and deploy beautiful forms in minutes —
+          with real-time analytics, custom themes, and zero-friction sharing
+          built right in.
+        </motion.p>
+
+        {/* CTA row */}
+        <motion.div
+          className="mt-9 flex flex-wrap items-center justify-center gap-3"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        >
           <a
             href="/sign-up"
-            className="group inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-all duration-300 hover:bg-primary/90 hover:shadow-[0_12px_28px_-12px_rgba(40,60,40,0.45)]"
+            className="group inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all duration-300 hover:bg-primary/90 hover:shadow-xl hover:shadow-primary/30 hover:gap-3"
           >
-            Start Building Free
+            Start Building — it's free
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
           </a>
           <a
-            href="#showcase"
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+            href="#features"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-6 py-3 text-sm font-medium text-foreground transition-all duration-300 hover:border-primary/40 hover:bg-secondary/60"
           >
-            See it in action
+            Explore features
           </a>
-        </div>
-        <p className="mt-5 text-xs text-muted-foreground">
-          No credit card required · Free forever plan
-        </p>
-      </div>
+        </motion.div>
 
-      <div id="showcase" className="mx-auto mt-16 max-w-5xl">
-        <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-[0_30px_80px_-40px_rgba(40,60,40,0.25)]">
-          <div className="flex items-center justify-between border-b border-border bg-background px-4 py-2.5">
-            <div className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-[oklch(0.78_0.13_30)]" />
-              <span className="h-2.5 w-2.5 rounded-full bg-[oklch(0.84_0.13_85)]" />
-              <span className="h-2.5 w-2.5 rounded-full bg-[oklch(0.78_0.1_150)]" />
+        <motion.p
+          className="mt-4 text-xs text-muted-foreground"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+        >
+          No credit card required · Free forever plan · Cancel anytime
+        </motion.p>
+
+        {/* Stats strip */}
+        <motion.div
+          className="mt-14 flex flex-wrap items-center justify-center gap-10"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.55 }}
+        >
+          {STAT_ITEMS.map((stat, i) => (
+            <div key={i} className="flex flex-col items-center gap-0.5">
+              <span
+                className="text-2xl font-bold tracking-tight text-foreground"
+                style={serif}
+              >
+                {stat.value}
+              </span>
+              <span className="text-xs text-muted-foreground">{stat.label}</span>
             </div>
-            <span className="rounded-md bg-secondary px-2 py-0.5 text-[11px] text-muted-foreground">
-              app.kanso.io/forms/abcdef
-            </span>
-            <span className="w-16" />
-          </div>
-          <div className="grid grid-cols-12">
-            <aside className="col-span-12 border-b border-border p-5 md:col-span-3 md:border-b-0 md:border-r">
-              <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                Fields
-              </p>
-              <ul className="mt-4 space-y-1.5">
-                {fields.map((f) => (
-                  <li
-                    key={f}
-                    className="flex items-center gap-2 rounded-md border border-border bg-background px-2.5 py-1.5 text-xs text-foreground"
-                  >
-                    <span className="h-1 w-1 rounded-full bg-primary/60" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-            </aside>
-            <div className="col-span-12 p-6 md:col-span-6">
-              <div className="rounded-xl border border-border bg-background p-5 text-left">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h3 className="text-lg text-foreground" style={serif}>
-                      Customer Feedback Survey
-                    </h3>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      Help us improve — takes under a minute.
-                    </p>
-                  </div>
-                  <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-primary">
-                    Live draft
-                  </span>
-                </div>
-                <div className="mt-5 grid gap-4">
-                  <Field label="Full Name *" filled />
-                  <Field label="Email Address *" />
-                </div>
-                <div className="mt-4">
-                  <p className="text-xs text-foreground">How satisfied are you with our service?</p>
-                  <div className="mt-1.5 flex gap-1 text-primary">
-                    {"★★★★☆".split("").map((s, i) => (
-                      <span key={i} className={i < 4 ? "" : "text-muted-foreground/40"}>
-                        {s}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <aside className="col-span-12 border-t border-border p-5 md:col-span-3 md:border-l md:border-t-0">
-              <div className="flex items-center justify-between">
-                <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                  Field properties
-                </p>
-                <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] text-muted-foreground">
-                  Selected
-                </span>
-              </div>
-              <div className="mt-4 space-y-3.5">
-                <div>
-                  <label className="text-[11px] font-medium text-muted-foreground">Label</label>
-                  <div className="mt-1 flex h-8 items-center rounded-md border border-border bg-background px-2.5 text-xs text-foreground">
-                    Full Name
-                  </div>
-                </div>
-                <div>
-                  <label className="text-[11px] font-medium text-muted-foreground">
-                    Placeholder
-                  </label>
-                  <div className="mt-1 flex h-8 items-center rounded-md border border-border bg-background px-2.5 text-xs text-muted-foreground">
-                    e.g. Jane Doe
-                  </div>
-                </div>
-                <div>
-                  <label className="text-[11px] font-medium text-muted-foreground">Help text</label>
-                  <div className="mt-1 flex h-8 items-center rounded-md border border-border bg-background px-2.5 text-xs text-muted-foreground">
-                    Shown below the field
-                  </div>
-                </div>
-                <div className="flex items-center justify-between rounded-md border border-border bg-background px-2.5 py-2">
-                  <div>
-                    <p className="text-xs font-medium text-foreground">Required</p>
-                    <p className="text-[10px] text-muted-foreground">Must be answered</p>
-                  </div>
-                  <span className="relative inline-flex h-5 w-9 items-center rounded-full bg-primary transition-colors">
-                    <span className="absolute right-0.5 h-4 w-4 rounded-full bg-background shadow-sm" />
-                  </span>
-                </div>
-                <div className="flex items-center justify-between rounded-md border border-border bg-background px-2.5 py-2">
-                  <div>
-                    <p className="text-xs font-medium text-foreground">Hidden</p>
-                    <p className="text-[10px] text-muted-foreground">Hide on the form</p>
-                  </div>
-                  <span className="relative inline-flex h-5 w-9 items-center rounded-full bg-muted transition-colors">
-                    <span className="absolute left-0.5 h-4 w-4 rounded-full bg-background shadow-sm" />
-                  </span>
-                </div>
-              </div>
-            </aside>
-          </div>
-        </div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );

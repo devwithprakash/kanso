@@ -39,7 +39,7 @@ export function DashboardSidebar() {
             <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
               <span className="text-primary-foreground font-serif text-lg">F</span>
             </div>
-            <span className="font-serif text-xl text-foreground">FormZen</span>
+            <span className="font-serif text-xl text-foreground">Kanso</span>
           </Link>
         </div>
 
@@ -98,7 +98,7 @@ export function DashboardSidebar() {
           <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
             <span className="text-primary-foreground font-serif text-lg">F</span>
           </div>
-          <span className="font-serif text-xl text-foreground">FormZen</span>
+          <span className="font-serif text-xl text-foreground">Kanso</span>
         </Link>
 
         <Link href="/dashboard/forms/new">

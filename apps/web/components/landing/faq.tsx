@@ -19,7 +19,7 @@ const faqs = [
   },
   {
     question: "What integrations do you support?",
-    answer: "FormZen integrates with 50+ tools including Slack, Google Sheets, Airtable, Notion, Zapier, and more. Pro and Enterprise plans have access to our full API for custom integrations.",
+    answer: "Kanso integrates with 50+ tools including Slack, Google Sheets, Airtable, Notion, Zapier, and more. Pro and Enterprise plans have access to our full API for custom integrations.",
   },
   {
     question: "Can I customize the look of my forms?",
@@ -49,7 +49,7 @@ export function FAQ() {
             Common questions
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Everything you need to know about FormZen.
+            Everything you need to know about Kanso.
           </p>
         </motion.div>
 

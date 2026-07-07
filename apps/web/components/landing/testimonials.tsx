@@ -6,7 +6,7 @@ import { Star } from "lucide-react";
 const testimonials = [
   {
     content:
-      "FormZen has completely changed how we collect customer feedback. The forms are beautiful and the response rate increased by 40%.",
+      "Kanso has completely changed how we collect customer feedback. The forms are beautiful and the response rate increased by 40%.",
     author: "Sarah Chen",
     role: "Head of Product",
     company: "Bloom",
@@ -48,7 +48,7 @@ export function Testimonials() {
             Loved by teams everywhere
           </h2>
           <p className="mt-4 text-muted-foreground max-w-2xl mx-auto">
-            Join thousands of teams who have transformed their data collection with FormZen.
+            Join thousands of teams who have transformed their data collection with Kanso.
           </p>
         </motion.div>
 

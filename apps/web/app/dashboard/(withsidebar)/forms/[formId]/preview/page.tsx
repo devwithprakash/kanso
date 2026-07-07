@@ -1,7 +1,7 @@
 import { FormPreview } from "@/components/forms/form-preview"
 
 export const metadata = {
-  title: "Form Preview — FormZen",
+  title: "Form Preview — Kanso",
 }
 
 // Mock form data - in real app this would come from database

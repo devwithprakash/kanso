@@ -16,7 +16,7 @@ const plans = [
       "100 responses/month",
       "Basic analytics",
       "Email notifications",
-      "FormZen branding",
+      "Kanso branding",
     ],
     highlighted: false,
     cta: "Get Started Free",

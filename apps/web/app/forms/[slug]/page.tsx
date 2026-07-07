@@ -507,7 +507,7 @@ export default function PublicFormPage() {
 
 
         <p className="text-center text-[11px] opacity-30 pb-4">
-          Powered by FormZen
+          Powered by Kanso
         </p>
       </div>  
     </div>

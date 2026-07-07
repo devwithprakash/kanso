@@ -402,7 +402,7 @@ export function FormPreview({ form, isPreview = false }: FormPreviewProps) {
               href="/"
               className="text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
-              Powered by FormZen
+              Powered by Kanso
             </Link>
           </div>
         </motion.div>

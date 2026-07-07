@@ -46,7 +46,7 @@ type ThemeOption = {
 const visualThemes: ThemeOption[] = [
   {
     id: "light",
-    name: "FormZen Light",
+    name: "Kanso Light",
     bg: "bg-[#fafafa] border-slate-200",
     primary: "bg-slate-900",
     description: "Clean, default high-contrast dashboard layout",
