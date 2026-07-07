@@ -49,7 +49,7 @@ async function getUniqueSlug(title: string): Promise<string> {
 }
 
 const createForm = async (payload: CreateFormInputType, userId: string) => {
-  const { title, description, theme } = await createFormInput.parseAsync(payload);
+  const { title, description, formFieldData } = await createFormInput.parseAsync(payload);
 
   const dbUser = await db.select().from(usersTable).where(eq(usersTable.clerkUserId, userId));
 
@@ -68,13 +68,15 @@ const createForm = async (payload: CreateFormInputType, userId: string) => {
       slug: uniqueSlug,
       description,
       createdBy: user.id,
-      theme,
     })
     .returning();
 
   if (!form[0] || form.length === 0) {
     throw new Error("Failed to create form");
   }
+
+  
+
 
   return form[0];
 };

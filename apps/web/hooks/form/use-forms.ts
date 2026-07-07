@@ -1,5 +1,4 @@
 import { trpc } from "@/trpc/client";
-import { useRouter } from "next/navigation";
 
 export interface FormRecord {
   id: string;
@@ -17,25 +16,20 @@ export interface FormRecord {
 
 export const useCreateForm = () => {
   const utils = trpc.useUtils();
-  const router = useRouter();
 
   const createFormMutation = trpc.form.create.useMutation({
-    onSuccess: (data) => {
+    onSuccess: () => {
       utils.form.invalidate();
-      if (data?.id) {
-        router.push(`/dashboard/forms/${data.id}/builder`);
-      }
     },
     onError: (err) => {
       console.error("Failed to create form:", err.message);
     },
   });
 
-  const submitForm = async (title: string, description: string, theme: string) => {
+  const submitForm = async (title: string, description: string) => {
     return await createFormMutation.mutateAsync({
       title,
       description,
-      theme: theme as "light" | "dark" | "minimal" | "gradient",
     });
   };
 
@@ -97,7 +91,6 @@ export const useDeleteForm = () => {
   const deleteMutation = trpc.form.delete.useMutation({
     onSuccess: (data) => {
       utils.form.invalidate();
-
     },
     onError: (error) => {
       console.error("Failed to delete form:", error.message);

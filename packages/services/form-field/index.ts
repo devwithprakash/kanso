@@ -117,8 +117,6 @@ const updateFormFieldsBatch = async (payload: UpdateBatchFormFieldInputType) => 
         required: fieldData.required ?? false,
         order: fieldData.order,
         placeholder: fieldData.placeholder ?? null,
-        helperText: fieldData.helperText ?? null,
-        minLength: fieldData.minLength ?? null,
         maxLength: fieldData.maxLength ?? null,
         minValue: fieldData.minValue ?? null,
         maxValue: fieldData.maxValue ?? null,

@@ -20,6 +20,7 @@ import { FieldsStep } from "@/components/dashboard/fields-step";
 import { ConfigureStep } from "@/components/dashboard/configure-step";
 import { PreviewStep } from "@/components/dashboard/preview-step";
 import { Label } from "@/components/dashboard/label";
+import { useCreateForm } from "@/hooks/form/use-forms";
 
 const serif = { fontFamily: "'Fraunces', Georgia, serif" } as const;
 
@@ -57,7 +58,7 @@ const nid = () => `f${++idCounter}`;
 
 export default function FormEditPage() {
   const [step, setStep] = React.useState<StepIdx>(0);
-  const [title, setTitle] = React.useState("Feedback form");
+  const [title, setTitle] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [fields, setFields] = React.useState<Field[]>([
     { id: nid(), type: "shorttext", label: "Name", placeholder: "Your name", required: true },
@@ -70,15 +71,20 @@ export default function FormEditPage() {
   const [editingId, setEditingId] = React.useState<string | null>(null);
   const [copied, setCopied] = React.useState(false);
 
+  const { submitForm, isLoading } = useCreateForm();
+
   const openAdd = () => {
     setEditingId(null);
     setModalOpen(true);
   };
+
   const openEdit = (id: string) => {
     setEditingId(id);
     setModalOpen(true);
   };
+
   const remove = (id: string) => setFields((f) => f.filter((x) => x.id !== id));
+
   const move = (id: string, dir: -1 | 1) =>
     setFields((arr) => {
       const i = arr.indexOf(arr.find((x) => x.id === id)!);
@@ -109,6 +115,13 @@ export default function FormEditPage() {
   };
 
   const canNext = step === 0 ? title.trim().length > 0 : step === 1 ? fields.length > 0 : true;
+
+  const handleCreateForm = async () => {
+    if (step === 0) {
+      await submitForm(title, description);
+      setStep((s) => (s + 1) as StepIdx);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -180,15 +193,22 @@ export default function FormEditPage() {
             </button>
             {step < STEPS.length - 1 ? (
               <button
-                disabled={!canNext}
-                onClick={() => setStep((s) => (s + 1) as StepIdx)}
+                disabled={!canNext || isLoading}
+                onClick={handleCreateForm}
                 className={cn(
                   "inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.42_0.045_150/0.5)] transition-all",
                   "hover:shadow-[0_12px_32px_-8px_oklch(0.42_0.045_150/0.6)] hover:-translate-y-px",
-                  !canNext && "opacity-50 cursor-not-allowed hover:translate-y-0",
+                  (!canNext || isLoading) &&
+                    "cursor-not-allowed opacity-50 hover:translate-y-0 hover:shadow-none",
                 )}
               >
-                Next <ArrowRight className="h-4 w-4" />
+                {isLoading ? (
+                  "Saving..."
+                ) : (
+                  <>
+                    Next <ArrowRight className="h-4 w-4" />
+                  </>
+                )}
               </button>
             ) : (
               <button className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.42_0.045_150/0.5)] hover:-translate-y-px transition-all">

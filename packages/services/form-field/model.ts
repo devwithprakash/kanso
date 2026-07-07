@@ -66,8 +66,6 @@ export const updateBatchFormFieldItemInput = z.object({
   required: z.boolean().optional().default(false),
   order: z.number().int().min(0),
   placeholder: z.string().max(100).nullable().optional(),
-  helperText: z.string().max(200).nullable().optional(),
-  minLength: z.number().int().min(0).nullable().optional(),
   maxLength: z.number().int().min(1).nullable().optional(),
   minValue: z.number().nullable().optional(),
   maxValue: z.number().nullable().optional(),

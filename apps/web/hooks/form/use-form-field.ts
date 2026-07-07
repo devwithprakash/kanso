@@ -6,7 +6,6 @@ export const useSyncFormFields = () => {
   const syncFieldsMutation = trpc.formField.sync.useMutation({
     onSuccess: (data) => {
       utils.formField.invalidate();
-
     },
     
     onError: (err) => {

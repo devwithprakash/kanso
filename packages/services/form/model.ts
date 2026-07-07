@@ -2,10 +2,48 @@ import { z } from "zod";
 
 const themeOptions = z.enum(["clean-zen", "cyber-sunset", "cherry-blossom", "forest-state"]);
 
+const batchFormFieldOptionInput = z.object({
+  label: z.string().min(1).max(100),
+  value: z.string().min(1).max(100),
+  order: z.number().int().min(0),
+});
+
+const optionField = z.object({
+  label: z.string().min(1).max(100),
+  type: z.enum(["select", "radio", "checkbox"]),
+  required: z.boolean().default(false),
+  order: z.number().int().min(0),
+  options: z.array(batchFormFieldOptionInput).min(1),
+});
+
+const normalField = z.object({
+  label: z.string().min(1).max(100),
+  type: z.enum([
+    "text",
+    "textarea",
+    "email",
+    "number",
+    "phone",
+    "date",
+    "file",
+  ]),
+  required: z.boolean().default(false),
+  order: z.number().int().min(0),
+  placeholder: z.string().max(100).nullable().optional(),
+  maxLength: z.number().int().min(1).nullable().optional(),
+  minValue: z.number().nullable().optional(),
+  maxValue: z.number().nullable().optional(),
+});
+
+const formFieldInput = z.discriminatedUnion("type", [
+  optionField,
+  normalField,
+]);
+
 export const createFormInput = z.object({
   title: z.string().describe("title of the form"),
   description: z.string().describe("description of the form").nullable().optional(),
-  theme: themeOptions,
+  formFieldData: z.array(formFieldInput),
 });
 
 export const updateFormInput = z.object({
