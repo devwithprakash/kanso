@@ -1,40 +1,6 @@
-import {
-  AlignLeft,
-  ChevronDown,
-  ChevronUp,
-  GripVertical,
-  Hash,
-  ListChecks,
-  Mail,
-  Pencil,
-  Plus,
-  Trash2,
-  Type,
-} from "lucide-react";
-
-const FIELD_META: Record<
-  FieldType,
-  { label: string; icon: React.ComponentType<{ className?: string }> }
-> = {
-  shorttext: { label: "Short Text", icon: Type },
-  longtext: { label: "Long Text", icon: AlignLeft },
-  email: { label: "Email", icon: Mail },
-  number: { label: "Number", icon: Hash },
-  dropdown: { label: "Dropdown", icon: ListChecks },
-};
-
-type FieldType = "shorttext" | "longtext" | "email" | "number" | "dropdown";
-
-type Field = {
-  id: string;
-  type: FieldType;
-  label: string;
-  placeholder?: string;
-  required: boolean;
-  maxLength?: number;
-  pattern?: string;
-  options?: string[];
-};
+import { FIELD_META } from "@/constants/form";
+import { Field } from "@/types/form";
+import { ChevronDown, ChevronUp, GripVertical, Pencil, Plus, Trash2 } from "lucide-react";
 
 export function FieldsStep({
   fields,

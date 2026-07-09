@@ -86,7 +86,7 @@ const updateFormFieldsBatch = async (payload: UpdateBatchFormFieldInputType) => 
   const optionFieldTypes = ["select", "radio", "checkbox"];
 
   return await db.transaction(async (tx) => {
-    // handle deletions first to clear out removed fields and cascade options
+    // handle deletions first to clear out removed fields and cascade option
 
     const incomingDbIds: string[] = incomingFields
       .map((f) => f.id)

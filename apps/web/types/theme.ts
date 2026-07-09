@@ -1,0 +1,1 @@
+export type ThemeKey = "clean-zen" | "cherry-blossum" | "cyber-sunset" | "forest-slate";

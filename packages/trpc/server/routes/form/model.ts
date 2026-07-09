@@ -8,26 +8,28 @@ const batchFormFieldOptionInput = z.object({
   order: z.number().int().min(0),
 });
 
-const optionField = z.object({
+const formFieldInput = z.object({
   label: z.string().min(1).max(100),
-  type: z.enum(["select", "radio", "checkbox"]),
-  required: z.boolean().default(false),
-  order: z.number().int().min(0),
-  options: z.array(batchFormFieldOptionInput).min(1),
-});
-
-const normalField = z.object({
-  label: z.string().min(1).max(100),
-  type: z.enum(["text", "textarea", "email", "number", "phone", "date", "file"]),
+  type: z.enum([
+    "text",
+    "textarea",
+    "email",
+    "number",
+    "phone",
+    "select",
+    "radio",
+    "checkbox",
+    "date",
+    "file",
+  ]),
   required: z.boolean().default(false),
   order: z.number().int().min(0),
   placeholder: z.string().max(100).nullable().optional(),
   maxLength: z.number().int().min(1).nullable().optional(),
   minValue: z.number().nullable().optional(),
   maxValue: z.number().nullable().optional(),
+  options: z.array(batchFormFieldOptionInput).optional(),
 });
-
-const formFieldInput = z.discriminatedUnion("type", [optionField, normalField]);
 
 // create form schema
 export const createFormInputModel = z.object({

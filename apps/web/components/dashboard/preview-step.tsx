@@ -1,48 +1,9 @@
 import { cn } from "@/lib/utils";
 import { Label } from "./label";
-
-type ThemeKey = "clean-zen" | "cherry-blossum" | "cyber-sunset" | "forest-slate";
-const THEMES: Record<ThemeKey, { name: string; swatch: string; bg: string; accent: string }> = {
-  "clean-zen": {
-    name: "Clean Zen",
-    swatch: "bg-[oklch(0.42_0.045_150)]",
-    bg: "bg-[oklch(0.97_0.012_120)]",
-    accent: "text-[oklch(0.42_0.045_150)]",
-  },
-  "cherry-blossum": {
-    name: "Cherry-Blossum",
-    swatch: "bg-[oklch(0.85_0.04_75)]",
-    bg: "bg-[oklch(0.98_0.02_85)]",
-    accent: "text-[oklch(0.45_0.06_60)]",
-  },
-  "cyber-sunset": {
-    name: "Cyber Sunset",
-    swatch: "bg-[oklch(0.78_0.08_15)]",
-    bg: "bg-[oklch(0.97_0.015_20)]",
-    accent: "text-[oklch(0.45_0.08_15)]",
-  },
-  "forest-slate": {
-    name: "Forest Slate",
-    swatch: "bg-[oklch(0.72_0.09_230)]",
-    bg: "bg-[oklch(0.97_0.015_230)]",
-    accent: "text-[oklch(0.42_0.08_240)]",
-  },
-};
-
-type FieldType = "shorttext" | "longtext" | "email" | "number" | "dropdown";
-
-type Field = {
-  id: string;
-  type: FieldType;
-  label: string;
-  placeholder?: string;
-  required: boolean;
-  maxLength?: number;
-  pattern?: string;
-  options?: string[];
-};
-
-const serif = { fontFamily: "'Fraunces', Georgia, serif" } as const;
+import { Field } from "@/types/form";
+import { THEMES } from "@/constants/theme";
+import { ThemeKey } from "@/types/theme";
+import { serif } from "@/constants/form";
 
 export function PreviewStep({
   title,
@@ -71,18 +32,18 @@ export function PreviewStep({
         {fields.map((f) => (
           <div key={f.id}>
             <Label required={f.required}>{f.label || "Untitled"}</Label>
-            {f.type === "longtext" ? (
+            {f.type === "textarea" ? (
               <textarea
                 rows={3}
                 className={cn(inputCls, "resize-none bg-card/80")}
                 placeholder={f.placeholder}
               />
-            ) : f.type === "dropdown" ? (
+            ) : f.type === "select" ? (
               <select className={cn(inputCls, "bg-card/80")}>
                 <option value="">{f.placeholder || "Select…"}</option>
                 {(f.options ?? []).map((o) => (
-                  <option key={o} value={o}>
-                    {o}
+                  <option key={o.order} value={o.value}>
+                    {o.value}
                   </option>
                 ))}
               </select>

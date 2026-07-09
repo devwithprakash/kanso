@@ -14,6 +14,34 @@ export interface FormRecord {
   formFields?: any[];
 }
 
+export type FormFieldOptionData = {
+  label: string;
+  value: string;
+  order: number;
+};
+
+export type FormFieldData = {
+  label: string;
+  type:
+    | "text"
+    | "textarea"
+    | "email"
+    | "number"
+    | "phone"
+    | "select"
+    | "radio"
+    | "checkbox"
+    | "date"
+    | "file";
+  required: boolean;
+  order: number;
+  placeholder?: string | null;
+  maxLength?: number | null;
+  minValue?: number | null;
+  maxValue?: number | null;
+  options?: FormFieldOptionData[];
+};
+
 export const useCreateForm = () => {
   const utils = trpc.useUtils();
 
@@ -26,10 +54,11 @@ export const useCreateForm = () => {
     },
   });
 
-  const submitForm = async (title: string, description: string) => {
+  const submitForm = async (title: string, description: string, formFieldData: FormFieldData[]) => {
     return await createFormMutation.mutateAsync({
       title,
       description,
+      formFieldData,
     });
   };
 

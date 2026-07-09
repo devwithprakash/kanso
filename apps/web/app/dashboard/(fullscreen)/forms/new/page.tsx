@@ -1,17 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Check,
-  X,
-  Type,
-  AlignLeft,
-  Mail,
-  Hash,
-  ListChecks,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TopBar } from "@/components/dashboard/topbar";
 import { Stepper } from "@/components/dashboard/stepper";
@@ -21,36 +11,10 @@ import { ConfigureStep } from "@/components/dashboard/configure-step";
 import { PreviewStep } from "@/components/dashboard/preview-step";
 import { Label } from "@/components/dashboard/label";
 import { useCreateForm } from "@/hooks/form/use-forms";
+import { Field, FieldType, FormFieldOption } from "@/types/form";
+import { ThemeKey } from "@/types/theme";
+import { FIELD_META, serif, STEPS } from "@/constants/form";
 
-const serif = { fontFamily: "'Fraunces', Georgia, serif" } as const;
-
-type FieldType = "shorttext" | "longtext" | "email" | "number" | "dropdown";
-
-type Field = {
-  id: string;
-  type: FieldType;
-  label: string;
-  placeholder?: string;
-  required: boolean;
-  maxLength?: number;
-  pattern?: string;
-  options?: string[];
-};
-
-const FIELD_META: Record<
-  FieldType,
-  { label: string; icon: React.ComponentType<{ className?: string }> }
-> = {
-  shorttext: { label: "Short Text", icon: Type },
-  longtext: { label: "Long Text", icon: AlignLeft },
-  email: { label: "Email", icon: Mail },
-  number: { label: "Number", icon: Hash },
-  dropdown: { label: "Dropdown", icon: ListChecks },
-};
-
-type ThemeKey = "clean-zen" | "cherry-blossum" | "cyber-sunset" | "forest-slate";
-
-const STEPS = ["Details", "Fields", "Configure", "Preview"] as const;
 type StepIdx = 0 | 1 | 2 | 3;
 
 let idCounter = 0;
@@ -61,7 +25,18 @@ export default function FormEditPage() {
   const [title, setTitle] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [fields, setFields] = React.useState<Field[]>([
-    { id: nid(), type: "shorttext", label: "Name", placeholder: "Your name", required: true },
+    {
+      id: nid(),
+      type: "text",
+      label: "Name",
+      placeholder: "Your name",
+      required: true,
+      order: 0,
+      maxLength: undefined,
+      maxValue: undefined,
+      minValue: undefined,
+      options: [],
+    },
   ]);
   const [theme, setTheme] = React.useState<ThemeKey>("clean-zen");
   const [visibility, setVisibility] = React.useState<"public" | "unlisted">("public");
@@ -116,10 +91,13 @@ export default function FormEditPage() {
 
   const canNext = step === 0 ? title.trim().length > 0 : step === 1 ? fields.length > 0 : true;
 
+  const formFieldData = {};
+
   const handleCreateForm = async () => {
-    if (step === 0) {
-      await submitForm(title, description);
-      setStep((s) => (s + 1) as StepIdx);
+    setStep((s) => (s + 1) as StepIdx);
+
+    if (step === 1) {
+      // submitForm(title, description, formFieldData)
     }
   };
 
@@ -245,32 +223,41 @@ function FieldModal({
   onClose: () => void;
   onSave: (f: Field) => void;
 }) {
-  const [type, setType] = React.useState<FieldType>(existing?.type ?? "shorttext");
+  const [type, setType] = React.useState<FieldType>(existing?.type ?? "text");
   const [label, setLabel] = React.useState(existing?.label ?? "");
   const [placeholder, setPlaceholder] = React.useState(existing?.placeholder ?? "");
   const [required, setRequired] = React.useState(existing?.required ?? false);
-  const [maxLen, setMaxLen] = React.useState(existing?.maxLength ? String(existing.maxLength) : "");
-  const [pattern, setPattern] = React.useState(existing?.pattern ?? "");
+  const [maxLength, setMaxLength] = React.useState(
+    existing?.maxLength ? String(existing.maxLength) : "",
+  );
   const [optionsText, setOptionsText] = React.useState((existing?.options ?? []).join("\n"));
 
   const save = () => {
     if (!label.trim()) return;
+
     const f: Field = {
-      id: existing?.id ?? nid(),
-      type,
+      id: existing?.id ?? crypto.randomUUID(),
       label: label.trim(),
-      placeholder: placeholder.trim() || undefined,
+      type,
+      order: existing?.order ?? 0,
       required,
-      maxLength: maxLen ? Number(maxLen) : undefined,
-      pattern: pattern || undefined,
+      placeholder: placeholder.trim() || undefined,
+      maxLength: maxLength ? Number(maxLength) : undefined,
+      minValue: undefined,
+      maxValue: undefined,
       options:
-        type === "dropdown"
+        type === "select" || type === "radio" || type === "checkbox"
           ? optionsText
               .split("\n")
-              .map((s) => s.trim())
-              .filter(Boolean)
+              .map((option, index) => ({
+                label: option.trim(),
+                value: option.trim().toLowerCase().replace(/\s+/g, "-"),
+                order: index,
+              }))
+              .filter((option) => option.label.length > 0)
           : undefined,
     };
+
     onSave(f);
   };
 
@@ -371,7 +358,7 @@ function FieldModal({
             </button>
           </label>
 
-          {type === "dropdown" && (
+          {type === "select" && (
             <div>
               <Label>Options</Label>
               <textarea
@@ -384,28 +371,16 @@ function FieldModal({
             </div>
           )}
 
-          {(type === "shorttext" || type === "longtext") && (
+          {(type === "text" || type === "textarea") && (
             <div>
               <Label>Max length</Label>
               <input
                 type="number"
                 min={1}
                 className={inputCls}
-                value={maxLen}
-                onChange={(e) => setMaxLen(e.target.value)}
+                value={maxLength}
+                onChange={(e) => setMaxLength(e.target.value)}
                 placeholder="Leave empty for unlimited"
-              />
-            </div>
-          )}
-
-          {(type === "shorttext" || type === "email") && (
-            <div>
-              <Label>Validation pattern (regex)</Label>
-              <input
-                className={cn(inputCls, "font-mono text-xs")}
-                value={pattern}
-                onChange={(e) => setPattern(e.target.value)}
-                placeholder="e.g. ^[A-Z].+$"
               />
             </div>
           )}

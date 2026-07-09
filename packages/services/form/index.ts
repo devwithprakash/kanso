@@ -15,7 +15,7 @@ import { throwTRPCError } from "../../trpc/server/utils/trpc-error";
 
 import { formsTable } from "@repo/database/models/form";
 import { usersTable } from "@repo/database/models/user";
-import { formResponsesTable } from "@repo/database/schema";
+import { fieldOptionsTable, formFieldsTable, formResponsesTable } from "@repo/database/schema";
 
 function generateSlug(title: string) {
   return title
@@ -71,14 +71,72 @@ const createForm = async (payload: CreateFormInputType, userId: string) => {
     })
     .returning();
 
-  if (!form[0] || form.length === 0) {
+  const createdForm = form[0];
+
+  if (!createdForm) {
     throw new Error("Failed to create form");
   }
 
-  
+  return await db.transaction(async (tx) => {
+    const results = [];
 
+    for (const fieldData of formFieldData) {
+      const insertedFields = await tx
+        .insert(formFieldsTable)
+        .values({
+          formId: createdForm.id,
+          label: fieldData.label,
+          type: fieldData.type,
+          placeholder: fieldData.placeholder,
+          order: fieldData.order,
+          required: fieldData.required,
+          maxLength: fieldData.maxLength,
+          minValue: fieldData.minValue,
+          maxValue: fieldData.maxValue,
+        })
+        .returning();
 
-  return form[0];
+      const field = insertedFields[0];
+
+      if (!field) {
+        throwTRPCError("INTERNAL_SERVER_ERROR", `Field creation failed for: ${fieldData.label}`);
+      }
+
+      const optionsFieldTypes = ["select", "radio", "checkbox"];
+
+      let insertedOptionsResult: any[] = [];
+
+      if (optionsFieldTypes.includes(fieldData.type) && fieldData.options?.length) {
+        const optionsToInsert = fieldData.options.map((opt) => ({
+          label: opt.label,
+          value: opt.value,
+          order: opt.order,
+          fieldId: field.id,
+        }));
+
+        const insertedOptions = await tx
+          .insert(fieldOptionsTable)
+          .values(optionsToInsert)
+          .returning();
+
+        if (!insertedOptions.length) {
+          throwTRPCError(
+            "INTERNAL_SERVER_ERROR",
+            `Failed to store field options for: ${fieldData.label}`,
+          );
+        }
+
+        insertedOptionsResult = insertedOptions;
+      }
+
+      results.push({
+        ...field,
+        options: insertedOptionsResult,
+      });
+    }
+
+    return createdForm;
+  });
 };
 
 const updateForm = async (payload: UpdateFormInputType, userId: string) => {
