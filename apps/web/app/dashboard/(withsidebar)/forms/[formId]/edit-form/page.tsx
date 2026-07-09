@@ -32,47 +32,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-type Theme = "light" | "dark" | "minimal" | "gradient";
+import type { ThemeType } from "@/types/form-builder";
+import { themeOptions } from "@/constants/form-builder";
 type Visibility = "public" | "private" | "unlisted";
 
-type ThemeOption = {
-  id: Theme;
-  name: string;
-  bg: string;
-  primary: string;
-  description: string;
-};
 
-const visualThemes: ThemeOption[] = [
-  {
-    id: "light",
-    name: "Kanso Light",
-    bg: "bg-[#fafafa] border-slate-200",
-    primary: "bg-slate-900",
-    description: "Clean, default high-contrast dashboard layout",
-  },
-  {
-    id: "dark",
-    name: "Forest Slate",
-    bg: "bg-[#3f3f46] border-zinc-600 dark",
-    primary: "bg-emerald-400",
-    description: "Soft metallic layout with fresh mint accents",
-  },
-  {
-    id: "minimal",
-    name: "Sakura",
-    bg: "bg-[#fffafd] border-rose-100/70",
-    primary: "bg-rose-400",
-    description: "Soft cherry-blossom theme with high-contrast text layout",
-  },
-  {
-    id: "gradient",
-    name: "Cyber Sunset",
-    bg: "bg-gradient-to-br from-orange-50 via-white to-purple-50 border-orange-100",
-    primary: "bg-orange-400",
-    description: "Light desaturated sunset gradient with clean typography",
-  },
-];
 
 export default function FormSettingsPage() {
   const params = useParams();
@@ -84,7 +48,7 @@ export default function FormSettingsPage() {
     "Help us improve our developer tooling platform experience.",
   );
   const [isPublished, setIsPublished] = useState(true);
-  const [theme, setTheme] = useState<"light" | "dark" | "minimal" | "gradient">("light");
+  const [theme, setTheme] = useState<ThemeType>("clean-zen");
   const [visibility, setVisibility] = useState<Visibility>("unlisted");
   const [isSaving, setIsSaving] = useState(false);
 
@@ -99,7 +63,7 @@ export default function FormSettingsPage() {
       setIsPublished(form.isPublished);
       setVisibility(form.visibility)
       if (form?.theme) {
-        setTheme(form.theme as "light" | "dark" | "minimal" | "gradient");
+        setTheme(form.theme as ThemeType);
       }
     }
   }, [form]);
@@ -225,7 +189,7 @@ export default function FormSettingsPage() {
             </p>
 
             <div className="grid sm:grid-cols-2 gap-4">
-              {visualThemes.map((vTheme) => (
+              {themeOptions.map((vTheme) => (
                 <div
                   key={vTheme.id}
                   onClick={() => setTheme(vTheme.id)}
@@ -238,7 +202,7 @@ export default function FormSettingsPage() {
                 >
                   <div>
                     <div className="flex items-center justify-between">
-                      <span className="font-medium text-sm text-foreground">{vTheme.name}</span>
+                      <span className="font-medium text-sm text-foreground">{vTheme.label}</span>
                       {theme === vTheme.id && <Sparkles className="h-3.5 w-3.5 text-primary" />}
                     </div>
                     <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
@@ -246,17 +210,8 @@ export default function FormSettingsPage() {
                     </p>
                   </div>
 
-                  <div
-                    className={cn(
-                      "h-10 w-full rounded-lg border p-1.5 flex items-center gap-1.5 mt-3",
-                      vTheme.bg,
-                    )}
-                  >
-                    <div className={cn("h-4 w-12 rounded-sm opacity-80", vTheme.primary)} />
-                    <div className="h-2 w-full space-y-1">
-                      <div className={cn("h-1 rounded-full w-4/5", vTheme.primary, "opacity-30")} />
-                      <div className={cn("h-1 rounded-full w-1/2", vTheme.primary, "opacity-20")} />
-                    </div>
+                  <div className="h-10 w-full rounded-lg border flex items-center justify-center mt-3 bg-secondary/50 overflow-hidden">
+                     <div className="h-full w-full opacity-80" style={{ background: `linear-gradient(90deg, ${vTheme.swatch.join(", ")})` }} />
                   </div>
                 </div>
               ))}

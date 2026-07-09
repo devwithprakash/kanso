@@ -49,9 +49,6 @@ export const deleteFormInput = z.object({
   formId: z.string().describe("id of the form"),
 });
 
-export const getFormByIdInput = z.object({
-  formId: z.string().describe("id of the form"),
-});
 
 export const getSingleFormDetailsInput = z.object({
   formId: z.string().describe("id of the form"),
@@ -64,6 +61,5 @@ export const getFormBySlugInput = z.object({
 export type CreateFormInputType = z.infer<typeof createFormInput>;
 export type UpdateFormInputType = z.infer<typeof updateFormInput>;
 export type DeleteFormInputType = z.infer<typeof deleteFormInput>;
-export type GetFormByIdInputType = z.infer<typeof getFormByIdInput>;
 export type GetSingleFormDetailsInputType = z.infer<typeof getSingleFormDetailsInput>;
 export type GetFormBySlugInputType = z.infer<typeof getFormBySlugInput>;

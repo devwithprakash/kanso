@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, Reorder } from "framer-motion";
 import {
@@ -44,159 +44,22 @@ import { useGetForm, useUpdateForm } from "@/hooks/form/use-forms";
 import { useSyncFormFields } from "@/hooks/form/use-form-field";
 import { Popover, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
 
-interface FormFieldOption {
-  label: string;
-  value: string;
-  order: number;
-}
+import type {
+  FormFieldOption,
+  BackendFieldType,
+  VisibilityType,
+  FormField,
+  VisibilityOption,
+  ThemeType,
+  ThemeOption,
+} from "@/types/form-builder";
 
-type BackendFieldType =
-  | "text"
-  | "textarea"
-  | "email"
-  | "number"
-  | "phone"
-  | "select"
-  | "radio"
-  | "checkbox"
-  | "date"
-  | "file";
-
-type VisibilityType = "public" | "unlisted" | "private";
-
-interface FormField {
-  id: string;
-  formId: string;
-  label: string;
-  type: BackendFieldType;
-  order: number;
-  required: boolean;
-  placeholder?: string;
-  helperText?: string;
-  minLength?: number;
-  maxLength?: number;
-  minValue?: number;
-  maxValue?: number;
-  options?: FormFieldOption[];
-  fieldOptions?: FormFieldOption[]; // backend alias
-}
-
-interface VisibilityOption {
-  id: VisibilityType;
-  label: string;
-  icon: React.ElementType;
-}
-
-const fieldTypes = [
-  { type: "text", icon: Type, label: "Short Text", description: "Single line text input" },
-  { type: "textarea", icon: AlignLeft, label: "Long Text", description: "Multi-line text area" },
-  { type: "email", icon: Mail, label: "Email", description: "Email address field" },
-  { type: "number", icon: Hash, label: "Number", description: "Numeric input field" },
-  { type: "phone", icon: Phone, label: "Phone", description: "Contact number layout" },
-  {
-    type: "select",
-    icon: ChevronDown,
-    label: "Dropdown Select",
-    description: "Dropdown choices selection menu",
-  },
-  {
-    type: "radio",
-    icon: Radio,
-    label: "Single Choice Radio",
-    description: "Select one option out of multiple choices",
-  },
-  {
-    type: "checkbox",
-    icon: ListChecks,
-    label: "Checkbox Collection",
-    description: "Multi-select option parameters",
-  },
-  {
-    type: "date",
-    icon: Calendar,
-    label: "Date Selection",
-    description: "Calendar appointment picking tool",
-  },
-  {
-    type: "file",
-    icon: FileUp,
-    label: "File Upload",
-    description: "Binary attachment uploader field",
-  },
-] as const;
-
-const defaultFieldData: Record<BackendFieldType, Partial<FormField>> = {
-  text: { label: "Short Text Field", placeholder: "Enter response text..." },
-  textarea: { label: "Long Text Context", placeholder: "Provide comprehensive answers here..." },
-  email: { label: "Email Address Input", placeholder: "username@example.com" },
-  number: { label: "Numeric Parameter", placeholder: "0" },
-  phone: { label: "Contact Number", placeholder: "+1 (555) 000-0000" },
-  select: {
-    label: "Dropdown Options Selector",
-    options: [
-      { label: "Choice A", value: "choice_a", order: 0 },
-      { label: "Choice B", value: "choice_b", order: 1 },
-    ],
-  },
-  radio: {
-    label: "Radio Choice Selector",
-    options: [
-      { label: "Option 1", value: "option_1", order: 0 },
-      { label: "Option 2", value: "option_2", order: 1 },
-    ],
-  },
-  checkbox: {
-    label: "Multiselect Parameters Box",
-    options: [
-      { label: "Accept Item 1", value: "accept_item_1", order: 0 },
-      { label: "Accept Item 2", value: "accept_item_2", order: 1 },
-    ],
-  },
-  date: { label: "Target Date Selection" },
-  file: { label: "Document Workspace Upload" },
-};
-
-const visibilityOptions: VisibilityOption[] = [
-  { id: "public", label: "Public", icon: Globe },
-  { id: "unlisted", label: "Unlisted", icon: Link2 },
-  { id: "private", label: "Private", icon: Lock },
-];
-
-type ThemeType = "cherry-blossom" | "cyber-sunset" | "clean-zen" | "forest-state";
-
-interface ThemeOption {
-  id: ThemeType;
-  label: string;
-  description: string;
-  swatch: string[]; // gradient stops used for the preview dot
-}
-
-const themeOptions: ThemeOption[] = [
-  {
-    id: "clean-zen",
-    label: "Cherry Blossom",
-    description: "Soft pink, warm and inviting",
-    swatch: ["#FFD1DC", "#FF8FA3", "#C2185B"],
-  },
-  {
-    id: "cyber-sunset",
-    label: "Cyber Sunset",
-    description: "Neon gradient, bold and modern",
-    swatch: ["#FF6B6B", "#C44BC4", "#4834D4"],
-  },
-  {
-    id: "cherry-blossom",
-    label: "Clean & Zen",
-    description: "Minimal, calm, distraction-free",
-    swatch: ["#F5F5F0", "#D8D4C8", "#8A8578"],
-  },
-  {
-    id: "forest-state",
-    label: "Forest State",
-    description: "Deep greens, earthy and grounded",
-    swatch: ["#A8D5A0", "#4F7942", "#2C4A2E"],
-  },
-];
+import {
+  fieldTypes,
+  defaultFieldData,
+  visibilityOptions,
+  themeOptions,
+} from "@/constants/form-builder";
 
 export function FormBuilder() {
   const params = useParams();
@@ -209,6 +72,7 @@ export function FormBuilder() {
   const [isThemePopoverOpen, setIsThemePopoverOpen] = useState(false);
   const [fields, setFields] = useState<FormField[]>([]);
   const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
+  const pointerDownRef = useRef<{ x: number; y: number } | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isMobileSettingsOpen, setIsMobileSettingsOpen] = useState(false);
   const [isMobileAddFieldsOpen, setIsMobileAddFieldsOpen] = useState(false);
@@ -253,6 +117,22 @@ export function FormBuilder() {
     if (window.innerWidth < 1024) {
       setIsMobileSettingsOpen(true);
     }
+  };
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    pointerDownRef.current = { x: e.clientX, y: e.clientY };
+  };
+
+  const handleClickWithDragCheck = (e: React.MouseEvent, fieldId: string) => {
+    if (pointerDownRef.current) {
+      const dx = Math.abs(e.clientX - pointerDownRef.current.x);
+      const dy = Math.abs(e.clientY - pointerDownRef.current.y);
+      if (dx > 5 || dy > 5) {
+        // Drag occurred, ignore click
+        return;
+      }
+    }
+    handleSelectField(fieldId);
   };
 
   const addField = useCallback(
@@ -883,7 +763,7 @@ export function FormBuilder() {
                     axis="y"
                     values={fields}
                     onReorder={handleReorder}
-                    className="space-y-3"
+                    className="flex flex-col gap-3"
                   >
                     {fields.map((field) => {
                       const Icon = getFieldIcon(field.type);
@@ -896,7 +776,8 @@ export function FormBuilder() {
                                 ? "border-primary"
                                 : "border-transparent hover:border-border",
                             )}
-                            onClick={() => handleSelectField(field.id)}
+                            onPointerDown={handlePointerDown}
+                            onClick={(e) => handleClickWithDragCheck(e, field.id)}
                           >
                             <div className="absolute left-3 top-1/2 -translate-y-1/2 opacity-40 group-hover:opacity-100 cursor-grab">
                               <GripVertical className="h-4 w-4 text-muted-foreground" />

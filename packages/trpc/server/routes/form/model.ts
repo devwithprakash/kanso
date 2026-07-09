@@ -57,6 +57,7 @@ export const updateFormInputModel = z.object({
   description: z.string().optional(),
   theme: themeOptions,
   visibility: z.enum(["public", "private", "unlisted"]),
+  isPublished: z.boolean().optional(),
 });
 
 export const updateFormOutputModel = z.object({
@@ -170,19 +171,6 @@ export const getFormByIdOutputModel = z.object({
   updatedAt: z.date().nullable().optional(),
 });
 
-// get all public forms
-
-export const allFormSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  description: z.string().optional(),
-  theme: z.string(),
-  visibility: z.enum(["public", "private", "unlisted"]),
-  slug: z.string(),
-  createdBy: z.string(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-});
 
 // get form by slug
 
@@ -221,4 +209,3 @@ export const getAllPublicFormOutputModel = z.array(
   }),
 );
 
-export const getAllPublicFormsOutputModel = z.array(allFormSchema);

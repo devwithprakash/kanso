@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-export const getFormAnalyticsInputModel = z.object({
-  formId: z.string(),
-});
+// Note: getFormAnalyticsInputModel was removed — both analytics procedures
+// (getFormAnalytics, getDashboardAnalytics) take no query input; they derive
+// the user identity from ctx.userId populated by the Clerk middleware.
 
 export const getFormAnalyticsOutputModel = z.object({
   responsesPerForm: z.array(

@@ -1,46 +1,6 @@
 import { trpc } from "@/trpc/client";
 
-export interface FormRecord {
-  id: string;
-  title: string;
-  description: string | null;
-  theme: "light" | "dark" | "minimal" | "gradient" | "modern";
-  visibility: "private" | "public" | "unlisted";
-  slug: string;
-  isPublished: boolean;
-  createdBy: string;
-  createdAt: Date | string;
-  updatedAt: Date | string | null;
-  formFields?: any[];
-}
-
-export type FormFieldOptionData = {
-  label: string;
-  value: string;
-  order: number;
-};
-
-export type FormFieldData = {
-  label: string;
-  type:
-    | "text"
-    | "textarea"
-    | "email"
-    | "number"
-    | "phone"
-    | "select"
-    | "radio"
-    | "checkbox"
-    | "date"
-    | "file";
-  required: boolean;
-  order: number;
-  placeholder?: string | null;
-  maxLength?: number | null;
-  minValue?: number | null;
-  maxValue?: number | null;
-  options?: FormFieldOptionData[];
-};
+import type { FormRecord, FormFieldData, FormFieldOptionData } from "@/types/form";
 
 export const useCreateForm = () => {
   const utils = trpc.useUtils();

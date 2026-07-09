@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-export const formAnalyticsInput = z.object({
-  formId: z.string(),
-});
-
-export type FormAnalyticsInputType = z.infer<typeof formAnalyticsInput>;
+// Note: formAnalyticsInput was removed — analytics routes derive the user from
+// ctx.userId (Clerk JWT), so they do not accept a formId input parameter.
+// Nothing in the codebase imports this schema.

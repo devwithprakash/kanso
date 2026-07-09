@@ -68,7 +68,7 @@ export function DashboardSidebar() {
           })}
         </nav>
 
-        <CreateFormDialog onSubmit={submitForm} />
+        <CreateFormDialog onSubmit={(title, desc) => submitForm(title, desc, [])} />
 
         <div className="p-4 border-t border-border">
           <div className="flex items-center gap-3">

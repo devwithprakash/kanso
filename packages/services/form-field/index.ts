@@ -1,80 +1,13 @@
 import { formFieldsTable } from "@repo/database/models/form-field";
 import {
-  createFormFieldBatchInput,
-  CreateFormFieldBatchInputType,
   UpdateBatchFormFieldInputType,
-  updateBatchFormFieldItemInput,
   updateBatchFormFieldsInput,
 } from "./model";
 import db, { and, eq, notInArray } from "@repo/database";
 import { throwTRPCError } from "../../trpc/server/utils/trpc-error";
 import { fieldOptionsTable } from "@repo/database/models/field-options";
 
-const createFormFieldBatch = async (payload: CreateFormFieldBatchInputType) => {
-  const batchData = await createFormFieldBatchInput.parseAsync(payload);
 
-  return await db.transaction(async (tx) => {
-    const results = [];
-
-    for (const fieldData of batchData) {
-      const insertedFields = await tx
-        .insert(formFieldsTable)
-        .values({
-          formId: fieldData.formId,
-          label: fieldData.label,
-          type: fieldData.type,
-          order: fieldData.order,
-          required: fieldData.required,
-          helperText: fieldData.helperText,
-          placeholder: fieldData.placeholder,
-          minLength: fieldData.minLength,
-          maxLength: fieldData.maxLength,
-          minValue: fieldData.minValue,
-          maxValue: fieldData.maxValue,
-        })
-        .returning();
-
-      const field = insertedFields[0];
-
-      if (!field) {
-        throwTRPCError("INTERNAL_SERVER_ERROR", `Field creation failed for: ${fieldData.label}`);
-      }
-
-      const optionsFieldTypes = ["select", "radio", "checkbox"];
-      let insertedOptionsResult: any[] = [];
-
-      if (optionsFieldTypes.includes(fieldData.type) && fieldData.options?.length) {
-        const optionsToInsert = fieldData.options.map((opt) => ({
-          label: opt.label,
-          value: opt.value,
-          order: opt.order,
-          fieldId: field.id,
-        }));
-
-        const insertedOptions = await tx
-          .insert(fieldOptionsTable)
-          .values(optionsToInsert)
-          .returning();
-
-        if (!insertedOptions.length) {
-          throwTRPCError(
-            "INTERNAL_SERVER_ERROR",
-            `Failed to store field options for: ${fieldData.label}`,
-          );
-        }
-
-        insertedOptionsResult = insertedOptions;
-      }
-
-      results.push({
-        ...field,
-        options: insertedOptionsResult,
-      });
-    }
-
-    return results;
-  });
-};
 
 const updateFormFieldsBatch = async (payload: UpdateBatchFormFieldInputType) => {
   const incomingFields = await updateBatchFormFieldsInput.parseAsync(payload);
@@ -192,4 +125,4 @@ const deleteFormField = async (formFieldId: string) => {
   return deletedFormField;
 };
 
-export { createFormFieldBatch, updateFormFieldsBatch, deleteFormField };
+export { updateFormFieldsBatch, deleteFormField };
