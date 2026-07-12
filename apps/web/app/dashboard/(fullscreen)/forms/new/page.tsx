@@ -1,53 +1,46 @@
 "use client";
 
-import * as React from "react";
+import { useState } from "react";
 import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { TopBar } from "@/components/dashboard/topbar";
 import { Stepper } from "@/components/dashboard/stepper";
 import { DetailsStep } from "@/components/dashboard/details-step";
 import { FieldsStep } from "@/components/dashboard/fields-step";
 import { ConfigureStep } from "@/components/dashboard/configure-step";
 import { PreviewStep } from "@/components/dashboard/preview-step";
-import { useCreateForm } from "@/hooks/form/use-forms";
+import { useCreateForm, useUpdateForm } from "@/hooks/form/use-forms";
 import { Field } from "@/types/form";
 import { ThemeKey } from "@/types/theme";
 import { serif, STEPS } from "@/constants/form";
 import { FieldModal } from "@/components/dashboard/field-model";
-import { arrayMove } from "@dnd-kit/sortable";
+import { useSyncFormFields } from "@/hooks/form/use-form-field";
+import { Nav } from "@/components/landing/navbar";
+import { ThankYouScreen } from "@/components/dashboard/thankyou-screen";
 
 type StepIdx = 0 | 1 | 2 | 3;
 
 let idCounter = 0;
-const nid = () => `f${++idCounter}`;
+const nid = () => `field${++idCounter}`;
 
 export default function FormEditPage() {
-  const [step, setStep] = React.useState<StepIdx>(0);
-  const [title, setTitle] = React.useState("");
-  const [description, setDescription] = React.useState("");
-  const [fields, setFields] = React.useState<Field[]>([
-    {
-      id: nid(),
-      type: "text",
-      label: "Name",
-      placeholder: "Your name",
-      required: true,
-      order: 0,
-      maxLength: undefined,
-      maxValue: undefined,
-      minValue: undefined,
-      options: [],
-    },
-  ]);
-  const [theme, setTheme] = React.useState<ThemeKey>("clean-zen");
-  const [visibility, setVisibility] = React.useState<"public" | "unlisted">("public");
-  const [responseLimit, setResponseLimit] = React.useState("");
-  const [expiry, setExpiry] = React.useState("");
-  const [modalOpen, setModalOpen] = React.useState(false);
-  const [editingId, setEditingId] = React.useState<string | null>(null);
-  const [copied, setCopied] = React.useState(false);
+  const [step, setStep] = useState<StepIdx>(0);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [fields, setFields] = useState<Field[]>([]);
+  const [theme, setTheme] = useState<ThemeKey>("clean-zen");
+  const [visibility, setVisibility] = useState<"public" | "unlisted" | "private">("public");
+  const [responseLimit, setResponseLimit] = useState("");
+  const [expiry, setExpiry] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [slug, setSlug] = useState("");
+  const [formId, setFormId] = useState("");
+  const [published, setPublished] = useState(false);
 
   const { submitForm, isLoading } = useCreateForm();
+  const { submitFormFieldData } = useSyncFormFields();
+  const { updateForm } = useUpdateForm();
 
   const openAdd = () => {
     setEditingId(null);
@@ -77,7 +70,9 @@ export default function FormEditPage() {
       return reindex(copy);
     });
 
-  const onReorder = (newFields: Field[]) => setFields(newFields);
+  const onReorder = (newFields: Field[]) => {
+    setFields(reindex(newFields));
+  };
 
   const upsertField = (data: Field) => {
     setFields((arr) => {
@@ -94,7 +89,7 @@ export default function FormEditPage() {
 
   const copyLink = async () => {
     try {
-      await navigator.clipboard.writeText(`https://`);
+      await navigator.clipboard.writeText(`https://kanso.prakashjangid.in/${slug}`);
       setCopied(true);
       setTimeout(() => setCopied(false), 1400);
     } catch {}
@@ -102,11 +97,24 @@ export default function FormEditPage() {
 
   const canNext = step === 0 ? title.trim().length > 0 : step === 1 ? fields.length > 0 : true;
 
-  const handleCreateForm = async () => {
-    setStep((s) => (s + 1) as StepIdx);
+  let formUrl = "";
 
+  const handleCreateForm = async () => {
     if (step === 1) {
+      const createdForm = await submitForm(title, description, fields);
+
+      setFormId(createdForm.id);
+      setSlug(createdForm.slug);
+      formUrl = `https://kanso.prakashjangid.in/${slug}`;
+      console.log("Result", createdForm);
     }
+
+    if (step === 3) {
+      const updatedForm = await updateForm(formId, title, description, theme, visibility);
+
+      console.log("Form updated successfully", updatedForm);
+    }
+    setStep((s) => (s + 1) as StepIdx);
   };
 
   return (
@@ -116,7 +124,7 @@ export default function FormEditPage() {
         <div className="absolute inset-0 bg-[radial-gradient(60%_40%_at_20%_0%,oklch(0.92_0.03_120/0.6),transparent_60%),radial-gradient(50%_35%_at_80%_10%,oklch(0.9_0.04_75/0.55),transparent_60%)]" />
       </div>
 
-      <TopBar />
+      <Nav />
 
       <main className="mx-auto w-full max-w-4xl px-4 pb-24 pt-24 sm:pt-28">
         <Stepper step={step} onGo={(s) => setStep(s)} />
@@ -152,6 +160,8 @@ export default function FormEditPage() {
             )}
             {step === 2 && (
               <ConfigureStep
+                slug={slug}
+                formUrl={formUrl}
                 theme={theme}
                 setTheme={setTheme}
                 visibility={visibility}
@@ -164,9 +174,11 @@ export default function FormEditPage() {
                 copied={copied}
               />
             )}
-            {step === 3 && (
+            {step === 3 && !published && (
               <PreviewStep title={title} description={description} fields={fields} theme={theme} />
             )}
+
+            {step === 3 && published && <ThankYouScreen formUrl={formUrl} title={title} />}
           </div>
 
           <div className="mt-12 flex items-center justify-between border-t border-border/60 pt-6">
@@ -198,7 +210,10 @@ export default function FormEditPage() {
                 )}
               </button>
             ) : (
-              <button className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.42_0.045_150/0.5)] hover:-translate-y-px transition-all">
+              <button
+                onClick={() => setPublished(true)}
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.42_0.045_150/0.5)] hover:-translate-y-px transition-all"
+              >
                 <Check className="h-4 w-4" /> Publish form
               </button>
             )}

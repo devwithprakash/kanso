@@ -7,8 +7,8 @@ export const THEMES: Record<ThemeKey, { name: string; swatch: string; bg: string
     bg: "bg-[oklch(0.97_0.012_120)]",
     accent: "text-[oklch(0.42_0.045_150)]",
   },
-  "cherry-blossum": {
-    name: "Cherry-Blossum",
+  "cherry-blossom": {
+    name: "Cherry-Blossom",
     swatch: "bg-[oklch(0.85_0.04_75)]",
     bg: "bg-[oklch(0.98_0.02_85)]",
     accent: "text-[oklch(0.45_0.06_60)]",

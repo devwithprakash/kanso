@@ -1,6 +1,9 @@
 import { trpc } from "@/trpc/client";
 
 import type { FormRecord, FormFieldData, FormFieldOptionData } from "@/types/form";
+import { ThemeKey } from "@/types/theme";
+
+type Visibility = "public" | "unlisted" | "private";
 
 export const useCreateForm = () => {
   const utils = trpc.useUtils();
@@ -60,7 +63,7 @@ export const useUpdateForm = () => {
   const utils = trpc.useUtils();
 
   const updateFormMutation = trpc.form.update.useMutation({
-    onSuccess: (data) => {
+    onSuccess: () => {
       utils.form.invalidate();
     },
 
@@ -69,8 +72,23 @@ export const useUpdateForm = () => {
     },
   });
 
+  const updateForm = async (
+    formId: string,
+    title: string,
+    description: string,
+    theme: ThemeKey,
+    visibility: Visibility,
+  ) => {
+    return await updateFormMutation.mutateAsync({
+      formId,
+      title,
+      description,
+      visibility,
+      theme,
+    });
+  };
   return {
-    updateFormMutation,
+    updateForm,
   };
 };
 

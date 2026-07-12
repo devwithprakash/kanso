@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const themeOptions = z.enum(["clean-zen", "cyber-sunset", "cherry-blossom", "forest-state"]);
+const themeOptions = z.enum(["clean-zen", "cyber-sunset", "cherry-blossom", "forest-slate"]);
 
 export const batchFormFieldOptionInput = z.object({
   label: z.string().min(1).max(100),
@@ -48,7 +48,6 @@ export const updateFormInput = z.object({
 export const deleteFormInput = z.object({
   formId: z.string().describe("id of the form"),
 });
-
 
 export const getSingleFormDetailsInput = z.object({
   formId: z.string().describe("id of the form"),

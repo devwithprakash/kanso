@@ -1,4 +1,5 @@
 import { trpc } from "@/trpc/client";
+import { FormFieldData } from "@/types/form";
 
 export const useSyncFormFields = () => {
   const utils = trpc.useUtils();
@@ -7,13 +8,17 @@ export const useSyncFormFields = () => {
     onSuccess: (data) => {
       utils.formField.invalidate();
     },
-    
+
     onError: (err) => {
       console.error("Failed to save form configuration:", err.message);
     },
   });
 
+  const submitFormFieldData = async (fieldsData: FormFieldData[]) => {
+    await syncFieldsMutation.mutateAsync(fieldsData);
+  };
+
   return {
-    syncFieldsMutation,
+    submitFormFieldData,
   };
 };

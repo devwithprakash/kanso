@@ -61,3 +61,13 @@ export const FIELD_META: Record<
     icon: Notebook,
   },
 };
+
+
+export const CONFETTI_COLORS = [
+  "oklch(0.75_0.15_50)",
+  "oklch(0.72_0.14_150)",
+  "oklch(0.72_0.14_230)",
+  "oklch(0.78_0.14_20)",
+  "oklch(0.8_0.14_95)",
+  "oklch(0.7_0.15_310)",
+];

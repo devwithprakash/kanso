@@ -1,6 +1,6 @@
 import { string, z } from "zod";
 
-const themeOptions = z.enum(["clean-zen", "cyber-sunset", "cherry-blossom", "forest-state"]);
+const themeOptions = z.enum(["clean-zen", "cyber-sunset", "cherry-blossom", "forest-slate"]);
 
 const batchFormFieldOptionInput = z.object({
   label: z.string().min(1).max(100),
@@ -31,6 +31,13 @@ const formFieldInput = z.object({
   options: z.array(batchFormFieldOptionInput).optional(),
 });
 
+const formFieldOutput = z.object({
+  id: z.string(),
+  type: z.string(),
+  label: z.string(),
+  options: z.array(batchFormFieldOptionInput).optional(),
+});
+
 // create form schema
 export const createFormInputModel = z.object({
   title: z.string().describe("title of the form"),
@@ -40,14 +47,8 @@ export const createFormInputModel = z.object({
 
 export const createFormOutputModel = z.object({
   id: z.string(),
-  title: z.string(),
-  description: z.string().nullable(),
-  theme: z.string(),
-  visibility: z.enum(["public", "private", "unlisted"]),
-  createdBy: z.string(),
   slug: z.string(),
-  createdAt: z.date(),
-  updatedAt: z.date().nullable(),
+  fieldData: z.array(formFieldOutput),
 });
 
 // update form schema
@@ -57,19 +58,18 @@ export const updateFormInputModel = z.object({
   description: z.string().optional(),
   theme: themeOptions,
   visibility: z.enum(["public", "private", "unlisted"]),
-  isPublished: z.boolean().optional(),
 });
 
 export const updateFormOutputModel = z.object({
   id: z.string(),
   title: z.string(),
-  description: z.string().nullable(),
-  theme: themeOptions,
-  visibility: z.enum(["public", "private", "unlisted"]),
-  createdBy: z.string(),
-  slug: z.string(),
-  createdAt: z.date(),
-  updatedAt: z.date().nullable(),
+  // description: z.string().nullable(),
+  // theme: themeOptions,
+  // visibility: z.enum(["public", "private", "unlisted"]),
+  // createdBy: z.string(),
+  // slug: z.string(),
+  // createdAt: z.date(),
+  // updatedAt: z.date().nullable(),
 });
 
 // delete from schema
@@ -171,7 +171,6 @@ export const getFormByIdOutputModel = z.object({
   updatedAt: z.date().nullable().optional(),
 });
 
-
 // get form by slug
 
 export const getFormBySlugInputModel = z.object({
@@ -208,4 +207,3 @@ export const getAllPublicFormOutputModel = z.array(
     updatedAt: z.date().nullable(),
   }),
 );
-

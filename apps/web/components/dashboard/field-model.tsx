@@ -4,6 +4,13 @@ import { X } from "lucide-react";
 import React from "react";
 import { Label } from "./label";
 import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const inputCls =
   "w-full rounded-xl border border-border bg-card/60 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/70 outline-none transition-all focus:border-primary/60 focus:bg-card focus:ring-4 focus:ring-primary/10";
@@ -30,7 +37,7 @@ export function FieldModal({
     if (!label.trim()) return;
 
     const f: Field = {
-      id: existing?.id ?? crypto.randomUUID(),
+      id: existing?.id ?? `field-${Date.now()}`,
       label: label.trim(),
       type,
       order: existing?.order ?? 0,
@@ -77,37 +84,27 @@ export function FieldModal({
         <div className="mt-5 space-y-4 max-h-[70vh] overflow-y-auto pr-1">
           <div>
             <Label>Field type</Label>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-              {(Object.keys(FIELD_META) as FieldType[]).map((k) => {
-                const M = FIELD_META[k];
-                const Icon = M.icon;
-                const active = type === k;
-                return (
-                  <button
-                    key={k}
-                    onClick={() => setType(k)}
-                    className={cn(
-                      "flex items-center gap-2 rounded-xl border px-3 py-2 text-left text-sm transition-all",
-                      active
-                        ? "border-primary bg-primary/5 text-foreground"
-                        : "border-border bg-card/60 text-muted-foreground hover:border-primary/40",
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        "grid h-6 w-6 place-items-center rounded-md",
-                        active
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted text-foreground/70",
-                      )}
-                    >
-                      <Icon className="h-3.5 w-3.5" />
-                    </span>
-                    <span className="truncate">{M.label}</span>
-                  </button>
-                );
-              })}
-            </div>
+
+            <Select value={type} onValueChange={(value) => setType(value as FieldType)}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select field type" />
+              </SelectTrigger>
+
+              <SelectContent>
+                {(Object.keys(FIELD_META) as FieldType[]).map((key) => {
+                  const Icon = FIELD_META[key].icon;
+
+                  return (
+                    <SelectItem key={key} value={key}>
+                      <div className="flex items-center gap-2">
+                        <Icon className="h-4 w-4" />
+                        <span>{FIELD_META[key].label}</span>
+                      </div>
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
           </div>
 
           <div>
@@ -133,20 +130,21 @@ export function FieldModal({
 
           <label className="flex items-center justify-between rounded-xl border border-border bg-card/60 px-4 py-3">
             <span className="text-sm text-foreground">Required field</span>
+
             <button
               type="button"
               role="switch"
               aria-checked={required}
-              onClick={() => setRequired((v) => !v)}
+              onClick={() => setRequired((prev) => !prev)}
               className={cn(
-                "relative h-6 w-11 rounded-full transition-colors",
+                "relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200",
                 required ? "bg-primary" : "bg-muted",
               )}
             >
               <span
                 className={cn(
-                  "absolute top-0.5 h-5 w-5 rounded-full bg-background shadow-sm transition-transform",
-                  required ? "translate-x-5" : "translate-x-0.5",
+                  "absolute left-0.5 h-5 w-5 rounded-full bg-background shadow transition-transform duration-200",
+                  required ? "translate-x-5" : "translate-x-0",
                 )}
               />
             </button>

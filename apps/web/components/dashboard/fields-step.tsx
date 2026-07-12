@@ -34,9 +34,9 @@ export function FieldsStep({
         ))}
       </Reorder.Group>
 
-      <button
+      <button 
         onClick={onAdd}
-        className="flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-transparent px-4 py-4 text-sm text-muted-foreground transition-all hover:border-primary/50 hover:bg-primary/5 hover:text-primary"
+        className="flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-primary/50 cursor-pointer bg-transparent px-4 py-4 text-sm text-muted-foreground transition-all hover:border-primary/50 hover:bg-primary/5 hover:text-primary"
       >
         <Plus className="h-4 w-4" /> Add field
       </button>

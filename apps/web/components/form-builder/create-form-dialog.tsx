@@ -89,7 +89,7 @@ export function CreateFormDialog({ onSubmit }: CreateFormDialogProps) {
               <SelectContent>
                 <SelectItem value="clean-zen">Clean Zen</SelectItem>
                 <SelectItem value="cyber-sunset">Cyber Sunset</SelectItem>
-                <SelectItem value="cherry-blossum">Cherry Blossum</SelectItem>
+                <SelectItem value="cherry-blossom">Cherry Blossum</SelectItem>
                 <SelectItem value="forest-slate">Forset Slate</SelectItem>
               </SelectContent>
             </Select>

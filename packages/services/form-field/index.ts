@@ -1,13 +1,8 @@
 import { formFieldsTable } from "@repo/database/models/form-field";
-import {
-  UpdateBatchFormFieldInputType,
-  updateBatchFormFieldsInput,
-} from "./model";
+import { UpdateBatchFormFieldInputType, updateBatchFormFieldsInput } from "./model";
 import db, { and, eq, notInArray } from "@repo/database";
 import { throwTRPCError } from "../../trpc/server/utils/trpc-error";
 import { fieldOptionsTable } from "@repo/database/models/field-options";
-
-
 
 const updateFormFieldsBatch = async (payload: UpdateBatchFormFieldInputType) => {
   const incomingFields = await updateBatchFormFieldsInput.parseAsync(payload);
@@ -31,6 +26,7 @@ const updateFormFieldsBatch = async (payload: UpdateBatchFormFieldInputType) => 
         .where(
           and(eq(formFieldsTable.formId, formId), notInArray(formFieldsTable.id, incomingDbIds)),
         );
+
     } else {
       // If the canvas was emptied, wipe all records tied to this form
       await tx.delete(formFieldsTable).where(eq(formFieldsTable.formId, formId));
@@ -58,6 +54,8 @@ const updateFormFieldsBatch = async (payload: UpdateBatchFormFieldInputType) => 
       if (isNewField) {
         const [inserted] = await tx.insert(formFieldsTable).values(fieldValues).returning();
         finalFieldRecord = inserted;
+
+        console.log(isNewField)
       } else {
         // Inside your API/TRPC handler
         const fieldId = fieldData.id;
@@ -66,7 +64,6 @@ const updateFormFieldsBatch = async (payload: UpdateBatchFormFieldInputType) => 
           throwTRPCError("BAD_REQUEST", "Field id is required");
         }
 
-      
         const targetId = fieldId;
 
         const [updated] = await tx

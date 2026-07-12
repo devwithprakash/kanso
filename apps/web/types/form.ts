@@ -64,3 +64,16 @@ export type FormFieldData = {
   maxValue?: number | null;
   options?: FormFieldOptionData[];
 };
+
+
+export interface FormConfigData {
+  id: string;
+  title: string;
+  description: string | null;
+  theme: string;
+  visibility: "public" | "unlisted" | "private";
+  slug: string;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string | null;
+}

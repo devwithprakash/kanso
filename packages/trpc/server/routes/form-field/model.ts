@@ -39,8 +39,6 @@ export const syncFormFieldItemInputModel = z.object({
 
   // nullable and options fields
   placeholder: z.string().max(100).nullable().optional(),
-  helperText: z.string().max(200).nullable().optional(),
-  minLength: z.number().int().min(0).nullable().optional(),
   maxLength: z.number().int().min(1).nullable().optional(),
   minValue: z.number().nullable().optional(),
   maxValue: z.number().nullable().optional(),
@@ -62,8 +60,6 @@ export const syncFormFieldItemOutputModel = z.object({
 
   // Database returns explicit nulls rather than undefined for empty rows
   placeholder: z.string().nullable(),
-  helperText: z.string().nullable(),
-  minLength: z.number().int().nullable(),
   maxLength: z.number().int().nullable(),
   minValue: z.number().nullable(),
   maxValue: z.number().nullable(),

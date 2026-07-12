@@ -3,7 +3,7 @@ import { usersTable } from "./user";
 import { relations } from "drizzle-orm";
 import { formFieldsTable } from "./form-field";
 
-export const formThemeEnum = pgEnum("form_theme", ["clean-zen", "cyber-sunset", "cherry-blossom", "forest-state"]);
+export const formThemeEnum = pgEnum("form_theme", ["clean-zen", "cyber-sunset", "cherry-blossom", "forest-slate"]);
 export const formVisibilityEnum = pgEnum("visibility", ["public", "unlisted", "private"]);
 
 export const formsTable = pgTable("forms", {

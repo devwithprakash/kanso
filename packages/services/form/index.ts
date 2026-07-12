@@ -69,7 +69,10 @@ const createForm = async (payload: CreateFormInputType, userId: string) => {
       description,
       createdBy: user.id,
     })
-    .returning();
+    .returning({
+      id: formsTable.id,
+      slug: formsTable.slug,
+    });
 
   const createdForm = form[0];
 
@@ -77,7 +80,7 @@ const createForm = async (payload: CreateFormInputType, userId: string) => {
     throw new Error("Failed to create form");
   }
 
-  return await db.transaction(async (tx) => {
+  return db.transaction(async (tx) => {
     const results = [];
 
     for (const fieldData of formFieldData) {
@@ -87,14 +90,18 @@ const createForm = async (payload: CreateFormInputType, userId: string) => {
           formId: createdForm.id,
           label: fieldData.label,
           type: fieldData.type,
-          placeholder: fieldData.placeholder,
           order: fieldData.order,
           required: fieldData.required,
+          placeholder: fieldData.placeholder,
           maxLength: fieldData.maxLength,
           minValue: fieldData.minValue,
           maxValue: fieldData.maxValue,
         })
-        .returning();
+        .returning({
+          id: formFieldsTable.id,
+          label: formFieldsTable.label,
+          type: formFieldsTable.type,
+        });
 
       const field = insertedFields[0];
 
@@ -102,15 +109,15 @@ const createForm = async (payload: CreateFormInputType, userId: string) => {
         throwTRPCError("INTERNAL_SERVER_ERROR", `Field creation failed for: ${fieldData.label}`);
       }
 
-      const optionsFieldTypes = ["select", "radio", "checkbox"];
+      const optionFieldTypes = ["select", "radio", "checkbox"];
 
-      let insertedOptionsResult: any[] = [];
+      let insertedOptionResult: any[] = [];
 
-      if (optionsFieldTypes.includes(fieldData.type) && fieldData.options?.length) {
+      if (optionFieldTypes.includes(field.type) && fieldData.options?.length) {
         const optionsToInsert = fieldData.options.map((opt) => ({
           label: opt.label,
-          value: opt.value,
           order: opt.order,
+          value: opt.value,
           fieldId: field.id,
         }));
 
@@ -126,16 +133,16 @@ const createForm = async (payload: CreateFormInputType, userId: string) => {
           );
         }
 
-        insertedOptionsResult = insertedOptions;
+        insertedOptionResult = insertedOptions;
       }
 
-      results.push({
-        ...field,
-        options: insertedOptionsResult,
-      });
+      results.push({ ...field, options: insertedOptionResult });
     }
 
-    return createdForm;
+    return {
+      ...createdForm,
+      fieldData: results,
+    };
   });
 };
 
@@ -159,7 +166,10 @@ const updateForm = async (payload: UpdateFormInputType, userId: string) => {
       updatedAt: new Date(),
     })
     .where(and(eq(formsTable.id, formId), eq(formsTable.createdBy, dbUser.id)))
-    .returning();
+    .returning({
+      id: formsTable.id,
+      title: formsTable.title,
+    });
 
   const updatedForm = result[0];
 
