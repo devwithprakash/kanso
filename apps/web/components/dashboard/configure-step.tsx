@@ -19,6 +19,8 @@ export function ConfigureStep(props: {
   onCopy: () => void;
   copied: boolean;
 }) {
+
+  const formUrl = `https://localhost:3000/forms/${props.slug}`
   return (
     <div className="space-y-10">
       <div>
@@ -90,7 +92,7 @@ export function ConfigureStep(props: {
         </h3>
         <div className="mt-4 flex items-stretch gap-2">
           <div className="flex-1 truncate rounded-xl border border-border bg-muted/40 px-4 py-2.5 text-sm text-foreground/80">
-            {props.formUrl}
+            {formUrl}
           </div>
           <button
             onClick={props.onCopy}

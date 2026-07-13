@@ -64,12 +64,6 @@ export default function DashboardPage() {
             Welcome back! Here&apos;s an overview of your forms.
           </p>
         </div>
-        <Link href="/dashboard/forms">
-          <Button className="rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 gap-2">
-            <Plus className="h-4 w-4" />
-            Create Form
-          </Button>
-        </Link>
       </div>
 
       {isLoading ? (

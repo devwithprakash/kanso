@@ -53,6 +53,7 @@ export default function FormEditPage() {
       setDescription(form.description);
       setTheme(form.theme);
       setVisibility(form.visibility);
+      setSlug(form.slug)
 
       if (form.formFields) {
         setFields(form.formFields as FormField[]);
@@ -124,7 +125,9 @@ export default function FormEditPage() {
 
       console.log(updatedForm);
     }
-    setStep((s) => (s + 1) as StepIdx);
+   if(step <= 3){
+     setStep((s) => (s + 1) as StepIdx);
+   }
   };
 
   if (isLoading) {

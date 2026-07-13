@@ -181,9 +181,9 @@ const updateForm = async (payload: UpdateFormInputType, userId: string) => {
   const optionFieldTypes = ["select", "radio", "checkbox"];
 
   return db.transaction(async (tx) => {
-    const incomingDbIds: string[] = formFieldData
+    const incomingDbIds = formFieldData
       .map((f) => f.id)
-      .filter((id): id is string => !!id.startsWith("field-"));
+      .filter((id): id is string => !!id && !id.startsWith("field-"));
 
     if (incomingDbIds.length > 0) {
       await tx
@@ -314,8 +314,6 @@ const getAllForms = async (userId: string) => {
 
 const getFormById = async (payload: GetSingleFormDetailsInputType, userId: string) => {
   const { formId } = await getSingleFormDetailsInput.parseAsync(payload);
-
-  console.log(formId);
 
   const dbUser = await db.select().from(usersTable).where(eq(usersTable.clerkUserId, userId));
 

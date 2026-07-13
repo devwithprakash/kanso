@@ -105,16 +105,19 @@ export default function NewFormPage() {
 
       setFormId(createdForm.id);
       setSlug(createdForm.slug);
+
       formUrl = `https://kanso.prakashjangid.in/${slug}`;
       console.log("Result", createdForm);
     }
 
     if (step === 3) {
-      const updatedForm = await updateForm(formId, title, description, theme, visibility);
+      const updatedForm = await updateForm(formId, title, description, theme, visibility, fields);
 
       console.log("Form updated successfully", updatedForm);
     }
-    setStep((s) => (s + 1) as StepIdx);
+    if (step <= 3) {
+      setStep((s) => (s + 1) as StepIdx);
+    }
   };
 
   return (
