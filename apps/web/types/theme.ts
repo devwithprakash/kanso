@@ -1,1 +1,1 @@
-export type ThemeKey = "clean-zen" | "cherry-blossom" | "cyber-sunset" | "forest-slate";
+export type ThemeKey = "clean-zen" | "cherry-blossom" | "cyber-sunset" | "ocean-mist" | "lavender-dream";

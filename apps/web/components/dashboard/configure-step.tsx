@@ -28,7 +28,7 @@ export function ConfigureStep(props: {
         <p className="mt-0.5 text-sm text-muted-foreground">
           Choose a calm visual palette for your form.
         </p>
-        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-5">
           {(Object.keys(THEMES) as ThemeKey[]).map((k) => {
             const t = THEMES[k];
             const active = props.theme === k;

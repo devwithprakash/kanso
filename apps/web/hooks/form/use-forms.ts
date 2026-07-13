@@ -78,6 +78,7 @@ export const useUpdateForm = () => {
     description: string,
     theme: ThemeKey,
     visibility: Visibility,
+    formFieldData: FormFieldData[],
   ) => {
     return await updateFormMutation.mutateAsync({
       formId,
@@ -85,6 +86,7 @@ export const useUpdateForm = () => {
       description,
       visibility,
       theme,
+      formFieldData,
     });
   };
   return {

@@ -126,8 +126,14 @@ export const themeOptions: ThemeOption[] = [
     swatch: ["#F5F5F0", "#D8D4C8", "#8A8578"],
   },
   {
-    id: "forest-state",
-    label: "Forest State",
+    id: "ocean-mist",
+    label: "Ocean Mist",
+    description: "Deep greens, earthy and grounded",
+    swatch: ["#A8D5A0", "#4F7942", "#2C4A2E"],
+  },
+  {
+    id: "lavender-dream",
+    label: "Lavender Dream",
     description: "Deep greens, earthy and grounded",
     swatch: ["#A8D5A0", "#4F7942", "#2C4A2E"],
   },

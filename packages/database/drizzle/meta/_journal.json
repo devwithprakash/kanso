@@ -15,6 +15,13 @@
       "when": 1783762829160,
       "tag": "0001_luxuriant_silver_fox",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1783922015111,
+      "tag": "0002_easy_kylun",
+      "breakpoints": true
     }
   ]
 }

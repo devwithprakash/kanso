@@ -22,7 +22,7 @@ type StepIdx = 0 | 1 | 2 | 3;
 let idCounter = 0;
 const nid = () => `field${++idCounter}`;
 
-export default function FormEditPage() {
+export default function NewFormPage() {
   const [step, setStep] = useState<StepIdx>(0);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");

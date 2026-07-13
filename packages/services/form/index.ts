@@ -1,4 +1,4 @@
-import db, { and, count, eq, like } from "@repo/database";
+import db, { and, count, eq, like, notInArray } from "@repo/database";
 import {
   createFormInput,
   CreateFormInputType,
@@ -16,6 +16,7 @@ import { throwTRPCError } from "../../trpc/server/utils/trpc-error";
 import { formsTable } from "@repo/database/models/form";
 import { usersTable } from "@repo/database/models/user";
 import { fieldOptionsTable, formFieldsTable, formResponsesTable } from "@repo/database/schema";
+import { id } from "zod/v4/locales";
 
 function generateSlug(title: string) {
   return title
@@ -147,7 +148,7 @@ const createForm = async (payload: CreateFormInputType, userId: string) => {
 };
 
 const updateForm = async (payload: UpdateFormInputType, userId: string) => {
-  const { formId, title, description, theme, visibility } =
+  const { formId, title, description, theme, visibility, formFieldData } =
     await updateFormInput.parseAsync(payload);
 
   const [dbUser] = await db.select().from(usersTable).where(eq(usersTable.clerkUserId, userId));
@@ -177,7 +178,91 @@ const updateForm = async (payload: UpdateFormInputType, userId: string) => {
     throwTRPCError("NOT_FOUND", "Form not found or you do not have permission to update it");
   }
 
-  return updatedForm;
+  const optionFieldTypes = ["select", "radio", "checkbox"];
+
+  return db.transaction(async (tx) => {
+    const incomingDbIds: string[] = formFieldData
+      .map((f) => f.id)
+      .filter((id): id is string => !!id.startsWith("field-"));
+
+    if (incomingDbIds.length > 0) {
+      await tx
+        .delete(formFieldsTable)
+        .where(
+          and(eq(formFieldsTable.formId, formId), notInArray(formFieldsTable.id, incomingDbIds)),
+        );
+    } else {
+      await tx.delete(formFieldsTable).where(eq(formFieldsTable.formId, formId));
+    }
+
+    const processedFields = [];
+
+    for (const fieldData of formFieldData) {
+      const isNewField = !fieldData.id || fieldData.id.startsWith("field-");
+      let finalFieldRecord;
+
+      const fieldValues = {
+        formId: formId,
+        label: fieldData.label,
+        type: fieldData.type,
+        required: fieldData.required ?? false,
+        order: fieldData.order,
+        placeholder: fieldData.placeholder ?? null,
+        maxLength: fieldData.maxLength ?? null,
+        minValue: fieldData.minValue ?? null,
+        maxValue: fieldData.maxValue ?? null,
+      };
+
+      if (isNewField) {
+        const [inserted] = await tx.insert(formFieldsTable).values(fieldValues).returning();
+        finalFieldRecord = inserted;
+      } else {
+        const fieldId = fieldData.id;
+
+        if (!fieldId) {
+          throwTRPCError("BAD_REQUEST", "Field id is required");
+        }
+
+        const targetId = fieldId;
+
+        const [updated] = await tx
+          .update(formFieldsTable)
+          .set(fieldValues)
+          .where(eq(formFieldsTable.id, targetId))
+          .returning();
+
+        finalFieldRecord = updated;
+      }
+
+      if (!finalFieldRecord) {
+        throwTRPCError("INTERNAL_SERVER_ERROR", `Failed to save field: ${fieldData.label}`);
+      }
+
+      await tx.delete(fieldOptionsTable).where(eq(fieldOptionsTable.fieldId, finalFieldRecord.id));
+
+      let synchronizedOptions: (typeof fieldOptionsTable.$inferSelect)[] = [];
+      if (optionFieldTypes.includes(finalFieldRecord.type) && fieldData.options?.length) {
+        synchronizedOptions = await tx
+          .insert(fieldOptionsTable)
+          .values(
+            fieldData.options.map((opt, index) => ({
+              fieldId: finalFieldRecord!.id,
+              label: opt.label,
+              value: opt.value,
+              order: opt.order ?? index,
+            })),
+          )
+          .returning();
+      }
+
+      processedFields.push({
+        ...finalFieldRecord,
+        options: synchronizedOptions,
+      });
+    }
+
+    return updatedForm;
+  });
 };
 
 const deleteForm = async (payload: DeleteFormInputType, userId: string) => {
@@ -229,6 +314,8 @@ const getAllForms = async (userId: string) => {
 
 const getFormById = async (payload: GetSingleFormDetailsInputType, userId: string) => {
   const { formId } = await getSingleFormDetailsInput.parseAsync(payload);
+
+  console.log(formId);
 
   const dbUser = await db.select().from(usersTable).where(eq(usersTable.clerkUserId, userId));
 

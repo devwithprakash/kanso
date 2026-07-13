@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { FormRecord } from "@/types/form";
 
 const inputCls =
   "w-full rounded-xl border border-border bg-card/60 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/70 outline-none transition-all focus:border-primary/60 focus:bg-card focus:ring-4 focus:ring-primary/10";

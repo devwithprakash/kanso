@@ -156,11 +156,11 @@ export default function FormsPage() {
                     <DropdownMenuContent align="end" className="w-48">
                       <DropdownMenuItem asChild>
                         <Link
-                          href={`/dashboard/forms/${form.id}/builder`}
+                          href={`/dashboard/forms/${form.id}/edit`}
                           className="flex items-center gap-2 cursor-pointer"
                         >
                           <FileText className="h-4 w-4 opacity-70" />
-                          Edit Form
+                          Edit
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
@@ -187,15 +187,6 @@ export default function FormsPage() {
                       >
                         <ExternalLink className="h-4 w-4 opacity-70" />
                         Copy Link
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link
-                          href={`/dashboard/forms/${form.id}/edit`}
-                          className="flex items-center gap-2 cursor-pointer"
-                        >
-                          <Settings className="h-4 w-4 opacity-70" />
-                          Settings
-                        </Link>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem

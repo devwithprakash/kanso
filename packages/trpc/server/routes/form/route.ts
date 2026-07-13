@@ -52,9 +52,12 @@ export const formRouter = router({
     .output(updateFormOutputModel)
     .mutation(async ({ input, ctx }) => {
       const { userId } = ctx;
-      const { formId, ...data } = input;
+      const { formId, title, description, theme, visibility, formFieldData } = input;
 
-      const result = await formService.updateForm({ formId, ...data }, userId);
+      const result = await formService.updateForm(
+        { formId, title, description, theme, visibility, formFieldData },
+        userId,
+      );
 
       return result;
     }),
@@ -109,6 +112,7 @@ export const formRouter = router({
     .input(getFormByIdInputModel)
     .output(getFormByIdOutputModel)
     .query(async ({ input, ctx }) => {
+      console.log("first");
       const { userId } = ctx;
       const { formId } = input;
 

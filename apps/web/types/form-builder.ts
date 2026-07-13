@@ -48,7 +48,8 @@ export type ThemeType =
   | "cherry-blossom"
   | "cyber-sunset"
   | "clean-zen"
-  | "forest-state";
+  | "ocean-mist"
+  | "lavender-dream";
 
 export interface ThemeOption {
   id: ThemeType;

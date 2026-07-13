@@ -36,8 +36,8 @@ export type Field = {
 export interface FormRecord {
   id: string;
   title: string;
-  description: string | null;
-  theme: "clean-zen" | "cyber-sunset" | "cherry-blossom" | "forest-state";
+  description: string;
+  theme: "clean-zen" | "cyber-sunset" | "cherry-blossom" | "ocean-mist" | "lavender-dream";
   visibility: "private" | "public" | "unlisted";
   slug: string;
   isPublished: boolean;
@@ -54,6 +54,7 @@ export type FormFieldOptionData = {
 };
 
 export type FormFieldData = {
+  id: string;
   label: string;
   type: FieldType;
   required: boolean;

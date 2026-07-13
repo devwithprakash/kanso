@@ -1,6 +1,12 @@
 import { string, z } from "zod";
 
-const themeOptions = z.enum(["clean-zen", "cyber-sunset", "cherry-blossom", "forest-slate"]);
+const themeOptions = z.enum([
+  "clean-zen",
+  "cyber-sunset",
+  "cherry-blossom",
+  "ocean-mist",
+  "lavender-dream",
+]);
 
 const batchFormFieldOptionInput = z.object({
   label: z.string().min(1).max(100),
@@ -9,6 +15,7 @@ const batchFormFieldOptionInput = z.object({
 });
 
 const formFieldInput = z.object({
+  id: z.string(),
   label: z.string().min(1).max(100),
   type: z.enum([
     "text",
@@ -58,6 +65,7 @@ export const updateFormInputModel = z.object({
   description: z.string().optional(),
   theme: themeOptions,
   visibility: z.enum(["public", "private", "unlisted"]),
+  formFieldData: z.array(formFieldInput),
 });
 
 export const updateFormOutputModel = z.object({
