@@ -43,7 +43,7 @@ export default function FormEditPage() {
   const formId = params.formId as string;
 
   const { form, isLoading } = useGetForm(formId);
-  const { updateForm } = useUpdateForm();
+  const { updateForm, isSubmitting } = useUpdateForm();
 
   console.log(form);
 
@@ -208,7 +208,7 @@ export default function FormEditPage() {
               onClick={() =>
                 step === 0 ? window.history.back() : setStep((s) => (s - 1) as StepIdx)
               }
-              className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-full px-4 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               <ArrowLeft className="h-4 w-4" /> Back
             </button>
@@ -217,13 +217,13 @@ export default function FormEditPage() {
                 disabled={!canNext || isLoading}
                 onClick={handleUpdateForm}
                 className={cn(
-                  "inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.42_0.045_150/0.5)] transition-all",
+                  "inline-flex items-center cursor-pointer gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.42_0.045_150/0.5)] transition-all",
                   "hover:shadow-[0_12px_32px_-8px_oklch(0.42_0.045_150/0.6)] hover:-translate-y-px",
-                  (!canNext || isLoading) &&
+                  (!canNext || isSubmitting) &&
                     "cursor-not-allowed opacity-50 hover:translate-y-0 hover:shadow-none",
                 )}
               >
-                {isLoading ? (
+                {isSubmitting ? (
                   "Saving..."
                 ) : (
                   <>
@@ -234,7 +234,7 @@ export default function FormEditPage() {
             ) : (
               <button
                 onClick={() => setPublished(true)}
-                className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.42_0.045_150/0.5)] hover:-translate-y-px transition-all"
+                className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.42_0.045_150/0.5)] hover:-translate-y-px transition-all"
               >
                 <Check className="h-4 w-4" /> Publish form
               </button>

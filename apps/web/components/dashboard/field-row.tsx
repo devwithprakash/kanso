@@ -73,13 +73,13 @@ export function FieldRow({
         </div>
         <button
           onClick={() => onEdit(field.id)}
-          className="rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+          className="rounded-full cursor-pointer p-2 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
         >
           <Pencil className="h-4 w-4" />
         </button>
         <button
           onClick={() => onRemove(field.id)}
-          className="rounded-full p-2 text-muted-foreground hover:bg-[oklch(0.95_0.03_25)] hover:text-[oklch(0.5_0.18_25)] transition-colors"
+          className="rounded-full cursor-pointer p-2 text-muted-foreground hover:bg-[oklch(0.95_0.03_25)] hover:text-[oklch(0.5_0.18_25)] transition-colors"
         >
           <Trash2 className="h-4 w-4" />
         </button>

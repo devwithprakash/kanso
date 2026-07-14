@@ -39,7 +39,7 @@ export function ConfigureStep(props: {
                 key={k}
                 onClick={() => props.setTheme(k)}
                 className={cn(
-                  "group flex flex-col items-center gap-2 rounded-2xl border p-3 transition-all",
+                  "group flex cursor-pointer flex-col items-center gap-2 rounded-2xl border p-3 transition-all",
                   active
                     ? "border-primary bg-primary/5 shadow-[0_0_0_4px_oklch(0.42_0.045_150/0.12)]"
                     : "border-border bg-card/60 hover:border-primary/40",
@@ -72,7 +72,7 @@ export function ConfigureStep(props: {
                 key={o.k}
                 onClick={() => props.setVisibility(o.k)}
                 className={cn(
-                  "rounded-2xl border p-4 text-left transition-all",
+                  "rounded-2xl cursor-pointer border p-4 text-left transition-all",
                   active
                     ? "border-primary bg-primary/5 shadow-[0_0_0_4px_oklch(0.42_0.045_150/0.12)]"
                     : "border-border bg-card/60 hover:border-primary/40",
@@ -96,7 +96,7 @@ export function ConfigureStep(props: {
           </div>
           <button
             onClick={props.onCopy}
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-border bg-card px-3 text-sm text-foreground hover:border-primary/50 hover:text-primary transition-colors"
+            className="inline-flex cursor-pointer shrink-0 items-center gap-1.5 rounded-xl border border-border bg-card px-3 text-sm text-foreground hover:border-primary/50 hover:text-primary transition-colors"
           >
             {props.copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
             {props.copied ? "Copied" : "Copy"}

@@ -181,7 +181,7 @@ export function FieldModal({
         <div className="mt-6 flex items-center justify-end gap-2">
           <button
             onClick={onClose}
-            className="rounded-full px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="rounded-full cursor-pointer px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             Cancel
           </button>
@@ -189,7 +189,7 @@ export function FieldModal({
             onClick={save}
             disabled={!label.trim()}
             className={cn(
-              "inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition-all",
+              "inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition-all",
               "shadow-[0_8px_24px_-8px_oklch(0.42_0.045_150/0.5)] hover:-translate-y-px",
               !label.trim() && "opacity-50 cursor-not-allowed hover:translate-y-0",
             )}

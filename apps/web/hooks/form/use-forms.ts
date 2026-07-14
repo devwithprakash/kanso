@@ -91,6 +91,7 @@ export const useUpdateForm = () => {
   };
   return {
     updateForm,
+    isSubmitting: updateFormMutation.isPending
   };
 };
 
