@@ -1,10 +1,43 @@
 // ─── Frontend API / Hook Data Types ──────────────────────────────────────────
+export type FieldValue = string | number | boolean | string[] | null;
 
 export interface FormFieldOption {
   label: string;
   value: string;
   order: number;
 }
+
+export interface FieldOption {
+  id: string;
+  fieldId: string;
+  value: string;
+  label: string;
+  order: number;
+}
+
+export interface FormField {
+  id: string;
+  formId: string;
+  label: string;
+  type:
+    | "text"
+    | "textarea"
+    | "email"
+    | "number"
+    | "phone"
+    | "select"
+    | "radio"
+    | "checkbox"
+    | "date"
+    | "file";
+  order: number;
+  required: boolean;
+  placeholder?: string | null;
+  helperText?: string | null;
+  fieldOptions: FieldOption[];
+}
+
+export type FormData = Record<string, FieldValue>;
 
 export type FieldType =
   | "text"
@@ -65,7 +98,6 @@ export type FormFieldData = {
   maxValue?: number | null;
   options?: FormFieldOptionData[];
 };
-
 
 export interface FormConfigData {
   id: string;

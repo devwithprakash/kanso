@@ -13,7 +13,6 @@ import {
   Trash2,
   ExternalLink,
   BarChart3,
-  Settings,
   Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -40,10 +39,12 @@ import { NoForms } from "@/components/dashboard/no-forms";
 export default function FormsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL
   const router = useRouter();
 
   const { data: forms, isLoading } = useGetAllForms();
   const { deleteMutation } = useDeleteForm();
+
 
   const filteredForms =
     forms?.filter((form) => {
@@ -64,7 +65,7 @@ export default function FormsPage() {
   };
 
   const handleCopyLink = async (slug: string) => {
-    const url = `${process.env.FRONTEND_URL}/${slug}`;
+    const url = `${FRONTEND_URL}/forms/${slug}`;
 
     await navigator.clipboard.writeText(url);
   };

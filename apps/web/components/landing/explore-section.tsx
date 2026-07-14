@@ -29,7 +29,7 @@ interface PublicFormType {
   createdAt: string;
   slug: string;
   updatedAt: string | null;
-  theme: "clean-zen" | "cyber-sunset" | "cherry-blossom" | "forest-state";
+  theme: "clean-zen" | "cyber-sunset" | "cherry-blossom" | "ocean-mist" | "lavender-dream";
   createdBy: string;
 }
 

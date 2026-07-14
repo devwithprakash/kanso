@@ -16,40 +16,7 @@ import {
 import { Loader2, Send } from "lucide-react";
 import { formThemes } from "@/components/themes";
 import type { ThemeKey } from "@/types/theme";
-
-type FieldValue = string | number | boolean | string[] | null;
-
-interface FieldOption {
-  id: string;
-  fieldId: string;
-  value: string;
-  label: string;
-  order: number;
-}
-
-interface FormField {
-  id: string;
-  formId: string;
-  label: string;
-  type:
-    | "text"
-    | "textarea"
-    | "email"
-    | "number"
-    | "phone"
-    | "select"
-    | "radio"
-    | "checkbox"
-    | "date"
-    | "file";
-  order: number;
-  required: boolean;
-  placeholder?: string | null;
-  helperText?: string | null;
-  fieldOptions: FieldOption[];
-}
-
-type FormData = Record<string, FieldValue>;
+import { FieldValue, FormData, FormField } from "@/types/form";
 
 export default function PublicFormPage() {
   const params = useParams();
@@ -66,7 +33,9 @@ export default function PublicFormPage() {
     error: formResponseError,
   } = useSubmitFormResponses();
 
-  const themeKey = (form?.theme && form.theme in formThemes ? form.theme : "minimal") as ThemeKey;
+  console.log(form);
+
+  const themeKey = (form?.theme && form.theme in formThemes ? form.theme : "clean-zen") as ThemeKey;
   const theme = formThemes[themeKey];
 
   const handleInputChange = (fieldId: string, value: FieldValue) => {
