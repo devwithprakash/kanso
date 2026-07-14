@@ -189,3 +189,103 @@
 html {
   scroll-behavior: smooth;
 }
+
+/* Cherry blossom: falls + drifts + rotates */
+@keyframes petal-fall {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110vh) translateX(40px) rotate(360deg);
+    opacity: 0;
+  }
+}
+.animate-petal-fall {
+  animation: petal-fall linear infinite;
+}
+
+/* Cyber sunset: glow pulse */
+@keyframes orb-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 0.85;
+  }
+}
+.animate-orb-pulse {
+  animation: orb-pulse ease-in-out infinite;
+}
+
+@keyframes scanline-drift {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 40px;
+  }
+}
+.animate-scanline-drift {
+  animation: scanline-drift 6s linear infinite;
+}
+
+/* Ocean mist: horizontal fog drift */
+@keyframes fog-drift {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(130vw);
+  }
+}
+@keyframes fog-drift-reverse {
+  0% {
+    transform: translateX(130vw);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+.animate-fog-drift {
+  animation: fog-drift linear infinite;
+}
+.animate-fog-drift-reverse {
+  animation: fog-drift-reverse linear infinite;
+}
+
+/* Lavender dream: sparkles float up + fade */
+@keyframes sparkle-float {
+  0% {
+    transform: translateY(0) scale(0.6);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-110vh) scale(1);
+    opacity: 0;
+  }
+}
+.animate-sparkle-float {
+  animation: sparkle-float linear infinite;
+}
+
+/* Global: honor accessibility setting for all effects at once */
+@media (prefers-reduced-motion: reduce) {
+  .animate-petal-fall,
+  .animate-orb-pulse,
+  .animate-scanline-drift,
+  .animate-fog-drift,
+  .animate-fog-drift-reverse,
+  .animate-sparkle-float {
+    animation: none !important;
+  }
+}

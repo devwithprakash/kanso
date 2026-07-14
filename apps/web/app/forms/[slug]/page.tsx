@@ -4,7 +4,11 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useSubmitFormResponses } from "@/hooks/response/use-response";
 import { useGetFormBySlug } from "@/hooks/form/use-forms";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
@@ -13,10 +17,45 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, Send } from "lucide-react";
-import { formThemes } from "@/components/themes";
-import type { ThemeKey } from "@/types/theme";
-import { FieldValue, FormData, FormField } from "@/types/form";
+import { AlertCircle, CheckCircle2, Loader2, Send } from "lucide-react";
+import { themeEffects } from "@/components/effects/registry";
+import { ThemeKey } from "@/types/theme";
+import { themeStyles } from "@/constants/theme";
+
+type FormTheme = "light" | "minimal" | "dark" | "gradient";
+type FieldValue = string | number | boolean | string[] | null;
+
+interface FieldOption {
+  id: string;
+  fieldId: string;
+  value: string;
+  label: string;
+  order: number;
+}
+
+interface FormField {
+  id: string;
+  formId: string;
+  label: string;
+  type:
+    | "text"
+    | "textarea"
+    | "email"
+    | "number"
+    | "phone"
+    | "select"
+    | "radio"
+    | "checkbox"
+    | "date"
+    | "file";
+  order: number;
+  required: boolean;
+  placeholder?: string | null;
+  helperText?: string | null;
+  fieldOptions: FieldOption[];
+}
+
+type FormData = Record<string, FieldValue>;
 
 export default function PublicFormPage() {
   const params = useParams();
@@ -33,10 +72,11 @@ export default function PublicFormPage() {
     error: formResponseError,
   } = useSubmitFormResponses();
 
-  console.log(form);
-
-  const themeKey = (form?.theme && form.theme in formThemes ? form.theme : "clean-zen") as ThemeKey;
-  const theme = formThemes[themeKey];
+  const themeKey = (
+    form?.theme && form.theme in themeStyles ? form.theme : "clean-zen"
+  ) as ThemeKey;
+  const EffectComponent = themeEffects[themeKey];
+  const t = themeStyles[themeKey];
 
   const handleInputChange = (fieldId: string, value: FieldValue) => {
     setFormData((prev) => ({ ...prev, [fieldId]: value }));
@@ -56,7 +96,6 @@ export default function PublicFormPage() {
     e.preventDefault();
     setValidationError(null);
     if (!form?.formFields) return;
-
     for (const field of form.formFields as FormField[]) {
       if (field.required) {
         const value = formData[field.id];
@@ -71,7 +110,6 @@ export default function PublicFormPage() {
         }
       }
     }
-
     try {
       const formattedAnswers = Object.entries(formData).map(([fieldId, value]) => ({
         fieldId,
@@ -90,47 +128,46 @@ export default function PublicFormPage() {
 
   if (isLoading) {
     return (
-      <theme.Page>
-        <div className="flex justify-center py-20">
-          <Loader2 className="animate-spin opacity-40 w-6 h-6" />
-        </div>
-      </theme.Page>
+      <div className={`${t.page} items-center`}>
+        <Loader2 className="animate-spin opacity-40 w-6 h-6" />
+      </div>
     );
   }
 
   if (error || !form || form.visibility === "private") {
     return (
-      <theme.Page>
-        <theme.BodyCard>
-          <div className="text-center py-6">
-            <p className="font-semibold mb-1">Form unavailable</p>
-            <p className="text-sm opacity-50">
+      <div className={t.page}>
+        <div className="w-full max-w-lg">
+          <div className={`${t.bodyCard} p-10 text-center`}>
+            <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
+              <AlertCircle className="w-5 h-5 text-slate-400" />
+            </div>
+            <p className="font-semibold text-slate-700 mb-1">Form unavailable</p>
+            <p className="text-sm text-slate-400">
               This form is either private or no longer accepting responses.
             </p>
           </div>
-        </theme.BodyCard>
-      </theme.Page>
+        </div>
+      </div>
     );
   }
 
   if (isSubmitted) {
     return (
-      <theme.Page>
-        <theme.BodyCard>
-          <div className="text-center py-6">
+      <div className={t.page}>
+        <div className="w-full max-w-lg">
+          <div className={`${t.bodyCard} p-12 text-center`}>
             <div className="w-16 h-16 rounded-full bg-current/5 flex items-center justify-center mx-auto mb-5">
-              <theme.SuccessIcon />
+              <CheckCircle2 className={`w-8 h-8 ${t.successIcon}`} />
             </div>
-            <p className={`text-xl font-bold mb-2 ${theme.successTitleClassName}`}>
-              Response recorded!
-            </p>
-            <p className={`text-sm ${theme.successSubtitleClassName}`}>
+            <p className={`text-xl font-bold mb-2 ${t.successTitle}`}>Response recorded!</p>
+            <p className={`text-sm ${t.successSubtitle}`}>
               Thank you for completing <span className="font-medium">{form.title}</span>. Your
               answers have been saved.
             </p>
           </div>
-        </theme.BodyCard>
-      </theme.Page>
+        </div>
+      </div>
     );
   }
 
@@ -138,42 +175,48 @@ export default function PublicFormPage() {
   const requiredCount = fields.filter((f) => f.required).length;
 
   return (
-    <theme.Page>
-      <div className="space-y-4">
-        <theme.HeaderCard>
-          <h1 className="text-2xl font-bold tracking-tight leading-tight mb-2">{form.title}</h1>
-          {form.description && (
-            <p className="text-sm leading-relaxed opacity-60">{form.description}</p>
-          )}
-          {requiredCount > 0 && (
-            <p className="mt-4 text-xs opacity-40">
-              Fields marked <span className="text-red-400 font-bold">*</span> are required
-            </p>
-          )}
-        </theme.HeaderCard>
+    <div className={t.page}>
+      {EffectComponent && <EffectComponent />}
+      <div className="w-full max-w-xl space-y-4">
+        <div className={t.headerCard}>
+          <div className="h-1 w-full bg-gradient-to-r from-slate-300 via-slate-400 to-slate-300 opacity-40" />
+          <div className="px-8 py-7">
+            <h1 className="text-2xl font-bold tracking-tight leading-tight mb-2">{form.title}</h1>
+            {form.description && (
+              <p className="text-sm leading-relaxed opacity-60">{form.description}</p>
+            )}
+            {requiredCount > 0 && (
+              <p className="mt-4 text-xs opacity-40">
+                Fields marked <span className="text-red-400 font-bold">*</span> are required
+              </p>
+            )}
+          </div>
+        </div>
 
         <form onSubmit={handleSubmit}>
-          <theme.BodyCard>
+          <div className={`${t.bodyCard} px-8 py-7`}>
             <div className="space-y-7">
               {fields.map((field, idx) => (
                 <div key={field.id}>
-                  {idx > 0 && <theme.Divider />}
+                  {idx > 0 && <hr className={`${t.divider} border-t mb-7`} />}
 
                   <div className="flex items-start gap-3">
-                    <theme.FieldNumber>{idx + 1}</theme.FieldNumber>
+                    <span className={`${t.fieldNumber} mt-0.5`}>{idx + 1}</span>
 
                     <div className="flex-1 space-y-2 min-w-0">
                       <div className="flex items-center gap-2">
-                        <Label>
-                          <theme.FieldLabel>{field.label}</theme.FieldLabel>
-                        </Label>
-                        {field.required ? <theme.RequiredMark /> : <theme.OptionalBadge />}
+                        <Label className={t.label}>{field.label}</Label>
+                        {field.required && (
+                          <span className="text-red-400 text-xs font-bold leading-none">*</span>
+                        )}
+                        {!field.required && <span className={t.badge}>optional</span>}
                       </div>
 
-                      {field.helperText && <theme.HelperText>{field.helperText}</theme.HelperText>}
+                      {field.helperText && <p className={t.helperText}>{field.helperText}</p>}
 
                       {field.type === "text" && (
-                        <theme.Input
+                        <Input
+                          className={t.input}
                           placeholder={field.placeholder ?? ""}
                           value={(formData[field.id] as string) ?? ""}
                           onChange={(e) => handleInputChange(field.id, e.target.value)}
@@ -181,8 +224,9 @@ export default function PublicFormPage() {
                       )}
 
                       {field.type === "email" && (
-                        <theme.Input
+                        <Input
                           type="email"
+                          className={t.input}
                           placeholder={field.placeholder ?? "you@example.com"}
                           value={(formData[field.id] as string) ?? ""}
                           onChange={(e) => handleInputChange(field.id, e.target.value)}
@@ -190,8 +234,9 @@ export default function PublicFormPage() {
                       )}
 
                       {field.type === "number" && (
-                        <theme.Input
+                        <Input
                           type="number"
+                          className={t.input}
                           placeholder={field.placeholder ?? ""}
                           value={(formData[field.id] as string) ?? ""}
                           onChange={(e) => handleInputChange(field.id, e.target.value)}
@@ -199,8 +244,9 @@ export default function PublicFormPage() {
                       )}
 
                       {field.type === "phone" && (
-                        <theme.Input
+                        <Input
                           type="tel"
+                          className={t.input}
                           placeholder={field.placeholder ?? "+1 (555) 000-0000"}
                           value={(formData[field.id] as string) ?? ""}
                           onChange={(e) => handleInputChange(field.id, e.target.value)}
@@ -208,15 +254,17 @@ export default function PublicFormPage() {
                       )}
 
                       {field.type === "date" && (
-                        <theme.Input
+                        <Input
                           type="date"
+                          className={t.input}
                           value={(formData[field.id] as string) ?? ""}
                           onChange={(e) => handleInputChange(field.id, e.target.value)}
                         />
                       )}
 
                       {field.type === "textarea" && (
-                        <theme.Textarea
+                        <Textarea
+                          className={`${t.input} h-auto min-h-[100px] py-2.5 resize-none`}
                           placeholder={field.placeholder ?? ""}
                           value={(formData[field.id] as string) ?? ""}
                           onChange={(e) => handleInputChange(field.id, e.target.value)}
@@ -228,7 +276,7 @@ export default function PublicFormPage() {
                           value={(formData[field.id] as string) ?? ""}
                           onValueChange={(val) => handleInputChange(field.id, val)}
                         >
-                          <SelectTrigger className={theme.selectTriggerClassName}>
+                          <SelectTrigger className={t.input}>
                             <SelectValue placeholder="Choose an option…" />
                           </SelectTrigger>
                           <SelectContent>
@@ -243,24 +291,32 @@ export default function PublicFormPage() {
 
                       {field.type === "radio" && (
                         <div className="space-y-2 pt-1">
-                          {field.fieldOptions.map((opt) => {
-                            const selected = (formData[field.id] as string) === opt.value;
-                            return (
-                              <label
-                                key={opt.id}
-                                className="flex items-center gap-3 cursor-pointer group"
+                          {field.fieldOptions.map((opt) => (
+                            <label
+                              key={opt.id}
+                              className="flex items-center gap-3 cursor-pointer group"
+                            >
+                              <span
+                                className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all
+                                  ${
+                                    (formData[field.id] as string) === opt.value
+                                      ? "border-current"
+                                      : "border-current/20 group-hover:border-current/50"
+                                  }`}
                               >
-                                <theme.RadioDot selected={selected} />
-                                <input
-                                  type="radio"
-                                  className="sr-only"
-                                  checked={selected}
-                                  onChange={() => handleInputChange(field.id, opt.value)}
-                                />
-                                <span className="text-sm">{opt.label}</span>
-                              </label>
-                            );
-                          })}
+                                {(formData[field.id] as string) === opt.value && (
+                                  <span className="w-2 h-2 rounded-full bg-current" />
+                                )}
+                              </span>
+                              <input
+                                type="radio"
+                                className="sr-only"
+                                checked={(formData[field.id] as string) === opt.value}
+                                onChange={() => handleInputChange(field.id, opt.value)}
+                              />
+                              <span className="text-sm">{opt.label}</span>
+                            </label>
+                          ))}
                         </div>
                       )}
 
@@ -288,16 +344,17 @@ export default function PublicFormPage() {
             </div>
 
             {validationError && (
-              <div className="mt-6">
-                <theme.ErrorBox>{validationError}</theme.ErrorBox>
+              <div className={`${t.errorBox} mt-6`}>
+                <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                <span>{validationError}</span>
               </div>
             )}
 
             <div className="mt-8 pt-6 border-t border-current/5">
-              <theme.SubmitButton
+              <Button
                 type="submit"
+                className={`${t.btn} flex items-center justify-center gap-2`}
                 disabled={isSubmitting}
-                className="flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>
@@ -310,13 +367,13 @@ export default function PublicFormPage() {
                     Submit
                   </>
                 )}
-              </theme.SubmitButton>
+              </Button>
             </div>
-          </theme.BodyCard>
+          </div>
         </form>
 
-        <p className="text-center text-[11px] opacity-30 pb-4">Powered by Kanso</p>
+        <p className="text-center text-[11px] opacity-30 pb-4">Powered by FormZen</p>
       </div>
-    </theme.Page>
+    </div>
   );
 }
