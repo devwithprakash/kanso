@@ -16,6 +16,7 @@ import { FieldModal } from "@/components/dashboard/field-model";
 import { useSyncFormFields } from "@/hooks/form/use-form-field";
 import { Nav } from "@/components/landing/navbar";
 import { ThankYouScreen } from "@/components/dashboard/thankyou-screen";
+import { AnimatePresence, motion } from "framer-motion";
 
 type StepIdx = 0 | 1 | 2 | 3;
 
@@ -143,45 +144,63 @@ export default function NewFormPage() {
           </div>
 
           <div className="mx-auto mt-8 sm:mt-10 max-w-2xl">
-            {step === 0 && (
-              <DetailsStep
-                title={title}
-                setTitle={setTitle}
-                description={description}
-                setDescription={setDescription}
-              />
-            )}
-            {step === 1 && (
-              <FieldsStep
-                fields={fields}
-                onAdd={openAdd}
-                onEdit={openEdit}
-                onRemove={remove}
-                onMove={move}
-                onReorder={onReorder}
-              />
-            )}
-            {step === 2 && (
-              <ConfigureStep
-                slug={slug}
-                formUrl={formUrl}
-                theme={theme}
-                setTheme={setTheme}
-                visibility={visibility}
-                setVisibility={setVisibility}
-                responseLimit={responseLimit}
-                setResponseLimit={setResponseLimit}
-                expiry={expiry}
-                setExpiry={setExpiry}
-                onCopy={copyLink}
-                copied={copied}
-              />
-            )}
-            {step === 3 && !published && (
-              <PreviewStep title={title} description={description} fields={fields} theme={theme} />
-            )}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`${step}-${published}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2, ease: "easeInOut" }}
+              >
+                {step === 0 && (
+                  <DetailsStep
+                    title={title}
+                    setTitle={setTitle}
+                    description={description}
+                    setDescription={setDescription}
+                  />
+                )}
 
-            {step === 3 && published && <ThankYouScreen formUrl={formUrl} title={title} />}
+                {step === 1 && (
+                  <FieldsStep
+                    fields={fields}
+                    onAdd={openAdd}
+                    onEdit={openEdit}
+                    onRemove={remove}
+                    onMove={move}
+                    onReorder={onReorder}
+                  />
+                )}
+
+                {step === 2 && (
+                  <ConfigureStep
+                    slug={slug}
+                    formUrl={formUrl}
+                    theme={theme}
+                    setTheme={setTheme}
+                    visibility={visibility}
+                    setVisibility={setVisibility}
+                    responseLimit={responseLimit}
+                    setResponseLimit={setResponseLimit}
+                    expiry={expiry}
+                    setExpiry={setExpiry}
+                    onCopy={copyLink}
+                    copied={copied}
+                  />
+                )}
+
+                {step === 3 && !published && (
+                  <PreviewStep
+                    title={title}
+                    description={description}
+                    fields={fields}
+                    theme={theme}
+                  />
+                )}
+
+                {step === 3 && published && <ThankYouScreen formUrl={formUrl} title={title} />}
+              </motion.div>
+            </AnimatePresence>
           </div>
 
           <div className="mt-12 flex items-center justify-between border-t border-border/60 pt-6">
@@ -208,7 +227,9 @@ export default function NewFormPage() {
                   "Saving..."
                 ) : (
                   <>
-                    Next <ArrowRight className="h-4 w-4" />
+                    <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                      Next <ArrowRight className="h-4 w-4" />
+                    </motion.button>
                   </>
                 )}
               </button>

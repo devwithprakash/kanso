@@ -112,7 +112,6 @@ export const formRouter = router({
     .input(getFormByIdInputModel)
     .output(getFormByIdOutputModel)
     .query(async ({ input, ctx }) => {
-      console.log("first");
       const { userId } = ctx;
       const { formId } = input;
 

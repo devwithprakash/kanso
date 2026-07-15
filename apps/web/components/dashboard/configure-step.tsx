@@ -2,12 +2,13 @@ import { cn } from "@/lib/utils";
 import { Check, Copy } from "lucide-react";
 import { ThemeKey } from "@/types/theme";
 import { THEMES } from "@/constants/theme";
-
-const serif = { fontFamily: "'Fraunces', Georgia, serif" } as const;
+import { motion } from "framer-motion";
+import { container, item } from "@/constants/form-builder";
+import { serif } from "@/constants/form";
 
 export function ConfigureStep(props: {
   slug: string;
-  formUrl: string
+  formUrl: string;
   theme: ThemeKey;
   setTheme: (t: ThemeKey) => void;
   visibility: "public" | "unlisted" | "private";
@@ -19,11 +20,10 @@ export function ConfigureStep(props: {
   onCopy: () => void;
   copied: boolean;
 }) {
-
-  const formUrl = `https://localhost:3000/forms/${props.slug}`
+  const formUrl = `https://localhost:3000/forms/${props.slug}`;
   return (
-    <div className="space-y-10">
-      <div>
+    <motion.div variants={container} initial="hidden" animate="show" className="space-y-10">
+      <motion.div variants={item}>
         <h3 className="text-lg font-medium text-foreground" style={serif}>
           Theme
         </h3>
@@ -39,12 +39,18 @@ export function ConfigureStep(props: {
                 key={k}
                 onClick={() => props.setTheme(k)}
                 className={cn(
-                  "group flex cursor-pointer flex-col items-center gap-2 rounded-2xl border p-3 transition-all",
+                  "group relative flex cursor-pointer flex-col items-center gap-2 rounded-2xl border p-3",
                   active
-                    ? "border-primary bg-primary/5 shadow-[0_0_0_4px_oklch(0.42_0.045_150/0.12)]"
+                    ? "border-primary bg-primary/5"
                     : "border-border bg-card/60 hover:border-primary/40",
                 )}
+                style={{ transition: "border-color 150ms ease, background-color 150ms ease" }}
               >
+                {active && (
+                  <div
+                    className="pointer-events-none absolute inset-0 rounded-2xl ring-2 ring-primary/20"
+                  />
+                )}
                 <div className={cn("h-14 w-full rounded-xl", t.bg, "grid place-items-center")}>
                   <div className={cn("h-2 w-8 rounded-full", t.swatch)} />
                 </div>
@@ -53,9 +59,9 @@ export function ConfigureStep(props: {
             );
           })}
         </div>
-      </div>
+      </motion.div>
 
-      <div className="border-t border-border/60 pt-8">
+      <motion.div variants={item} className="border-t border-border/60 pt-8">
         <h3 className="text-lg font-medium text-foreground" style={serif}>
           Visibility
         </h3>
@@ -72,25 +78,31 @@ export function ConfigureStep(props: {
                 key={o.k}
                 onClick={() => props.setVisibility(o.k)}
                 className={cn(
-                  "rounded-2xl cursor-pointer border p-4 text-left transition-all",
+                  "group relative cursor-pointer rounded-2xl border p-4 text-left",
                   active
-                    ? "border-primary bg-primary/5 shadow-[0_0_0_4px_oklch(0.42_0.045_150/0.12)]"
+                    ? "border-primary bg-primary/5"
                     : "border-border bg-card/60 hover:border-primary/40",
                 )}
+                style={{ transition: "border-color 150ms ease, background-color 150ms ease" }}
               >
+                {active && (
+                  <div
+                    className="pointer-events-none absolute inset-0 rounded-2xl ring-2 ring-primary/20"
+                  />
+                )}
                 <div className="text-sm font-medium text-foreground">{o.label}</div>
                 <div className="mt-0.5 text-xs text-muted-foreground">{o.desc}</div>
               </button>
             );
           })}
         </div>
-      </div>
+      </motion.div>
 
-      <div className="border-t border-border/60 pt-8">
+      <motion.div variants={item} className="border-t border-border/60 pt-8">
         <h3 className="text-lg font-medium text-foreground" style={serif}>
           Share
         </h3>
-        <div className="mt-4 flex items-stretch gap-2">
+        <motion.div variants={item} className="mt-4 flex items-stretch gap-2">
           <div className="flex-1 truncate rounded-xl border border-border bg-muted/40 px-4 py-2.5 text-sm text-foreground/80">
             {formUrl}
           </div>
@@ -101,8 +113,8 @@ export function ConfigureStep(props: {
             {props.copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
             {props.copied ? "Copied" : "Copy"}
           </button>
-        </div>
-      </div>
-    </div>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 }

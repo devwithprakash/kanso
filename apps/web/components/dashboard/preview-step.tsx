@@ -42,7 +42,7 @@ export function PreviewStep({
                   placeholder={f.placeholder}
                 />
               ) : f.type === "select" ? (
-                <select className={t.input}>
+                <select className={cn("px-4", t.input)}>
                   <option value="">{f.placeholder || "Select…"}</option>
                   {(f.options ?? []).map((o) => (
                     <option key={o.order} value={o.value}>
@@ -63,7 +63,12 @@ export function PreviewStep({
           {fields.length === 0 && (
             <div className="text-sm opacity-50">Add a field to see a preview.</div>
           )}
-          <button className={cn("mt-2 inline-flex justify-center cursor-pointer items-center gap-2", t.btn)}>
+          <button
+            className={cn(
+              "mt-2 inline-flex justify-center cursor-pointer items-center gap-2",
+              t.btn,
+            )}
+          >
             Submit
           </button>
         </div>

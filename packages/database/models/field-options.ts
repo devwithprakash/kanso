@@ -1,4 +1,4 @@
-import { integer, pgTable, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import { integer, pgTable, uuid, varchar } from "drizzle-orm/pg-core";
 import { formFieldsTable } from "./form-field";
 import { relations } from "drizzle-orm";
 
