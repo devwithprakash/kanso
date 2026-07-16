@@ -20,23 +20,6 @@ export type BackendFieldType =
 
 export type VisibilityType = "public" | "unlisted" | "private";
 
-export interface FormField {
-  id: string;
-  formId: string;
-  label: string;
-  type: BackendFieldType;
-  order: number;
-  required: boolean;
-  placeholder?: string;
-  helperText?: string;
-  minLength?: number;
-  maxLength?: number;
-  minValue?: number;
-  maxValue?: number;
-  options?: FormFieldOption[];
-  /** Backend alias for options returned from DB */
-  fieldOptions?: FormFieldOption[];
-}
 
 export interface VisibilityOption {
   id: VisibilityType;

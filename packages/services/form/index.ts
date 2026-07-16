@@ -73,6 +73,8 @@ const createForm = async (payload: CreateFormInputType, userId: string) => {
     .returning({
       id: formsTable.id,
       slug: formsTable.slug,
+      theme: formsTable.theme,
+      visibility: formsTable.visibility,
     });
 
   const createdForm = form[0];
@@ -151,6 +153,8 @@ const updateForm = async (payload: UpdateFormInputType, userId: string) => {
   const { formId, title, description, theme, visibility, formFieldData } =
     await updateFormInput.parseAsync(payload);
 
+  console.log("Form field data aa gya ji", formFieldData);
+
   const [dbUser] = await db.select().from(usersTable).where(eq(usersTable.clerkUserId, userId));
 
   if (!dbUser) {
@@ -184,6 +188,8 @@ const updateForm = async (payload: UpdateFormInputType, userId: string) => {
     const incomingDbIds = formFieldData
       .map((f) => f.id)
       .filter((id): id is string => !!id && !id.startsWith("field-"));
+
+    console.log("New fields ", incomingDbIds);
 
     if (incomingDbIds.length > 0) {
       await tx
@@ -236,6 +242,12 @@ const updateForm = async (payload: UpdateFormInputType, userId: string) => {
 
       if (!finalFieldRecord) {
         throwTRPCError("INTERNAL_SERVER_ERROR", `Failed to save field: ${fieldData.label}`);
+      }
+
+      const optionFieldTypes = ["select", "radio", "checkbox"];
+
+      if (optionFieldTypes.includes(fieldData.type)) {
+        const newFieldOptions = fieldData.options?.map((o) => {});
       }
 
       await tx.delete(fieldOptionsTable).where(eq(fieldOptionsTable.fieldId, finalFieldRecord.id));

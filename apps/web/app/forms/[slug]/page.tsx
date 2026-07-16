@@ -21,6 +21,8 @@ import { AlertCircle, CheckCircle2, Loader2, Send } from "lucide-react";
 import { themeEffects } from "@/components/effects/registry";
 import { ThemeKey } from "@/types/theme";
 import { themeStyles } from "@/constants/theme";
+import { buildFormSchema } from "@/lib/form-response-validation";
+import { cn } from "@/lib/utils";
 
 type FormTheme = "light" | "minimal" | "dark" | "gradient";
 type FieldValue = string | number | boolean | string[] | null;
@@ -58,12 +60,13 @@ interface FormField {
 type FormData = Record<string, FieldValue>;
 
 export default function PublicFormPage() {
-  const params = useParams();
-  const slug = params.slug as string;
-
   const [formData, setFormData] = useState<FormData>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const params = useParams();
+  const slug = params.slug as string;
 
   const { data: form, isLoading, error } = useGetFormBySlug(slug);
   const {
@@ -78,43 +81,82 @@ export default function PublicFormPage() {
   const EffectComponent = themeEffects[themeKey];
   const t = themeStyles[themeKey];
 
-  const handleInputChange = (fieldId: string, value: FieldValue) => {
-    setFormData((prev) => ({ ...prev, [fieldId]: value }));
-    if (validationError) setValidationError(null);
+  const handleInputChange = (id: string, value: FieldValue) => {
+    setFormData((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+
+    setErrors((prev) => {
+      if (!prev[id]) return prev;
+
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
   };
 
   const handleCheckboxChange = (fieldId: string, optionValue: string, checked: boolean) => {
     const currentValues = (formData[fieldId] as string[] | undefined) ?? [];
+
     const updatedValues = checked
       ? [...currentValues, optionValue]
       : currentValues.filter((v) => v !== optionValue);
-    setFormData((prev) => ({ ...prev, [fieldId]: updatedValues }));
-    if (validationError) setValidationError(null);
+
+    setFormData((prev) => ({
+      ...prev,
+      [fieldId]: updatedValues,
+    }));
+
+    setErrors((prev) => {
+      if (!prev[fieldId]) return prev;
+
+      const next = { ...prev };
+      delete next[fieldId];
+      return next;
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setValidationError(null);
     if (!form?.formFields) return;
-    for (const field of form.formFields as FormField[]) {
-      if (field.required) {
-        const value = formData[field.id];
-        const isEmpty =
-          value === undefined ||
-          value === null ||
-          value === "" ||
-          (Array.isArray(value) && value.length === 0);
-        if (isEmpty) {
-          setValidationError(`Please complete the required field: "${field.label}"`);
-          return;
+
+    if (submitResponsesMutation.isPending) return;
+
+    const schema = buildFormSchema(form.formFields as FormField[]);
+    const result = schema.safeParse(formData);
+
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+
+      for (const issue of result.error.issues) {
+        const fieldId = issue.path[0];
+
+        if (typeof fieldId === "string") {
+          fieldErrors[fieldId] = issue.message;
         }
       }
+
+      setErrors(fieldErrors);
+      return;
     }
+
+    setErrors({});
+
     try {
-      const formattedAnswers = Object.entries(formData).map(([fieldId, value]) => ({
-        fieldId,
-        value: Array.isArray(value) ? JSON.stringify(value) : String(value),
-      }));
+      // Use result.data (trimmed strings, coerced numbers, etc.) — not the raw
+      // formData — so what's submitted matches what was actually validated.
+      const formattedAnswers = Object.entries(result.data).map(([fieldId, value]) => {
+        if (value === undefined || value === null) {
+          return { fieldId, value: "" };
+        }
+        return {
+          fieldId,
+          value: Array.isArray(value) ? JSON.stringify(value) : String(value),
+        };
+      });
+
       await submitResponsesMutation.mutateAsync({
         formId: form.id,
         answer: formattedAnswers,
@@ -216,7 +258,10 @@ export default function PublicFormPage() {
 
                       {field.type === "text" && (
                         <Input
-                          className={t.input}
+                          className={cn(
+                            t.input,
+                            errors[field.id] && "border-red-500 focus-visible:ring-red-500",
+                          )}
                           placeholder={field.placeholder ?? ""}
                           value={(formData[field.id] as string) ?? ""}
                           onChange={(e) => handleInputChange(field.id, e.target.value)}
@@ -226,7 +271,10 @@ export default function PublicFormPage() {
                       {field.type === "email" && (
                         <Input
                           type="email"
-                          className={t.input}
+                          className={cn(
+                            t.input,
+                            errors[field.id] && "border-red-500 focus-visible:ring-red-500",
+                          )}
                           placeholder={field.placeholder ?? "you@example.com"}
                           value={(formData[field.id] as string) ?? ""}
                           onChange={(e) => handleInputChange(field.id, e.target.value)}
@@ -236,7 +284,10 @@ export default function PublicFormPage() {
                       {field.type === "number" && (
                         <Input
                           type="number"
-                          className={t.input}
+                          className={cn(
+                            t.input,
+                            errors[field.id] && "border-red-500 focus-visible:ring-red-500",
+                          )}
                           placeholder={field.placeholder ?? ""}
                           value={(formData[field.id] as string) ?? ""}
                           onChange={(e) => handleInputChange(field.id, e.target.value)}
@@ -246,7 +297,10 @@ export default function PublicFormPage() {
                       {field.type === "phone" && (
                         <Input
                           type="tel"
-                          className={t.input}
+                          className={cn(
+                            t.input,
+                            errors[field.id] && "border-red-500 focus-visible:ring-red-500",
+                          )}
                           placeholder={field.placeholder ?? "+1 (555) 000-0000"}
                           value={(formData[field.id] as string) ?? ""}
                           onChange={(e) => handleInputChange(field.id, e.target.value)}
@@ -256,7 +310,10 @@ export default function PublicFormPage() {
                       {field.type === "date" && (
                         <Input
                           type="date"
-                          className={t.input}
+                          className={cn(
+                            t.input,
+                            errors[field.id] && "border-red-500 focus-visible:ring-red-500",
+                          )}
                           value={(formData[field.id] as string) ?? ""}
                           onChange={(e) => handleInputChange(field.id, e.target.value)}
                         />
@@ -264,7 +321,11 @@ export default function PublicFormPage() {
 
                       {field.type === "textarea" && (
                         <Textarea
-                          className={`${t.input} h-auto min-h-[100px] py-2.5 resize-none`}
+                          className={cn(
+                            t.input,
+                            "h-auto min-h-[100px] py-2.5 resize-none",
+                            errors[field.id] && "border-red-500 focus-visible:ring-red-500",
+                          )}
                           placeholder={field.placeholder ?? ""}
                           value={(formData[field.id] as string) ?? ""}
                           onChange={(e) => handleInputChange(field.id, e.target.value)}
@@ -276,7 +337,12 @@ export default function PublicFormPage() {
                           value={(formData[field.id] as string) ?? ""}
                           onValueChange={(val) => handleInputChange(field.id, val)}
                         >
-                          <SelectTrigger className={t.input}>
+                          <SelectTrigger
+                            className={cn(
+                              t.input,
+                              errors[field.id] && "border-red-500 focus-visible:ring-red-500",
+                            )}
+                          >
                             <SelectValue placeholder="Choose an option…" />
                           </SelectTrigger>
                           <SelectContent>
@@ -336,6 +402,11 @@ export default function PublicFormPage() {
                             </label>
                           ))}
                         </div>
+                      )}
+
+  
+                      {errors[field.id] && (
+                        <p className="mt-1 text-sm text-red-500">{errors[field.id]}</p>
                       )}
                     </div>
                   </div>

@@ -101,11 +101,14 @@ export default function NewFormPage() {
   let formUrl = "";
 
   const handleCreateForm = async () => {
+    console.log(visibility);
     if (step === 1) {
       const createdForm = await submitForm(title, description, fields);
 
       setFormId(createdForm.id);
       setSlug(createdForm.slug);
+      setTheme(createdForm.theme);
+      setVisibility(createdForm.visibility);
 
       formUrl = `https://kanso.prakashjangid.in/${slug}`;
       console.log("Result", createdForm);
@@ -217,7 +220,7 @@ export default function NewFormPage() {
                 disabled={!canNext || isLoading}
                 onClick={handleCreateForm}
                 className={cn(
-                  "inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.42_0.045_150/0.5)] transition-all",
+                  "inline-flex cursor-pointer items-center justify-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.42_0.045_150/0.5)] transition-all",
                   "hover:shadow-[0_12px_32px_-8px_oklch(0.42_0.045_150/0.6)] hover:-translate-y-px",
                   (!canNext || isLoading) &&
                     "cursor-not-allowed opacity-50 hover:translate-y-0 hover:shadow-none",
@@ -227,9 +230,14 @@ export default function NewFormPage() {
                   "Saving..."
                 ) : (
                   <>
-                    <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                      Next <ArrowRight className="h-4 w-4" />
-                    </motion.button>
+                    <span>Next</span>
+                    <motion.span
+                      whileHover={{ x: 2 }}
+                      transition={{ duration: 0.2 }}
+                      className="flex items-center"
+                    >
+                      <ArrowRight className="h-4 w-4" />
+                    </motion.span>
                   </>
                 )}
               </button>

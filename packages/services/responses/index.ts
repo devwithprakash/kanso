@@ -13,6 +13,8 @@ type ResponseAnswer = InferSelectModel<typeof responseAnswersTable>;
 const createResponse = async (payload: SubmitResponseInputType) => {
   const { formId, ipAddress, answer } = await submitResponseInput.parseAsync(payload);
 
+  console.log(answer)
+
   const [existingResponse] = await db
     .select()
     .from(formResponsesTable)

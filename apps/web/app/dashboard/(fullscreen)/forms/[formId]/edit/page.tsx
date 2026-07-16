@@ -9,14 +9,13 @@ import { FieldsStep } from "@/components/dashboard/fields-step";
 import { ConfigureStep } from "@/components/dashboard/configure-step";
 import { PreviewStep } from "@/components/dashboard/preview-step";
 import { useGetForm, useUpdateForm } from "@/hooks/form/use-forms";
-import { Field } from "@/types/form";
+import { Field, FormField } from "@/types/form";
 import { ThemeKey } from "@/types/theme";
 import { serif, STEPS } from "@/constants/form";
 import { FieldModal } from "@/components/dashboard/field-model";
 import { Nav } from "@/components/landing/navbar";
 import { ThankYouScreen } from "@/components/dashboard/thankyou-screen";
 import { useParams } from "next/navigation";
-import { FormField } from "@/types/form-builder";
 
 type StepIdx = 0 | 1 | 2 | 3;
 
@@ -53,7 +52,7 @@ export default function FormEditPage() {
       setDescription(form.description);
       setTheme(form.theme);
       setVisibility(form.visibility);
-      setSlug(form.slug)
+      setSlug(form.slug);
 
       if (form.formFields) {
         setFields(form.formFields as FormField[]);
@@ -120,14 +119,13 @@ export default function FormEditPage() {
 
   const handleUpdateForm = async () => {
     if (step === 2) {
-      console.log("Hello ji", fields)
       const updatedForm = await updateForm(formId, title, description, theme, visibility, fields);
 
       console.log(updatedForm);
     }
-   if(step <= 3){
-     setStep((s) => (s + 1) as StepIdx);
-   }
+    if (step <= 3) {
+      setStep((s) => (s + 1) as StepIdx);
+    }
   };
 
   if (isLoading) {

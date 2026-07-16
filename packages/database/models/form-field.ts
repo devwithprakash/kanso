@@ -37,13 +37,11 @@ export const formFieldsTable = pgTable("form_fields", {
   label: varchar("label", { length: 100 }).notNull(),
   placeholder: varchar("placeholder", { length: 100 }),
 
-  helperText: text("helper_text"),
   type: fieldTypeEnum("type").notNull(),
 
   required: boolean("required").default(false).notNull(),
   order: integer("order").notNull(),
 
-  minLength: integer("min_length"),
   maxLength: integer("max_length"),
 
   minValue: integer("min_value"),

@@ -19,7 +19,7 @@ export const formsTable = pgTable("forms", {
   description: varchar("description", { length: 500 }),
 
   theme: formThemeEnum("theme").default("clean-zen").notNull(),
-  visibility: formVisibilityEnum("visibility").default("private").notNull(),
+  visibility: formVisibilityEnum("visibility").default("public").notNull(),
 
   slug: varchar("slug").unique().notNull(),
 

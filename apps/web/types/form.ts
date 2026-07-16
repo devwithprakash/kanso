@@ -32,8 +32,10 @@ export interface FormField {
     | "file";
   order: number;
   required: boolean;
-  placeholder?: string | null;
-  helperText?: string | null;
+  placeholder?: string;
+  maxLength?: number ;
+  minValue?: number;
+  maxValue?: number;
   fieldOptions: FieldOption[];
 }
 

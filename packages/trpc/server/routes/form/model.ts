@@ -55,6 +55,8 @@ export const createFormInputModel = z.object({
 export const createFormOutputModel = z.object({
   id: z.string(),
   slug: z.string(),
+  theme: themeOptions,
+  visibility: z.enum(["public", "private", "unlisted"]),
   fieldData: z.array(formFieldOutput),
 });
 
@@ -71,13 +73,6 @@ export const updateFormInputModel = z.object({
 export const updateFormOutputModel = z.object({
   id: z.string(),
   title: z.string(),
-  // description: z.string().nullable(),
-  // theme: themeOptions,
-  // visibility: z.enum(["public", "private", "unlisted"]),
-  // createdBy: z.string(),
-  // slug: z.string(),
-  // createdAt: z.date(),
-  // updatedAt: z.date().nullable(),
 });
 
 // delete from schema
@@ -152,10 +147,8 @@ export const formFieldModel = z.object({
   order: z.number().int(),
   required: z.boolean(),
 
-  helperText: z.string().nullable().optional(),
   placeholder: z.string().nullable().optional(),
 
-  minLength: z.number().int().nullable(),
   maxLength: z.number().int().nullable(),
   minValue: z.number().nullable(),
   maxValue: z.number().nullable(),
