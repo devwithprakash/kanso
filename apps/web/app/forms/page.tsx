@@ -4,7 +4,6 @@ export const metadata = {
   title: "Customer Feedback Survey — Kanso",
 }
 
-// Mock form data - in real app this would come from database
 const getFormData = (id: string) => ({
   id,
   name: "Customer Feedback Survey",
