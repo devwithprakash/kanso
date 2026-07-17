@@ -171,6 +171,31 @@ export function FieldModal({
             </div>
           )}
 
+          {type === "radio" && (
+            <div>
+              <Label>Options</Label>
+              <textarea
+                rows={4}
+                className={cn(inputCls, "resize-none font-mono text-xs")}
+                value={optionsText}
+                onChange={(e) => setOptionsText(e.target.value)}
+                placeholder={"One option per line\nOption 1\nOption 2"}
+              />
+            </div>
+          )}
+          {type === "checkbox" && (
+            <div>
+              <Label>Options</Label>
+              <textarea
+                rows={4}
+                className={cn(inputCls, "resize-none font-mono text-xs")}
+                value={optionsText}
+                onChange={(e) => setOptionsText(e.target.value)}
+                placeholder={"One option per line\nOption 1\nOption 2"}
+              />
+            </div>
+          )}
+
           {(type === "text" || type === "textarea") && (
             <div>
               <Label>Max length</Label>

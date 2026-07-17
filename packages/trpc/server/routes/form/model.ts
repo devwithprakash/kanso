@@ -197,9 +197,6 @@ export const getFormBySlugOutputModel = z.object({
   visibility: z.enum(["public", "private", "unlisted"]),
   slug: z.string(),
   formFields: z.array(formFieldModel),
-  createdBy: z.string(),
-  createdAt: z.date(),
-  updatedAt: z.date().nullable().optional(),
 });
 
 // get all public forms

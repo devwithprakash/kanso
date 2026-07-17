@@ -5,15 +5,22 @@ import {
   submitResponseInput,
   SubmitResponseInputType,
 } from "./model";
-import { formFieldsTable, formResponsesTable, responseAnswersTable } from "@repo/database/schema";
+import {
+  formFieldsTable,
+  formResponsesTable,
+  formsTable,
+  responseAnswersTable,
+  usersTable,
+} from "@repo/database/schema";
 import { throwTRPCError } from "../../trpc/server/utils/trpc-error";
+import { GetFormResponseOutput } from "../../trpc/server/routes/responses/model";
 
 type ResponseAnswer = InferSelectModel<typeof responseAnswersTable>;
 
 const createResponse = async (payload: SubmitResponseInputType) => {
   const { formId, ipAddress, answer } = await submitResponseInput.parseAsync(payload);
 
-  console.log(answer)
+  console.log(answer);
 
   const [existingResponse] = await db
     .select()
@@ -57,10 +64,31 @@ const createResponse = async (payload: SubmitResponseInputType) => {
 };
 
 const getFormResponse = async (payload: GetFormResponseInputType) => {
-  const { formId } = await getFormResponseInput.parseAsync(payload);
+  const { formId, userId } = await getFormResponseInput.parseAsync(payload);
+
+  const dbUser = await db.select().from(usersTable).where(eq(usersTable.clerkUserId, userId));
+
+  const user = dbUser[0];
+
+  if (!user) {
+    throwTRPCError("NOT_FOUND", "User not found");
+  }
+
+  const form = await db
+    .select()
+    .from(formsTable)
+    .where(and(eq(formsTable.id, formId), eq(formsTable.createdBy, user.id)));
+
+  if (!form) {
+    throwTRPCError("NOT_FOUND", "Requested form not found");
+  }
 
   const fields = await db
-    .select()
+    .select({
+      id: formFieldsTable.id,
+      label: formFieldsTable.label,
+      type: formFieldsTable.type,
+    })
     .from(formFieldsTable)
     .where(eq(formFieldsTable.formId, formId))
     .orderBy(formFieldsTable.order);
@@ -68,15 +96,21 @@ const getFormResponse = async (payload: GetFormResponseInputType) => {
   const responses = await db.query.formResponsesTable.findMany({
     where: eq(formResponsesTable.formId, formId),
     orderBy: (responses, { desc }) => [desc(responses.submittedAt)],
+    columns: {
+      id: true,
+      submittedAt: true,
+    },
     with: {
       answers: true,
     },
   });
 
-  return {
+  const result: GetFormResponseOutput = {
     fields,
     responses,
   };
+
+  return result;
 };
 
 export { createResponse, getFormResponse };

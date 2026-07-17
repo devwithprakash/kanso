@@ -399,15 +399,50 @@ const getFormBySlug = async (payload: GetFormBySlugInputType, ipAddress: string)
 
   const form = await db.query.formsTable.findFirst({
     where: eq(formsTable.slug, slug),
+    columns: {
+      id: true,
+      title: true,
+      description: true,
+      slug: true,
+      theme: true,
+      visibility: true,
+    },
     with: {
       formFields: {
-        with: { fieldOptions: true },
+        columns: {
+          id: true,
+          formId: true,
+
+          label: true,
+          type: true,
+
+          order: true,
+          required: true,
+
+          placeholder: true,
+          maxLength: true,
+          minValue: true,
+          maxValue: true,
+        },
+        with: {
+          fieldOptions: {
+            columns: {
+              label: true,
+              value: true,
+              order: true,
+            },
+          },
+        },
       },
     },
   });
 
   if (!form) {
-    throwTRPCError("NOT_FOUND", "The requested form could not be located.");
+    throwTRPCError("NOT_FOUND", "Requested form not found");
+  }
+
+  if (form.visibility === "private") {
+    throwTRPCError("FORBIDDEN", "This form is not currently accepting responses");
   }
 
   const [existingResponse] = await db
@@ -419,10 +454,6 @@ const getFormBySlug = async (payload: GetFormBySlugInputType, ipAddress: string)
 
   if (existingResponse) {
     throwTRPCError("BAD_REQUEST", "You have already submitted this form.");
-  }
-
-  if (form.visibility === "private") {
-    throwTRPCError("FORBIDDEN", "This form is not currently accepting responses");
   }
 
   return form;

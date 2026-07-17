@@ -14,7 +14,7 @@ import { ThemeKey } from "@/types/theme";
 import { serif, STEPS } from "@/constants/form";
 import { FieldModal } from "@/components/dashboard/field-model";
 import { Nav } from "@/components/landing/navbar";
-import { ThankYouScreen } from "@/components/dashboard/thankyou-screen";
+import { PublishedInline } from "@/components/dashboard/thankyou-screen";
 import { useParams } from "next/navigation";
 
 type StepIdx = 0 | 1 | 2 | 3;
@@ -193,7 +193,7 @@ export default function FormEditPage() {
               <PreviewStep title={title} description={description} fields={fields} theme={theme} />
             )}
 
-            {step === 3 && published && <ThankYouScreen formUrl={formUrl} title={title} />}
+            {step === 3 && published && <PublishedInline slug={slug} title={title} />}
           </div>
 
           <div className="mt-12 flex items-center justify-between border-t border-border/60 pt-6">

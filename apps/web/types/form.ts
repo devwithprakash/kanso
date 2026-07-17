@@ -59,3 +59,9 @@ export interface FormRecord {
 
   formFields: Field[];
 }
+
+export interface ResponseField {
+  id: string;
+  label: string;
+  type: FieldType;
+}

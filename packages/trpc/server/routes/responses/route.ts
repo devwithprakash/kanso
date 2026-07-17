@@ -46,11 +46,13 @@ export const responseRouter = router({
     })
     .input(getFormResponseInputModel)
     .output(getFormResponseOutputModel)
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       const { formId } = input;
+      const {userId} = ctx
 
       const result = await responseService.getFormResponse({
         formId,
+        userId
       });
 
       return result;

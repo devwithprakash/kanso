@@ -12,7 +12,8 @@ export const submitResponseInput = z.object({
 });
 
 export const getFormResponseInput = z.object({
-  formId: z.string()
+  formId: z.string(),
+  userId: z.string()
 })
 
 export type SubmitResponseInputType = z.infer<typeof submitResponseInput>;

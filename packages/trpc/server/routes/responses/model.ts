@@ -1,5 +1,18 @@
 import { z } from "zod";
 
+const fieldTypeEnum = z.enum([
+  "text",
+  "textarea",
+  "email",
+  "number",
+  "phone",
+  "select",
+  "radio",
+  "checkbox",
+  "date",
+  "file",
+]);
+
 const reponseAnswerInput = z.object({
   fieldId: z.string(),
   value: z.string(),
@@ -35,22 +48,18 @@ export const answerSchema = z.object({
   id: z.string(),
   fieldId: z.string(),
   responseId: z.string(),
-  value: z.string().nullable(), // Nullable to handle empty/non-required inputs nicely
+  value: z.string().nullable(),
 });
 
 export const fieldSchema = z.object({
   id: z.string(),
-  formId: z.string(),
   label: z.string(),
-  type: z.string(),
-  order: z.number(),
-  required: z.boolean(),
+  type: fieldTypeEnum,
 });
 
 export const responseRecordSchema = z.object({
   id: z.string(),
-  formId: z.string(),
-  submittedAt: z.date().or(z.string()), // Handles raw Date instances or JSON timestamps safely
+  submittedAt: z.date().or(z.string()),
   answers: z.array(answerSchema),
 });
 
@@ -59,3 +68,5 @@ export const getFormResponseOutputModel = z.object({
   fields: z.array(fieldSchema),
   responses: z.array(responseRecordSchema),
 });
+
+export type GetFormResponseOutput = z.infer<typeof getFormResponseOutputModel>;

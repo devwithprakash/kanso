@@ -23,39 +23,9 @@ import { ThemeKey } from "@/types/theme";
 import { themeStyles } from "@/constants/theme";
 import { buildFormSchema } from "@/lib/form-response-validation";
 import { cn } from "@/lib/utils";
+import { Field } from "@/types/form";
 
-type FormTheme = "light" | "minimal" | "dark" | "gradient";
 type FieldValue = string | number | boolean | string[] | null;
-
-interface FieldOption {
-  id: string;
-  fieldId: string;
-  value: string;
-  label: string;
-  order: number;
-}
-
-interface FormField {
-  id: string;
-  formId: string;
-  label: string;
-  type:
-    | "text"
-    | "textarea"
-    | "email"
-    | "number"
-    | "phone"
-    | "select"
-    | "radio"
-    | "checkbox"
-    | "date"
-    | "file";
-  order: number;
-  required: boolean;
-  placeholder?: string | null;
-  helperText?: string | null;
-  fieldOptions: FieldOption[];
-}
 
 type FormData = Record<string, FieldValue>;
 
@@ -124,7 +94,7 @@ export default function PublicFormPage() {
 
     if (submitResponsesMutation.isPending) return;
 
-    const schema = buildFormSchema(form.formFields as FormField[]);
+    const schema = buildFormSchema(form.formFields as Field[]);
     const result = schema.safeParse(formData);
 
     if (!result.success) {
@@ -145,8 +115,6 @@ export default function PublicFormPage() {
     setErrors({});
 
     try {
-      // Use result.data (trimmed strings, coerced numbers, etc.) — not the raw
-      // formData — so what's submitted matches what was actually validated.
       const formattedAnswers = Object.entries(result.data).map(([fieldId, value]) => {
         if (value === undefined || value === null) {
           return { fieldId, value: "" };
@@ -213,7 +181,7 @@ export default function PublicFormPage() {
     );
   }
 
-  const fields = (form.formFields ?? []) as FormField[];
+  const fields = (form.formFields ?? []) as Field[];
   const requiredCount = fields.filter((f) => f.required).length;
 
   return (
@@ -253,8 +221,6 @@ export default function PublicFormPage() {
                         )}
                         {!field.required && <span className={t.badge}>optional</span>}
                       </div>
-
-                      {field.helperText && <p className={t.helperText}>{field.helperText}</p>}
 
                       {field.type === "text" && (
                         <Input
@@ -347,7 +313,7 @@ export default function PublicFormPage() {
                           </SelectTrigger>
                           <SelectContent>
                             {field.fieldOptions.map((opt) => (
-                              <SelectItem key={opt.id} value={opt.value}>
+                              <SelectItem key={opt.value} value={opt.value}>
                                 {opt.label}
                               </SelectItem>
                             ))}
@@ -359,7 +325,7 @@ export default function PublicFormPage() {
                         <div className="space-y-2 pt-1">
                           {field.fieldOptions.map((opt) => (
                             <label
-                              key={opt.id}
+                              key={opt.value}
                               className="flex items-center gap-3 cursor-pointer group"
                             >
                               <span
@@ -389,7 +355,10 @@ export default function PublicFormPage() {
                       {field.type === "checkbox" && (
                         <div className="space-y-2 pt-1">
                           {field.fieldOptions.map((opt) => (
-                            <label key={opt.id} className="flex items-center gap-3 cursor-pointer">
+                            <label
+                              key={opt.value}
+                              className="flex items-center gap-3 cursor-pointer"
+                            >
                               <Checkbox
                                 checked={((formData[field.id] as string[]) ?? []).includes(
                                   opt.value,
@@ -404,7 +373,6 @@ export default function PublicFormPage() {
                         </div>
                       )}
 
-  
                       {errors[field.id] && (
                         <p className="mt-1 text-sm text-red-500">{errors[field.id]}</p>
                       )}

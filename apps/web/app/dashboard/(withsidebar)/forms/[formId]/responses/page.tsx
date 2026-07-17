@@ -14,6 +14,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { ResponseField } from "@/types/form";
 
 export default function FormResponsesPage() {
   const params = useParams();
@@ -22,6 +23,21 @@ export default function FormResponsesPage() {
 
   const { data, error, isLoading } = useGetFormResponse(formId);
   const { form } = useGetForm(formId);
+
+  const formatAnswer = (field: ResponseField, value: string | null) => {
+    if (!value) return null;
+
+    if (field.type === "checkbox") {
+      try {
+        const values = JSON.parse(value) as string[];
+        return values.join(", ");
+      } catch {
+        return value;
+      }
+    }
+
+    return value;
+  };
 
   if (isLoading) {
     return (
@@ -177,7 +193,9 @@ export default function FormResponsesPage() {
                 <div key={field.id} className="border-b border-border/40 pb-3 last:border-0">
                   <p className="text-xs font-medium text-muted-foreground mb-1">{field.label}</p>
                   <p className="text-sm text-foreground whitespace-pre-wrap break-words">
-                    {matchingAnswer?.value || (
+                    {matchingAnswer?.value ? (
+                      formatAnswer(field, matchingAnswer.value)
+                    ) : (
                       <span className="text-muted-foreground/30 italic">Empty</span>
                     )}
                   </p>

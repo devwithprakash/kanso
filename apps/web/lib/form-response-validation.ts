@@ -1,7 +1,7 @@
-import { FormField } from "@/types/form";
+import { Field } from "@/types/form";
 import { z } from "zod";
 
-function buildTypeSchema(field: FormField): z.ZodTypeAny {
+function buildTypeSchema(field: Field): z.ZodTypeAny {
   switch (field.type) {
     case "email":
       return z.string().trim().email("Enter a valid email address");
@@ -37,8 +37,19 @@ function buildTypeSchema(field: FormField): z.ZodTypeAny {
         : z.string();
     }
 
-    case "checkbox":
-      return z.boolean();
+    case "checkbox": {
+      const allowed = field.fieldOptions?.map((o) => o.value) ?? [];
+
+      let schema = allowed.length
+        ? z.array(
+            z.enum(allowed as [string, ...string[]], {
+              error: "Select a valid option",
+            }),
+          )
+        : z.array(z.string());
+
+      return schema;
+    }
 
     case "text":
     case "textarea":
@@ -61,16 +72,8 @@ function isEmptyValue(val: unknown): boolean {
   );
 }
 
-export function buildFieldSchema(field: FormField): z.ZodTypeAny {
+export function buildFieldSchema(field: Field): z.ZodTypeAny {
   const typeSchema = buildTypeSchema(field);
-
-  if (field.type === "checkbox") {
-    return field.required
-      ? typeSchema.refine((val) => val === true, {
-          message: `Please complete the required field: "${field.label}"`,
-        })
-      : typeSchema.optional();
-  }
 
   return z.any().superRefine((val, ctx) => {
     const empty = isEmptyValue(val);
@@ -98,7 +101,7 @@ export function buildFieldSchema(field: FormField): z.ZodTypeAny {
   });
 }
 
-export function buildFormSchema(fields: FormField[]) {
+export function buildFormSchema(fields: Field[]) {
   const shape: Record<string, z.ZodTypeAny> = {};
   for (const field of fields) {
     shape[field.id] = buildFieldSchema(field);
