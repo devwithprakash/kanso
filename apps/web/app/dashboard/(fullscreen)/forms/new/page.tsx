@@ -13,15 +13,11 @@ import { Field } from "@/types/form";
 import { ThemeKey } from "@/types/theme";
 import { serif, STEPS } from "@/constants/form";
 import { FieldModal } from "@/components/dashboard/field-model";
-import { useSyncFormFields } from "@/hooks/form/use-form-field";
 import { Nav } from "@/components/landing/navbar";
-import { ThankYouScreen } from "@/components/dashboard/thankyou-screen";
+import { PublishedInline } from "@/components/dashboard/thankyou-screen";
 import { AnimatePresence, motion } from "framer-motion";
 
 type StepIdx = 0 | 1 | 2 | 3;
-
-let idCounter = 0;
-const nid = () => `field${++idCounter}`;
 
 export default function NewFormPage() {
   const [step, setStep] = useState<StepIdx>(0);
@@ -40,7 +36,6 @@ export default function NewFormPage() {
   const [published, setPublished] = useState(false);
 
   const { submitForm, isLoading } = useCreateForm();
-  const { submitFormFieldData } = useSyncFormFields();
   const { updateForm } = useUpdateForm();
 
   const openAdd = () => {
@@ -64,7 +59,7 @@ export default function NewFormPage() {
       if (i < 0 || j < 0 || j >= arr.length) return arr;
 
       const copy = arr.slice();
-      const temp = copy[i]!; // safe: i is bounds-checked above
+      const temp = copy[i]!;
       copy[i] = copy[j]!;
       copy[j] = temp;
 
@@ -126,7 +121,6 @@ export default function NewFormPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Ambient background — same warm zen wash as landing */}
       <div className="pointer-events-none fixed inset-0 -z-10">
         <div className="absolute inset-0 bg-[radial-gradient(60%_40%_at_20%_0%,oklch(0.92_0.03_120/0.6),transparent_60%),radial-gradient(50%_35%_at_80%_10%,oklch(0.9_0.04_75/0.55),transparent_60%)]" />
       </div>
@@ -201,7 +195,7 @@ export default function NewFormPage() {
                   />
                 )}
 
-                {step === 3 && published && <ThankYouScreen formUrl={formUrl} title={title} />}
+                {step === 3 && published && <PublishedInline slug={slug} title={title} />}
               </motion.div>
             </AnimatePresence>
           </div>

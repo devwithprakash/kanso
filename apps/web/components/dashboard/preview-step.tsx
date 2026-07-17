@@ -39,12 +39,12 @@ export function PreviewStep({
                 <textarea
                   rows={3}
                   className={cn(t.input, "resize-none")}
-                  placeholder={f.placeholder}
+                  placeholder={f.placeholder ?? undefined}
                 />
               ) : f.type === "select" ? (
                 <select className={cn("px-4", t.input)}>
                   <option value="">{f.placeholder || "Select…"}</option>
-                  {(f.options ?? []).map((o) => (
+                  {(f.fieldOptions ?? []).map((o) => (
                     <option key={o.order} value={o.value}>
                       {o.value}
                     </option>
@@ -54,8 +54,8 @@ export function PreviewStep({
                 <input
                   type={f.type === "number" ? "number" : f.type === "email" ? "email" : "text"}
                   className={cn("px-4", t.input)}
-                  placeholder={f.placeholder}
-                  maxLength={f.maxLength}
+                  placeholder={f.placeholder ?? undefined}
+                  maxLength={f.maxLength ?? undefined}
                 />
               )}
             </div>
