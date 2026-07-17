@@ -31,22 +31,30 @@ export function FieldModal({
   const [maxLength, setMaxLength] = React.useState(
     existing?.maxLength ? String(existing.maxLength) : "",
   );
-  const [optionsText, setOptionsText] = React.useState((existing?.options ?? []).join("\n"));
+
+  console.log("existing:", existing);
+
+  const [optionsText, setOptionsText] = React.useState(
+    existing?.fieldOptions?.map((option) => option.label).join("\n") ?? "",
+  );
 
   const save = () => {
     if (!label.trim()) return;
 
     const f: Field = {
       id: existing?.id ?? `field-${Date.now()}`,
+      formId: existing?.formId ?? "", // Set the actual form ID if available
       label: label.trim(),
       type,
       order: existing?.order ?? 0,
       required,
-      placeholder: placeholder.trim() || undefined,
-      maxLength: maxLength ? Number(maxLength) : undefined,
-      minValue: undefined,
-      maxValue: undefined,
-      options:
+
+      placeholder: placeholder.trim() || null,
+      maxLength: maxLength ? Number(maxLength) : null,
+      minValue: null,
+      maxValue: null,
+
+      fieldOptions:
         type === "select" || type === "radio" || type === "checkbox"
           ? optionsText
               .split("\n")
@@ -56,7 +64,7 @@ export function FieldModal({
                 order: index,
               }))
               .filter((option) => option.label.length > 0)
-          : undefined,
+          : [],
     };
 
     onSave(f);

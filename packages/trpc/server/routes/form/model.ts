@@ -1,6 +1,7 @@
 import { string, z } from "zod";
 
-const themeOptions = z.enum([
+// common schemas
+const themeEnum = z.enum([
   "clean-zen",
   "cyber-sunset",
   "cherry-blossom",
@@ -8,7 +9,23 @@ const themeOptions = z.enum([
   "lavender-dream",
 ]);
 
-const batchFormFieldOptionInput = z.object({
+const visibilityEnum = z.enum(["public", "private", "unlisted"]);
+
+const fieldTypeEnum = z.enum([
+  "text",
+  "textarea",
+  "email",
+  "number",
+  "phone",
+  "select",
+  "radio",
+  "checkbox",
+  "date",
+  "file",
+]);
+
+// -----form field "INPUT" schema--------
+const formFieldOptionsInput = z.object({
   label: z.string().min(1).max(100),
   value: z.string().min(1).max(100),
   order: z.number().int().min(0),
@@ -17,62 +34,69 @@ const batchFormFieldOptionInput = z.object({
 const formFieldInput = z.object({
   id: z.string(),
   label: z.string().min(1).max(100),
-  type: z.enum([
-    "text",
-    "textarea",
-    "email",
-    "number",
-    "phone",
-    "select",
-    "radio",
-    "checkbox",
-    "date",
-    "file",
-  ]),
+  type: fieldTypeEnum,
   required: z.boolean().default(false),
   order: z.number().int().min(0),
-  placeholder: z.string().max(100).nullable().optional(),
-  maxLength: z.number().int().min(1).nullable().optional(),
-  minValue: z.number().nullable().optional(),
-  maxValue: z.number().nullable().optional(),
-  options: z.array(batchFormFieldOptionInput).optional(),
+  placeholder: z.string().max(100).nullable(),
+  maxLength: z.number().int().min(1).nullable(),
+  minValue: z.number().nullable(),
+  maxValue: z.number().nullable(),
+  fieldOptions: z.array(formFieldOptionsInput).optional(),
 });
 
-const formFieldOutput = z.object({
-  id: z.string(),
-  type: z.string(),
-  label: z.string(),
-  options: z.array(batchFormFieldOptionInput).optional(),
-});
-
-// create form schema
 export const createFormInputModel = z.object({
   title: z.string().describe("title of the form"),
   description: z.string().describe("description of the form").nullable().optional(),
   formFieldData: z.array(formFieldInput),
 });
+// -----form field input schema--------
+
+//--------------------------------------------------------
+const formFieldOptionOutput = z.object({
+  label: z.string(),
+  value: z.string(),
+  order: z.number(),
+});
+
+const formFieldOutput = z.object({
+  id: z.string(),
+  formId: z.string(),
+  label: z.string(),
+  type: fieldTypeEnum,
+  order: z.number(),
+  required: z.boolean(),
+  placeholder: z.string().nullable(),
+  maxLength: z.number().nullable(),
+  minValue: z.number().nullable(),
+  maxValue: z.number().nullable(),
+  fieldOptions: z.array(formFieldOptionOutput),
+});
 
 export const createFormOutputModel = z.object({
   id: z.string(),
   slug: z.string(),
-  theme: themeOptions,
+  theme: themeEnum,
   visibility: z.enum(["public", "private", "unlisted"]),
   fieldData: z.array(formFieldOutput),
 });
+//--------------------------------------------------------
 
-// update form schema
 export const updateFormInputModel = z.object({
   formId: z.string(),
-  title: z.string().optional(),
-  description: z.string().optional(),
-  theme: themeOptions,
-  visibility: z.enum(["public", "private", "unlisted"]),
+  title: z.string(),
+  description: z.string().nullable(),
+  theme: themeEnum,
+  visibility: visibilityEnum,
   formFieldData: z.array(formFieldInput),
 });
 
 export const updateFormOutputModel = z.object({
   id: z.string(),
   title: z.string(),
+  description: z.string().nullable().optional(),
+  theme: z.string(),
+  visibility: z.string(),
+  formFieldData: z.array(formFieldOutput),
 });
 
 // delete from schema
@@ -84,7 +108,7 @@ export const deleteFormOutputModel = z.object({
   id: z.string(),
   title: z.string(),
   description: z.string().nullable(),
-  theme: themeOptions,
+  theme: themeEnum,
   visibility: z.enum(["public", "private", "unlisted"]),
   createdBy: z.string(),
   slug: z.string(),
@@ -101,7 +125,7 @@ export const getAllFormsOutputModel = z.array(
 
     responseCount: z.number(),
 
-    theme: themeOptions,
+    theme: themeEnum,
     visibility: z.enum(["public", "private", "unlisted"]),
 
     slug: z.string(),
@@ -119,8 +143,6 @@ export const getFormByIdInputModel = z.object({
 });
 
 export const fieldOptionModel = z.object({
-  id: z.string(),
-  fieldId: z.string(),
   value: z.string(),
   label: z.string(),
   order: z.number().int(),
@@ -131,30 +153,15 @@ export const formFieldModel = z.object({
   formId: z.string(),
 
   label: z.string(),
-  type: z.enum([
-    "text",
-    "textarea",
-    "email",
-    "number",
-    "phone",
-    "select",
-    "radio",
-    "checkbox",
-    "date",
-    "file",
-  ]),
+  type: fieldTypeEnum,
 
   order: z.number().int(),
   required: z.boolean(),
 
-  placeholder: z.string().nullable().optional(),
-
+  placeholder: z.string().nullable(),
   maxLength: z.number().int().nullable(),
   minValue: z.number().nullable(),
   maxValue: z.number().nullable(),
-
-  createdAt: z.date().optional(),
-  updatedAt: z.date().optional().nullable(),
 
   fieldOptions: z.array(fieldOptionModel),
 });
@@ -162,14 +169,18 @@ export const formFieldModel = z.object({
 export const getFormByIdOutputModel = z.object({
   id: z.string(),
   title: z.string(),
-  description: z.string().nullable().optional(),
-  theme: string(),
-  visibility: z.enum(["public", "private", "unlisted"]),
+  description: z.string().nullable(),
+
+  theme: themeEnum,
+
+  visibility: visibilityEnum,
   slug: z.string(),
-  formFields: z.array(formFieldModel),
-  createdBy: z.string(),
-  createdAt: z.date(),
-  updatedAt: z.date().nullable().optional(),
+
+  formFields: z.array(
+    formFieldModel.extend({
+      fieldOptions: z.array(fieldOptionModel),
+    }),
+  ),
 });
 
 // get form by slug
@@ -198,7 +209,7 @@ export const getAllPublicFormOutputModel = z.array(
     title: z.string(),
     description: z.string().nullable(),
 
-    theme: themeOptions,
+    theme: themeEnum,
     visibility: z.enum(["public", "private", "unlisted"]),
 
     slug: z.string(),

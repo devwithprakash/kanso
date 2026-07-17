@@ -9,7 +9,7 @@ import { FieldsStep } from "@/components/dashboard/fields-step";
 import { ConfigureStep } from "@/components/dashboard/configure-step";
 import { PreviewStep } from "@/components/dashboard/preview-step";
 import { useGetForm, useUpdateForm } from "@/hooks/form/use-forms";
-import { Field, FormField } from "@/types/form";
+import { Field } from "@/types/form";
 import { ThemeKey } from "@/types/theme";
 import { serif, STEPS } from "@/constants/form";
 import { FieldModal } from "@/components/dashboard/field-model";
@@ -18,9 +18,6 @@ import { ThankYouScreen } from "@/components/dashboard/thankyou-screen";
 import { useParams } from "next/navigation";
 
 type StepIdx = 0 | 1 | 2 | 3;
-
-let idCounter = 0;
-const nid = () => `field${++idCounter}`;
 
 export default function FormEditPage() {
   const [step, setStep] = useState<StepIdx>(0);
@@ -44,10 +41,9 @@ export default function FormEditPage() {
   const { form, isLoading } = useGetForm(formId);
   const { updateForm, isSubmitting } = useUpdateForm();
 
-  console.log(form);
-
   useEffect(() => {
     if (form) {
+      console.log("form", form);
       setTitle(form.title);
       setDescription(form.description);
       setTheme(form.theme);
@@ -55,7 +51,7 @@ export default function FormEditPage() {
       setSlug(form.slug);
 
       if (form.formFields) {
-        setFields(form.formFields as FormField[]);
+        setFields(form.formFields as Field[]);
       }
     }
   }, [form]);
@@ -81,7 +77,7 @@ export default function FormEditPage() {
       if (i < 0 || j < 0 || j >= arr.length) return arr;
 
       const copy = arr.slice();
-      const temp = copy[i]!; // safe: i is bounds-checked above
+      const temp = copy[i]!;
       copy[i] = copy[j]!;
       copy[j] = temp;
 
@@ -120,7 +116,7 @@ export default function FormEditPage() {
   const handleUpdateForm = async () => {
     if (step === 2) {
       const updatedForm = await updateForm(formId, title, description, theme, visibility, fields);
-
+      setFields(updatedForm.formFieldData);
       console.log(updatedForm);
     }
     if (step <= 3) {
@@ -132,7 +128,6 @@ export default function FormEditPage() {
     return <div>Loading form data...</div>;
   }
 
-  // 2. Handle the edge-case where loading finished but form data is missing
   if (!form) {
     return <div>Form not found.</div>;
   }

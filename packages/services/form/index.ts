@@ -1,4 +1,4 @@
-import db, { and, count, eq, like, notInArray } from "@repo/database";
+import db, { and, count, eq, inArray, like, notInArray } from "@repo/database";
 import {
   createFormInput,
   CreateFormInputType,
@@ -16,7 +16,6 @@ import { throwTRPCError } from "../../trpc/server/utils/trpc-error";
 import { formsTable } from "@repo/database/models/form";
 import { usersTable } from "@repo/database/models/user";
 import { fieldOptionsTable, formFieldsTable, formResponsesTable } from "@repo/database/schema";
-import { id } from "zod/v4/locales";
 
 function generateSlug(title: string) {
   return title
@@ -51,6 +50,8 @@ async function getUniqueSlug(title: string): Promise<string> {
 
 const createForm = async (payload: CreateFormInputType, userId: string) => {
   const { title, description, formFieldData } = await createFormInput.parseAsync(payload);
+
+  console.log("Fielddata", formFieldData);
 
   const dbUser = await db.select().from(usersTable).where(eq(usersTable.clerkUserId, userId));
 
@@ -102,8 +103,15 @@ const createForm = async (payload: CreateFormInputType, userId: string) => {
         })
         .returning({
           id: formFieldsTable.id,
+          formId: formFieldsTable.formId,
           label: formFieldsTable.label,
           type: formFieldsTable.type,
+          order: formFieldsTable.order,
+          required: formFieldsTable.required,
+          placeholder: formFieldsTable.placeholder,
+          maxLength: formFieldsTable.maxLength,
+          minValue: formFieldsTable.minValue,
+          maxValue: formFieldsTable.maxValue,
         });
 
       const field = insertedFields[0];
@@ -116,8 +124,8 @@ const createForm = async (payload: CreateFormInputType, userId: string) => {
 
       let insertedOptionResult: any[] = [];
 
-      if (optionFieldTypes.includes(field.type) && fieldData.options?.length) {
-        const optionsToInsert = fieldData.options.map((opt) => ({
+      if (optionFieldTypes.includes(field.type) && fieldData.fieldOptions?.length) {
+        const optionsToInsert = fieldData.fieldOptions.map((opt) => ({
           label: opt.label,
           order: opt.order,
           value: opt.value,
@@ -139,21 +147,20 @@ const createForm = async (payload: CreateFormInputType, userId: string) => {
         insertedOptionResult = insertedOptions;
       }
 
-      results.push({ ...field, options: insertedOptionResult });
+      results.push({ ...field, fieldOptions: insertedOptionResult });
     }
-
-    return {
+    const finalResult = {
       ...createdForm,
       fieldData: results,
     };
+
+    return finalResult;
   });
 };
 
 const updateForm = async (payload: UpdateFormInputType, userId: string) => {
   const { formId, title, description, theme, visibility, formFieldData } =
     await updateFormInput.parseAsync(payload);
-
-  console.log("Form field data aa gya ji", formFieldData);
 
   const [dbUser] = await db.select().from(usersTable).where(eq(usersTable.clerkUserId, userId));
 
@@ -174,6 +181,10 @@ const updateForm = async (payload: UpdateFormInputType, userId: string) => {
     .returning({
       id: formsTable.id,
       title: formsTable.title,
+      description: formsTable.description,
+      theme: formsTable.theme,
+      visibility: formsTable.visibility,
+      slug: formsTable.slug,
     });
 
   const updatedForm = result[0];
@@ -182,14 +193,12 @@ const updateForm = async (payload: UpdateFormInputType, userId: string) => {
     throwTRPCError("NOT_FOUND", "Form not found or you do not have permission to update it");
   }
 
-  const optionFieldTypes = ["select", "radio", "checkbox"];
+  const optionFieldTypes = ["select", "radio", "checkbox"] as const;
 
-  return db.transaction(async (tx) => {
+  const processedFields = await db.transaction(async (tx) => {
     const incomingDbIds = formFieldData
       .map((f) => f.id)
       .filter((id): id is string => !!id && !id.startsWith("field-"));
-
-    console.log("New fields ", incomingDbIds);
 
     if (incomingDbIds.length > 0) {
       await tx
@@ -201,7 +210,7 @@ const updateForm = async (payload: UpdateFormInputType, userId: string) => {
       await tx.delete(formFieldsTable).where(eq(formFieldsTable.formId, formId));
     }
 
-    const processedFields = [];
+    const processed = [];
 
     for (const fieldData of formFieldData) {
       const isNewField = !fieldData.id || fieldData.id.startsWith("field-");
@@ -223,18 +232,12 @@ const updateForm = async (payload: UpdateFormInputType, userId: string) => {
         const [inserted] = await tx.insert(formFieldsTable).values(fieldValues).returning();
         finalFieldRecord = inserted;
       } else {
-        const fieldId = fieldData.id;
-
-        if (!fieldId) {
-          throwTRPCError("BAD_REQUEST", "Field id is required");
-        }
-
-        const targetId = fieldId;
+        const targetId = fieldData.id;
 
         const [updated] = await tx
           .update(formFieldsTable)
           .set(fieldValues)
-          .where(eq(formFieldsTable.id, targetId))
+          .where(and(eq(formFieldsTable.id, targetId), eq(formFieldsTable.formId, formId)))
           .returning();
 
         finalFieldRecord = updated;
@@ -244,20 +247,18 @@ const updateForm = async (payload: UpdateFormInputType, userId: string) => {
         throwTRPCError("INTERNAL_SERVER_ERROR", `Failed to save field: ${fieldData.label}`);
       }
 
-      const optionFieldTypes = ["select", "radio", "checkbox"];
-
-      if (optionFieldTypes.includes(fieldData.type)) {
-        const newFieldOptions = fieldData.options?.map((o) => {});
-      }
-
       await tx.delete(fieldOptionsTable).where(eq(fieldOptionsTable.fieldId, finalFieldRecord.id));
 
       let synchronizedOptions: (typeof fieldOptionsTable.$inferSelect)[] = [];
-      if (optionFieldTypes.includes(finalFieldRecord.type) && fieldData.options?.length) {
+
+      if (
+        optionFieldTypes.includes(finalFieldRecord.type as (typeof optionFieldTypes)[number]) &&
+        fieldData.fieldOptions?.length
+      ) {
         synchronizedOptions = await tx
           .insert(fieldOptionsTable)
           .values(
-            fieldData.options.map((opt, index) => ({
+            fieldData.fieldOptions.map((opt, index) => ({
               fieldId: finalFieldRecord!.id,
               label: opt.label,
               value: opt.value,
@@ -267,14 +268,19 @@ const updateForm = async (payload: UpdateFormInputType, userId: string) => {
           .returning();
       }
 
-      processedFields.push({
+      processed.push({
         ...finalFieldRecord,
-        options: synchronizedOptions,
+        fieldOptions: synchronizedOptions,
       });
     }
 
-    return updatedForm;
+    return processed;
   });
+
+  return {
+    ...updatedForm,
+    formFieldData: processedFields,
+  };
 };
 
 const deleteForm = async (payload: DeleteFormInputType, userId: string) => {
@@ -337,10 +343,36 @@ const getFormById = async (payload: GetSingleFormDetailsInputType, userId: strin
 
   const form = await db.query.formsTable.findFirst({
     where: and(eq(formsTable.id, formId), eq(formsTable.createdBy, user.id)),
+    columns: {
+      id: true,
+      title: true,
+      description: true,
+      theme: true,
+      visibility: true,
+      slug: true,
+    },
     with: {
       formFields: {
+        columns: {
+          id: true,
+          formId: true,
+          label: true,
+          type: true,
+          order: true,
+          required: true,
+          placeholder: true,
+          maxLength: true,
+          minValue: true,
+          maxValue: true,
+        },
         with: {
-          fieldOptions: true,
+          fieldOptions: {
+            columns: {
+              label: true,
+              value: true,
+              order: true,
+            },
+          },
         },
       },
     },

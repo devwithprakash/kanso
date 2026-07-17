@@ -101,7 +101,6 @@ export default function NewFormPage() {
   let formUrl = "";
 
   const handleCreateForm = async () => {
-    console.log(visibility);
     if (step === 1) {
       const createdForm = await submitForm(title, description, fields);
 
@@ -109,6 +108,7 @@ export default function NewFormPage() {
       setSlug(createdForm.slug);
       setTheme(createdForm.theme);
       setVisibility(createdForm.visibility);
+      setFields(createdForm.fieldData);
 
       formUrl = `https://kanso.prakashjangid.in/${slug}`;
       console.log("Result", createdForm);
@@ -116,7 +116,7 @@ export default function NewFormPage() {
 
     if (step === 3) {
       const updatedForm = await updateForm(formId, title, description, theme, visibility, fields);
-
+      setFields(updatedForm.formFieldData);
       console.log("Form updated successfully", updatedForm);
     }
     if (step <= 3) {

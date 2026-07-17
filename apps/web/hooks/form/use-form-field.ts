@@ -1,5 +1,5 @@
 import { trpc } from "@/trpc/client";
-import { FormFieldData } from "@/types/form";
+import { Field } from "@/types/form";
 
 export const useSyncFormFields = () => {
   const utils = trpc.useUtils();
@@ -14,7 +14,7 @@ export const useSyncFormFields = () => {
     },
   });
 
-  const submitFormFieldData = async (fieldsData: FormFieldData[]) => {
+  const submitFormFieldData = async (fieldsData: Field[]) => {
     await syncFieldsMutation.mutateAsync(fieldsData);
   };
 

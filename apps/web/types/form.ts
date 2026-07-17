@@ -1,45 +1,4 @@
-// ─── Frontend API / Hook Data Types ──────────────────────────────────────────
 export type FieldValue = string | number | boolean | string[] | null;
-
-export interface FormFieldOption {
-  label: string;
-  value: string;
-  order: number;
-}
-
-export interface FieldOption {
-  id: string;
-  fieldId: string;
-  value: string;
-  label: string;
-  order: number;
-}
-
-export interface FormField {
-  id: string;
-  formId: string;
-  label: string;
-  type:
-    | "text"
-    | "textarea"
-    | "email"
-    | "number"
-    | "phone"
-    | "select"
-    | "radio"
-    | "checkbox"
-    | "date"
-    | "file";
-  order: number;
-  required: boolean;
-  placeholder?: string;
-  maxLength?: number ;
-  minValue?: number;
-  maxValue?: number;
-  fieldOptions: FieldOption[];
-}
-
-export type FormData = Record<string, FieldValue>;
 
 export type FieldType =
   | "text"
@@ -53,62 +12,50 @@ export type FieldType =
   | "date"
   | "file";
 
+export type FormTheme =
+  | "clean-zen"
+  | "cyber-sunset"
+  | "cherry-blossom"
+  | "ocean-mist"
+  | "lavender-dream";
+
+export type FormVisibility = "public" | "private" | "unlisted";
+
+//-------------- common form fields -----------------
+
+export interface FieldOptions {
+  label: string;
+  value: string;
+  order: number;
+}
+
 export type Field = {
   id: string;
+  formId: string;
   label: string;
   type: FieldType;
   order: number;
   required: boolean;
-  placeholder?: string;
-  maxLength?: number;
-  maxValue?: number;
-  minValue?: number;
-  options?: FormFieldOption[];
-};
 
-// ─── Hook / API Response Types ────────────────────────────────────────────────
+  placeholder: string | null;
+  maxLength: number | null;
+  maxValue: number | null;
+  minValue: number | null;
+  fieldOptions: FieldOptions[];
+};
 
 export interface FormRecord {
   id: string;
   title: string;
   description: string;
-  theme: "clean-zen" | "cyber-sunset" | "cherry-blossom" | "ocean-mist" | "lavender-dream";
-  visibility: "private" | "public" | "unlisted";
+
+  theme: FormTheme;
+  visibility: FormVisibility;
   slug: string;
-  isPublished: boolean;
+
   createdBy: string;
-  createdAt: Date | string;
-  updatedAt: Date | string | null;
-  formFields?: any[];
-}
+  createdAt: Date;
+  updatedAt: Date | null;
 
-export type FormFieldOptionData = {
-  label: string;
-  value: string;
-  order: number;
-};
-
-export type FormFieldData = {
-  id: string;
-  label: string;
-  type: FieldType;
-  required: boolean;
-  order: number;
-  placeholder?: string | null;
-  maxLength?: number | null;
-  minValue?: number | null;
-  maxValue?: number | null;
-  options?: FormFieldOptionData[];
-};
-
-export interface FormConfigData {
-  id: string;
-  title: string;
-  description: string | null;
-  theme: string;
-  visibility: "public" | "unlisted" | "private";
-  slug: string;
-  createdBy: string;
-  createdAt: string;
-  updatedAt: string | null;
+  formFields: Field[];
 }

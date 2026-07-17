@@ -1,12 +1,14 @@
 import { z } from "zod";
 
-const themeOptions = z.enum([
+const themeEnum = z.enum([
   "clean-zen",
   "cyber-sunset",
   "cherry-blossom",
   "ocean-mist",
   "lavender-dream",
 ]);
+
+const visibilityEnum = z.enum(["public", "private", "unlisted"]);
 
 export const batchFormFieldOptionInput = z.object({
   label: z.string().min(1).max(100),
@@ -29,13 +31,13 @@ const formFieldInput = z.object({
     "date",
     "file",
   ]),
-  required: z.boolean().optional().default(false),
+  required: z.boolean().default(false),
   order: z.number().int().min(0),
-  placeholder: z.string().max(100).nullable().optional(),
-  maxLength: z.number().int().min(1).nullable().optional(),
-  minValue: z.number().nullable().optional(),
-  maxValue: z.number().nullable().optional(),
-  options: z.array(batchFormFieldOptionInput).optional(),
+  placeholder: z.string().max(100).nullable(),
+  maxLength: z.number().int().min(1).nullable(),
+  minValue: z.number().nullable(),
+  maxValue: z.number().nullable(),
+  fieldOptions: z.array(batchFormFieldOptionInput).optional(),
 });
 
 export const createFormInput = z.object({
@@ -46,10 +48,10 @@ export const createFormInput = z.object({
 
 export const updateFormInput = z.object({
   formId: z.string(),
-  title: z.string().optional(),
-  description: z.string().optional(),
-  theme: themeOptions,
-  visibility: z.enum(["public", "private", "unlisted"]),
+  title: z.string(),
+  description: z.string().nullable(),
+  theme: themeEnum,
+  visibility: visibilityEnum,
   formFieldData: z.array(formFieldInput),
 });
 
