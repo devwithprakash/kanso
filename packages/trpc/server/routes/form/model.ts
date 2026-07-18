@@ -24,8 +24,6 @@ const fieldTypeEnum = z.enum([
   "file",
 ]);
 
-
-
 // create form schema STARTS
 const formFieldOptionsInput = z.object({
   label: z.string().min(1).max(100),
@@ -195,6 +193,8 @@ export const getAllPublicFormOutputModel = z.array(
     title: z.string(),
     description: z.string().nullable(),
     slug: z.string(),
+    visibility: visibilityEnum,
     createdAt: z.date(),
+    totalResponses: z.number(),
   }),
 );

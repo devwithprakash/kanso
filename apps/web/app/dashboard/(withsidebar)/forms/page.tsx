@@ -131,116 +131,112 @@ export default function FormsPage() {
           filteredForms.map((form, index) => (
             <motion.div
               key={form.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: index * 0.05 }}
-              className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
+              className="group bg-card rounded-2xl border border-border p-5 flex flex-col h-full shadow-sm hover:border-primary/30 hover:shadow-md transition-all duration-300"
             >
-              <div className="p-5">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center transition-colors group-hover:bg-primary/15">
-                    <FileText className="h-5 w-5 text-primary" />
-                  </div>
+              {/* Top: Visibility Badge & Menu */}
+              <div className="flex items-center justify-between mb-4">
+                <span
+                  className={`text-[10px] px-2.5 py-0.5 font-bold uppercase tracking-wider rounded-full ${getVisibilityStyles(
+                    form.visibility,
+                  )}`}
+                >
+                  {form.visibility}
+                </span>
 
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 cursor-pointer w-8 hover:bg-muted"
-                      >
-                        <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">Open menu</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
-                      <DropdownMenuItem asChild>
-                        <Link
-                          href={`/dashboard/forms/${form.id}/edit`}
-                          className="flex items-center gap-2 cursor-pointer"
-                        >
-                          <FileText className="h-4 w-4 opacity-70" />
-                          Edit
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link
-                          href={`/forms/${form.id}/preview`}
-                          className="flex items-center gap-2 cursor-pointer"
-                        >
-                          <Eye className="h-4 w-4 opacity-70" />
-                          Preview
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link
-                          href={`/dashboard/forms/${form.id}/analytics`}
-                          className="flex items-center gap-2 cursor-pointer"
-                        >
-                          <BarChart3 className="h-4 w-4 opacity-70" />
-                          Analytics
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link
-                          href={`/dashboard/forms/${form.id}/responses`}
-                          className="flex items-center gap-2 cursor-pointer"
-                        >
-                          <FileText className="h-4 w-4 opacity-70" />
-                          Responses
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => handleCopyLink(form.slug)}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-muted-foreground hover:bg-secondary hover:text-foreground cursor-pointer"
+                    >
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={`/dashboard/forms/${form.id}/edit`}
                         className="flex items-center gap-2 cursor-pointer"
                       >
-                        <ExternalLink className="h-4 w-4 opacity-70" />
-                        Copy Link
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onClick={() => handleDeleteForm(form.id)}
-                        className="text-destructive focus:bg-destructive/10 focus:text-destructive flex items-center gap-2 cursor-pointer"
+                        <FileText className="h-4 w-4 opacity-70" /> Edit
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={`/forms/${form.id}/preview`}
+                        className="flex items-center gap-2 cursor-pointer"
                       >
-                        <Trash2 className="h-4 w-4" />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
+                        <Eye className="h-4 w-4 opacity-70" /> Preview
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={`/dashboard/forms/${form.id}/analytics`}
+                        className="flex items-center gap-2 cursor-pointer"
+                      >
+                        <BarChart3 className="h-4 w-4 opacity-70" /> Analytics
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={`/dashboard/forms/${form.id}/responses`}
+                        className="flex items-center gap-2 cursor-pointer"
+                      >
+                        <FileText className="h-4 w-4 opacity-70" /> Responses
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => handleCopyLink(form.slug)}
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      <ExternalLink className="h-4 w-4 opacity-70" /> Copy Link
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => handleDeleteForm(form.id)}
+                      className="text-destructive focus:bg-destructive/10 focus:text-destructive flex items-center gap-2 cursor-pointer"
+                    >
+                      <Trash2 className="h-4 w-4" /> Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
 
+              {/* Middle: Title & Description */}
+              <div className="flex-1 mb-6">
                 <Link
                   href={`/dashboard/forms/${form.id}/builder`}
-                  className="inline-block max-w-full"
+                  className="block mb-2 group/title"
                 >
-                  <h3 className="font-semibold font-serif text-lg text-foreground hover:text-primary transition-colors line-clamp-1  tracking-tight">
+                  <h3 className="font-serif text-lg font-semibold text-foreground group-hover/title:text-primary transition-colors line-clamp-1 tracking-tight">
                     {form.title}
                   </h3>
                 </Link>
-                <div className="flex items-center gap-2.5 mt-1.5">
-                  <span
-                    className={`text-xs px-2.5 py-0.5 font-medium rounded-full ${getVisibilityStyles(
-                      form.visibility,
-                    )}`}
-                  >
-                    {form.visibility[0]?.toUpperCase() + form.visibility.slice(1)}
-                  </span>
-                  <span className="text-xs text-muted-foreground/80">
-                    Created{" "}
-                    {new Date(form.createdAt).toLocaleDateString(undefined, {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </span>
-                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                  {form.description || "No description provided."}
+                </p>
+              </div>
 
-                <div className="flex items-center justify-between mt-5 pt-4 border-t border-border/60">
-                  <div className="flex items-baseline gap-1 text-sm">
-                    <Users className="h-4 w-4 text-muted-foreground self-center mr-1" />
-                    <span className="text-foreground font-semibold">{form.responseCount}</span>
-                    <span className="text-muted-foreground text-xs">responses</span>
-                  </div>
+              {/* Bottom: Date & Responses */}
+              <div className="pt-4 border-t border-border flex items-center justify-between mt-auto">
+                <span className="text-xs text-muted-foreground">
+                  {new Date(form.createdAt).toLocaleDateString(undefined, {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </span>
+
+                <div className="flex items-center gap-1.5 text-sm">
+                  <Users className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span className="font-semibold text-foreground">{form.responseCount}</span>
+                  <span className="text-muted-foreground text-[10px] uppercase font-bold">
+                    Responses
+                  </span>
                 </div>
               </div>
             </motion.div>

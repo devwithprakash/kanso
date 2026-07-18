@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import { GlobalProviders } from "@/providers/global";
+import { Toaster } from "sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -34,6 +35,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <body className="font-sans antialiased">
+          <Toaster />
           <GlobalProviders>
             {children}
             {process.env.NODE_ENV === "production" && <Analytics />}

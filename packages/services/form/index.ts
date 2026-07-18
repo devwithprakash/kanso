@@ -392,10 +392,21 @@ const getAllPublicForms = async () => {
       title: formsTable.title,
       description: formsTable.description,
       slug: formsTable.slug,
+      visibility: formsTable.visibility,
       createdAt: formsTable.createdAt,
+      totalResponses: count(formResponsesTable.id),
     })
     .from(formsTable)
-    .where(eq(formsTable.visibility, "public" as any));
+    .leftJoin(formResponsesTable, eq(formsTable.id, formResponsesTable.formId))
+    .where(eq(formsTable.visibility, "public"))
+    .groupBy(
+      formsTable.id,
+      formsTable.title,
+      formsTable.description,
+      formsTable.slug,
+      formsTable.visibility,
+      formsTable.createdAt,
+    );
 
   return result;
 };

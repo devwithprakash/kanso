@@ -1,23 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Search,
-  Sparkles,
-  ArrowUpRight,
-  Calendar as CalendarIcon,
-  ExternalLink,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { AnimatePresence } from "framer-motion";
+import { Search, Sparkles } from "lucide-react";
 import { Nav } from "@/components/landing/navbar";
 import { useGetAllPublicForms } from "@/hooks/form/use-forms";
+import ExploreFormCard from "@/components/landing/explore-form-card";
+import { ExploreFormCardSkeleton } from "@/components/landing/explore-form-skeleton";
+import { NoForms } from "@/components/dashboard/no-forms";
 
 export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory] = useState("All");
 
-  const { data: publicForms } = useGetAllPublicForms();
+  const { data: publicForms, isLoading } = useGetAllPublicForms();
 
   const filteredForms = (publicForms ?? []).filter((form) => {
     const matchesSearch =
@@ -28,6 +24,8 @@ export default function ExplorePage() {
 
     return matchesSearch && matchesCategory;
   });
+
+  const hashForms = filteredForms && filteredForms.length > 0;
 
   return (
     <>
@@ -64,48 +62,19 @@ export default function ExplorePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <AnimatePresence mode="popLayout">
-              {filteredForms.map((form) => (
-                <motion.div
-                  key={form.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="group flex flex-col bg-card rounded-2xl border border-border/50 p-5 hover:border-primary/50 transition-all h-full"
-                >
-                  <div className="flex-1">
-                    <div className="flex justify-between items-start mb-3">
-                      {form.visibility === "public" && (
-                        <span className="text-[10px] text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full font-medium">
-                          Live
-                        </span>
-                      )}
-                    </div>
-
-                    <h3 className="font-serif text-lg font-semibold mb-2 truncate">{form.title}</h3>
-                    <p className="text-xs text-muted-foreground line-clamp-3 mb-4">
-                      {form.description || "No description provided."}
-                    </p>
-                  </div>
-
-                  <div className="pt-4 border-t border-border/30 flex items-center justify-between mt-auto">
-                    <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-                      <CalendarIcon className="h-3 w-3" />
-                      {new Date(form.createdAt).toLocaleDateString()}
-                    </div>
-
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="rounded-x cursor-pointer text-xs h-8"
-                      onClick={() => window.open(`/forms/${form.slug}`, "_blank")}
-                    >
-                      <ExternalLink className="ml-1 h-3 w-3" /> Fill Form
-                    </Button>
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
+            {isLoading ? (
+              Array.from({ length: 6 }).map((_, index) => <ExploreFormCardSkeleton key={index} />)
+            ) : hashForms ? (
+              <AnimatePresence mode="popLayout">
+                {filteredForms.map((form) => (
+                  <ExploreFormCard key={form.id} form={form} />
+                ))}
+              </AnimatePresence>
+            ) : (
+              <div className="col-span-full">
+                <NoForms />
+              </div>
+            )}
           </div>
         </div>
       </div>
