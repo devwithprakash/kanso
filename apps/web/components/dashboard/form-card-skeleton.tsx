@@ -1,29 +1,25 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-export const FormCardSkeleton = () => {
+export function FormCardSkeleton() {
   return (
-    <div className="bg-card rounded-xl border border-border/50 overflow-hidden">
-      <div className="p-5">
-        <div className="flex items-center justify-between mb-4">
-          <Skeleton className="h-10 w-10 rounded-lg" />
-          <Skeleton className="h-8 w-8 rounded-md" />
-        </div>
+    <div className="bg-card rounded-2xl border border-border p-5 flex flex-col h-full animate-pulse">
+      <div className="flex items-center justify-between mb-4">
+        <Skeleton className="h-5 w-16 rounded-full" />
+        <Skeleton className="h-8 w-8 rounded-md" />
+      </div>
 
-        <Skeleton className="h-6 w-3/4 mb-3" />
-
-        <div className="flex items-center gap-2.5">
-          <Skeleton className="h-5 w-16 rounded-full" />
-          <Skeleton className="h-4 w-28" />
+      <div className="flex-1 mb-6 space-y-3">
+        <Skeleton className="h-7 w-3/4" />
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-5/6" />
         </div>
+      </div>
 
-        <div className="flex items-center justify-between mt-5 pt-4 border-t border-border/60">
-          <div className="flex items-center gap-2">
-            <Skeleton className="h-4 w-4 rounded-sm" />
-            <Skeleton className="h-5 w-8" />
-            <Skeleton className="h-4 w-16" />
-          </div>
-        </div>
+      <div className="pt-4 border-t border-border flex items-center justify-between mt-auto">
+        <Skeleton className="h-4 w-24" />
+        <Skeleton className="h-4 w-20" />
       </div>
     </div>
   );
-};
+}

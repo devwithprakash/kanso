@@ -16,19 +16,14 @@ export default function Index() {
         <Nav />
       </div>
       <main>
-        {/* 1. Hero — no showcase, clean copy + stats */}
         <Hero />
 
-        {/* 2. Features grid — unchanged */}
         <Features />
 
-        {/* 3. Explore — 4 live form template cards */}
         <ExploreSection />
 
-        {/* 4. Pricing — unchanged */}
         <Pricing />
 
-        {/* 5. CTA banner — above footer */}
         <CallToAction />
       </main>
       <Footer />

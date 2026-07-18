@@ -13,6 +13,7 @@ import {
   Eye,
   FileText,
   MoreHorizontal,
+  Pencil,
   Trash2,
   Users,
 } from "lucide-react";
@@ -83,7 +84,7 @@ export default function FormCard({ form, index, handleCopyLink, handleDeleteForm
                 href={`/dashboard/forms/${form.id}/edit`}
                 className="flex items-center gap-2 cursor-pointer"
               >
-                <FileText className="h-4 w-4 opacity-70" /> Edit
+                <Pencil className="h-4 w-4 opacity-70" /> Edit
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>

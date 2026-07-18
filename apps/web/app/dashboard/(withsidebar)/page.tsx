@@ -2,7 +2,17 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { FileText, Users, TrendingUp, Eye, Plus, ArrowRight, MoreHorizontal } from "lucide-react";
+import {
+  FileText,
+  Users,
+  TrendingUp,
+  Eye,
+  ArrowRight,
+  MoreHorizontal,
+  Trash2,
+  Pencil,
+  BarChart3,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,9 +25,11 @@ import { useDashboardStats } from "@/hooks/analytics/use-analytics";
 import { StatsCardsSkeleton } from "@/components/dashboard/stats-cards-skeleton";
 import StatCard from "@/components/dashboard/stat-card";
 import { NoForms } from "@/components/dashboard/no-forms";
+import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
+import { DashboardFormSkeleton } from "@/components/dashboard/dashboard-forms-skeleton";
 
 export default function DashboardPage() {
-  const { data: recentForms } = useGetAllForms();
+  const { data: recentForms, isLoading: formsLoading } = useGetAllForms();
 
   const { deleteMutation } = useDeleteForm();
   const { data: analytics, isLoading } = useDashboardStats();
@@ -81,9 +93,9 @@ export default function DashboardPage() {
       )}
 
       <div className="bg-card rounded-xl border border-border/50 overflow-hidden">
-        <div className="flex items-center justify-between p-5 border-b border-border/50">
-          <h2 className="font-serif text-lg text-foreground">Recent Forms</h2>
-          {hasForms && (
+        {hasForms && (
+          <div className="flex items-center justify-between p-5 border-b border-border/50">
+            <h2 className="font-serif text-lg text-foreground">Recent Forms</h2>
             <Link
               href="/dashboard/forms"
               className="text-sm text-primary hover:underline flex items-center gap-1"
@@ -91,65 +103,75 @@ export default function DashboardPage() {
               View all
               <ArrowRight className="h-4 w-4" />
             </Link>
-          )}
-        </div>
+          </div>
+        )}
 
-        {hasForms ? (
+        {formsLoading ? (
+          Array.from({ length: 6 }).map((_, index) => <DashboardFormSkeleton key={index} />)
+        ) : hasForms ? (
           <div className="divide-y divide-border/50">
             {recentForms?.map((form) => (
               <div
                 key={form.id}
-                className="flex items-center justify-between p-4 hover:bg-secondary/30 transition-colors"
+                className="flex items-center justify-between p-4 rounded-lg border border-border/50 hover:bg-secondary/30 transition-all group"
               >
                 <div className="flex items-center gap-4 min-w-0">
-                  <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
                     <FileText className="h-5 w-5 text-primary" />
                   </div>
                   <div className="min-w-0">
                     <Link
                       href={`/dashboard/forms/${form.id}`}
-                      className="text-sm font-medium text-foreground hover:text-primary truncate block"
+                      className="text-sm font-semibold font-serif text-foreground hover:text-primary truncate block"
                     >
                       {form.title}
                     </Link>
-                    <p className="text-xs text-muted-foreground">
-                      {form.responseCount} responses · Updated {form.updatedAt}
+                    <p className="text-xs text-muted-foreground flex items-center gap-2">
+                      <span>{form.responseCount} responses</span>
+                      <span>•</span>
+                      <span>Updated {form.updatedAt}</span>
                     </p>
                   </div>
                 </div>
+
                 <div className="flex items-center gap-3">
                   <span
-                    className={`text-xs px-2 py-1 rounded-full ${
+                    className={`text-[10px] px-2.5 py-0.5 font-bold uppercase tracking-wider rounded-full border ${
                       form.visibility === "public"
-                        ? "bg-primary/10 text-primary"
-                        : form.visibility === "private"
-                          ? "bg-muted text-muted-foreground"
-                          : "bg-chart-4/50 text-foreground"
+                        ? "bg-primary/5 border-primary/10 text-primary"
+                        : "bg-muted/50 border-transparent text-muted-foreground"
                     }`}
                   >
                     {form.visibility}
                   </span>
+
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 cursor-pointer hover:bg-secondary"
+                      >
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
+                    <DropdownMenuContent align="end" className="w-40">
                       <DropdownMenuItem asChild>
-                        <Link href={`/dashboard/forms/${form.id}/builder`}>Edit</Link>
+                        <Link href={`/dashboard/forms/${form.id}/builder`}>
+                          <Pencil className="mr-2 h-4 w-4" /> Edit
+                        </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href={`/dashboard/forms/${form.id}/analytics`}>Analytics</Link>
+                        <Link href={`/dashboard/forms/${form.id}/analytics`}>
+                          <BarChart3 className="mr-2 h-4 w-4" /> Analytics
+                        </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href={`/dashboard/forms/${form.id}/edit`}>Settings</Link>
-                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
                       <DropdownMenuItem
                         onClick={() => handleDeleteForm(form.id)}
-                        className="text-destructive"
+                        className="text-destructive focus:text-destructive"
                       >
-                        Delete
+                        <Trash2 className="mr-2 h-4 w-4" /> Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
