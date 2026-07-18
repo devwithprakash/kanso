@@ -119,7 +119,7 @@ export default function DashboardPage() {
                   <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
                     <FileText className="h-5 w-5 text-primary" />
                   </div>
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex flex-col gap-2">
                     <Link
                       href={`/dashboard/forms/${form.id}`}
                       className="text-sm font-semibold font-serif text-foreground hover:text-primary truncate block"
@@ -127,9 +127,10 @@ export default function DashboardPage() {
                       {form.title}
                     </Link>
                     <p className="text-xs text-muted-foreground flex items-center gap-2">
-                      <span>{form.responseCount} responses</span>
-                      <span>•</span>
-                      <span>Updated {form.updatedAt}</span>
+                      <span>{form.responseCount}</span>
+                      <Users className="w-3 h-3" />
+
+                      <span>{new Date(form.createdAt).toLocaleDateString("en-GB")}</span>
                     </p>
                   </div>
                 </div>
