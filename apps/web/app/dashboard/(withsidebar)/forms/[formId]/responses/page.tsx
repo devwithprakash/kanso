@@ -15,6 +15,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { ResponseField } from "@/types/form";
+import { exportFormResponsesCsv } from "@/lib/csv";
 
 export default function FormResponsesPage() {
   const params = useParams();
@@ -88,6 +89,7 @@ export default function FormResponsesPage() {
 
         {responses.length > 0 && (
           <Button
+            onClick={() => exportFormResponsesCsv(form?.title, data)}
             variant="outline"
             size="sm"
             className="bg-card border-border/50 self-start sm:self-auto"
