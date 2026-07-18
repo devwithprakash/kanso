@@ -1,22 +1,14 @@
 import { z } from "zod";
 
-// Note: getFormAnalyticsInputModel was removed — both analytics procedures
-// (getFormAnalytics, getDashboardAnalytics) take no query input; they derive
-// the user identity from ctx.userId populated by the Clerk middleware.
+export const getFormAnalyticsInputModel = z.object({
+  formId: z.string(),
+});
 
 export const getFormAnalyticsOutputModel = z.object({
-  responsesPerForm: z.array(
-    z.object({
-      formTitle: z.string(),
-      responseCount: z.number(),
-    }),
-  ),
-  responsesOverTime: z.array(
-    z.object({
-      date: z.string(),
-      count: z.number(),
-    }),
-  ),
+  totalResponses: z.number(),
+  todaysResponses: z.number(),
+  lastResponseAt: z.date().nullable(),
+  averageResponsesPerDay: z.number(),
 });
 
 export const getDashboardAnalyticsOutputModel = z.object({
@@ -25,3 +17,15 @@ export const getDashboardAnalyticsOutputModel = z.object({
   totalResponses: z.coerce.number(),
   completionRate: z.coerce.number(),
 });
+
+export const getFormSubmissionsOverTimeInputModel = z.object({
+  formId: z.string(),
+  days: z.number(),
+});
+
+export const getFormSubmissionsOverTimeOutputModel = z.array(
+  z.object({
+    date: z.string(),
+    count: z.number(),
+  }),
+);

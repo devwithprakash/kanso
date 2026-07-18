@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useDeleteForm, useGetAllForms } from "@/hooks/form/use-forms";
-import { useDashboardAnalytics } from "@/hooks/analytics/use-analytics";
+import { useDashboardStats } from "@/hooks/analytics/use-analytics";
 import { StatsCardsSkeleton } from "@/components/dashboard/stats-cards-skeleton";
 import StatCard from "@/components/dashboard/stat-card";
 import { NoForms } from "@/components/dashboard/no-forms";
@@ -20,7 +20,7 @@ export default function DashboardPage() {
   const { data: recentForms } = useGetAllForms();
 
   const { deleteMutation } = useDeleteForm();
-  const { data: analytics, isLoading } = useDashboardAnalytics();
+  const { data: analytics, isLoading } = useDashboardStats();
 
   const handleDeleteForm = async (formId: string) => {
     await deleteMutation.mutateAsync({ formId });
@@ -158,7 +158,7 @@ export default function DashboardPage() {
             ))}
           </div>
         ) : (
-          <NoForms/>
+          <NoForms />
         )}
       </div>
     </div>

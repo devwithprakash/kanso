@@ -1,7 +1,7 @@
 import { trpc } from "@/trpc/client";
 
-export const useFormAnalytics = () => {
-  const { data, error, isLoading } = trpc.analytics.getFormAnalytics.useQuery();
+export const useFormStats = (formId: string) => {
+  const { data, error, isLoading } = trpc.analytics.getFormStats.useQuery({ formId });
 
   return {
     data,
@@ -10,12 +10,25 @@ export const useFormAnalytics = () => {
   };
 };
 
-export const useDashboardAnalytics = ()=>{
-  const {data, error, isLoading} = trpc.analytics.getDashboardAnalytics.useQuery()
+export const useFormSubmissionsOverTime = (formId: string, days: number) => {
+  const { data, error, isLoading } = trpc.analytics.getFormSubmissionsOverTime.useQuery({
+    formId,
+    days,
+  });
 
   return {
     data,
     error,
-    isLoading
-  }
-}
+    isLoading,
+  };
+};
+
+export const useDashboardStats = () => {
+  const { data, error, isLoading } = trpc.analytics.getDashboardStats.useQuery();
+
+  return {
+    data,
+    error,
+    isLoading,
+  };
+};

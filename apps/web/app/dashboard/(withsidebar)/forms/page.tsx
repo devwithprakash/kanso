@@ -39,12 +39,11 @@ import { NoForms } from "@/components/dashboard/no-forms";
 export default function FormsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL
+  const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL;
   const router = useRouter();
 
   const { data: forms, isLoading } = useGetAllForms();
   const { deleteMutation } = useDeleteForm();
-
 
   const filteredForms =
     forms?.filter((form) => {
@@ -175,10 +174,19 @@ export default function FormsPage() {
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
                         <Link
-                          href={`/dashboard/forms/${form.id}/responses`}
+                          href={`/dashboard/forms/${form.id}/analytics`}
                           className="flex items-center gap-2 cursor-pointer"
                         >
                           <BarChart3 className="h-4 w-4 opacity-70" />
+                          Analytics
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href={`/dashboard/forms/${form.id}/responses`}
+                          className="flex items-center gap-2 cursor-pointer"
+                        >
+                          <FileText className="h-4 w-4 opacity-70" />
                           Responses
                         </Link>
                       </DropdownMenuItem>
