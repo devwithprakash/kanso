@@ -1,4 +1,4 @@
-import { string, z } from "zod";
+import { z } from "zod";
 
 // common schemas
 const themeEnum = z.enum([
@@ -24,7 +24,9 @@ const fieldTypeEnum = z.enum([
   "file",
 ]);
 
-// -----form field "INPUT" schema--------
+
+
+// create form schema STARTS
 const formFieldOptionsInput = z.object({
   label: z.string().min(1).max(100),
   value: z.string().min(1).max(100),
@@ -49,9 +51,7 @@ export const createFormInputModel = z.object({
   description: z.string().describe("description of the form").nullable().optional(),
   formFieldData: z.array(formFieldInput),
 });
-// -----form field input schema--------
 
-//--------------------------------------------------------
 const formFieldOptionOutput = z.object({
   label: z.string(),
   value: z.string(),
@@ -79,8 +79,8 @@ export const createFormOutputModel = z.object({
   visibility: z.enum(["public", "private", "unlisted"]),
   fieldData: z.array(formFieldOutput),
 });
-//--------------------------------------------------------
 
+// update form schema STARTS
 export const updateFormInputModel = z.object({
   formId: z.string(),
   title: z.string(),
@@ -99,24 +99,15 @@ export const updateFormOutputModel = z.object({
   formFieldData: z.array(formFieldOutput),
 });
 
-// delete from schema
+// delete form schema STARTS
 export const deleteFormInputModel = z.object({
   formId: z.string().describe("id of the form"),
 });
-
 export const deleteFormOutputModel = z.object({
-  id: z.string(),
-  title: z.string(),
-  description: z.string().nullable(),
-  theme: themeEnum,
-  visibility: z.enum(["public", "private", "unlisted"]),
-  createdBy: z.string(),
-  slug: z.string(),
-  createdAt: z.date(),
-  updatedAt: z.date().nullable(),
+  title: z.string().describe("Title of the form"),
 });
 
-// get all forms schema
+// fetch all forms schema STARTS
 export const getAllFormsOutputModel = z.array(
   z.object({
     id: z.string(),
@@ -136,8 +127,7 @@ export const getAllFormsOutputModel = z.array(
   }),
 );
 
-// get form details by id schema
-
+// fetch form by ID schema STARTS
 export const getFormByIdInputModel = z.object({
   formId: z.string().describe("id of the form"),
 });
@@ -183,8 +173,7 @@ export const getFormByIdOutputModel = z.object({
   ),
 });
 
-// get form by slug
-
+// fetch form by SLUG schema STARTS
 export const getFormBySlugInputModel = z.object({
   slug: z.string(),
 });
@@ -199,20 +188,13 @@ export const getFormBySlugOutputModel = z.object({
   formFields: z.array(formFieldModel),
 });
 
-// get all public forms
+// fetch all public forms schema STARTS
 export const getAllPublicFormOutputModel = z.array(
   z.object({
     id: z.string(),
     title: z.string(),
     description: z.string().nullable(),
-
-    theme: themeEnum,
-    visibility: z.enum(["public", "private", "unlisted"]),
-
     slug: z.string(),
-    createdBy: z.string(),
-
     createdAt: z.date(),
-    updatedAt: z.date().nullable(),
   }),
 );

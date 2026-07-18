@@ -98,7 +98,7 @@ export const useDeleteForm = () => {
   const utils = trpc.useUtils();
 
   const deleteMutation = trpc.form.delete.useMutation({
-    onSuccess: (data) => {
+    onSuccess: () => {
       utils.form.invalidate();
     },
     onError: (error) => {

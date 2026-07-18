@@ -13,14 +13,14 @@ const fieldTypeEnum = z.enum([
   "file",
 ]);
 
-const reponseAnswerInput = z.object({
+const responseAnswerInput = z.object({
   fieldId: z.string(),
   value: z.string(),
 });
 
 export const createResponseInputModel = z.object({
   formId: z.string(),
-  answer: z.array(reponseAnswerInput),
+  answer: z.array(responseAnswerInput),
 });
 
 const responseAnswerOutputModel = z.object({

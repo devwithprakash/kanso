@@ -1,4 +1,4 @@
-import db, { and, count, eq, inArray, like, notInArray } from "@repo/database";
+import db, { and, count, eq, like, notInArray } from "@repo/database";
 import {
   createFormInput,
   CreateFormInputType,
@@ -51,14 +51,12 @@ async function getUniqueSlug(title: string): Promise<string> {
 const createForm = async (payload: CreateFormInputType, userId: string) => {
   const { title, description, formFieldData } = await createFormInput.parseAsync(payload);
 
-  console.log("Fielddata", formFieldData);
-
   const dbUser = await db.select().from(usersTable).where(eq(usersTable.clerkUserId, userId));
 
   const user = dbUser[0];
 
   if (!user) {
-    throw new Error("User not found");
+    throwTRPCError("NOT_FOUND", "User not found");
   }
 
   const uniqueSlug = await getUniqueSlug(title);
@@ -81,7 +79,7 @@ const createForm = async (payload: CreateFormInputType, userId: string) => {
   const createdForm = form[0];
 
   if (!createdForm) {
-    throw new Error("Failed to create form");
+    throwTRPCError("INTERNAL_SERVER_ERROR", "Failed to create form");
   }
 
   return db.transaction(async (tx) => {
@@ -295,7 +293,9 @@ const deleteForm = async (payload: DeleteFormInputType, userId: string) => {
   const result = await db
     .delete(formsTable)
     .where(and(eq(formsTable.id, formId), eq(formsTable.createdBy, dbUser.id)))
-    .returning();
+    .returning({
+      title: formsTable.title,
+    });
 
   const deletedForm = result[0];
 
@@ -387,7 +387,13 @@ const getFormById = async (payload: GetSingleFormDetailsInputType, userId: strin
 
 const getAllPublicForms = async () => {
   const result = await db
-    .select()
+    .select({
+      id: formsTable.id,
+      title: formsTable.title,
+      description: formsTable.description,
+      slug: formsTable.slug,
+      createdAt: formsTable.createdAt,
+    })
     .from(formsTable)
     .where(eq(formsTable.visibility, "public" as any));
 
