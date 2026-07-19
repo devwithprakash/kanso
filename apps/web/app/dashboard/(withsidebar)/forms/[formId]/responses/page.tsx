@@ -16,11 +16,15 @@ import {
 } from "@/components/ui/dialog";
 import { ResponseField } from "@/types/form";
 import { exportFormResponsesCsv } from "@/lib/csv";
+import ResponseCardSkeleton from "@/components/dashboard/response-card-skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
+
+type FormResponse = NonNullable<ReturnType<typeof useGetFormResponse>["data"]>["responses"][number];
 
 export default function FormResponsesPage() {
   const params = useParams();
   const formId = params.formId as string;
-  const [selectedResponse, setSelectedResponse] = useState<(typeof responses)[number] | null>(null);
+  const [selectedResponse, setSelectedResponse] = useState<FormResponse | null>(null);
 
   const { data, error, isLoading } = useGetFormResponse(formId);
   const { form } = useGetForm(formId);
@@ -42,28 +46,31 @@ export default function FormResponsesPage() {
 
   if (isLoading) {
     return (
-      <div className="flex h-[70vh] flex-col items-center justify-center gap-3 text-muted-foreground animate-in fade-in">
-        <Loader2 className="h-7 w-7 animate-spin text-primary" />
-        <p className="text-sm font-medium">Retrieving form submission records...</p>
-      </div>
-    );
-  }
+      <div className="space-y-6 pb-12 animate-in fade-in duration-300">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-3">
+            <Skeleton className="h-4 w-28" />
+            <Skeleton className="h-9 w-64" />
+            <Skeleton className="h-4 w-96 max-w-full" />
+          </div>
 
-  if (error || !data) {
-    return (
-      <div className="p-6 border border-destructive/20 bg-destructive/5 rounded-xl text-destructive text-sm flex items-center gap-3 max-w-xl mx-auto mt-12 animate-in slide-in-from-top-4">
-        <AlertCircle className="h-5 w-5 shrink-0" />
-        <div>
-          <h5 className="font-semibold">Failed to load responses</h5>
-          <p className="text-xs opacity-90 mt-0.5">
-            The requested form layout might not exist or you lack sufficient access permissions.
-          </p>
+          <Skeleton className="h-9 w-28 rounded-md" />
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <ResponseCardSkeleton key={i} />
+          ))}
         </div>
       </div>
     );
   }
 
+  if (!data) {
+    return null;
+  }
   const { fields, responses } = data;
+  const hasResponses = responses && responses.length > 0;
 
   return (
     <div className="space-y-6 pb-12 animate-in fade-in duration-300 max-w-full min-w-0 overflow-hidden">
@@ -99,24 +106,15 @@ export default function FormResponsesPage() {
         )}
       </div>
 
-      {responses.length === 0 ? (
-        <div className="flex flex-col items-center justify-center text-center p-12 border border-dashed border-border/60 rounded-2xl bg-card/30 min-h-[400px]">
-          <div className="h-12 w-12 rounded-xl bg-muted/50 flex items-center justify-center text-muted-foreground mb-4">
-            <Inbox className="h-6 w-6" />
-          </div>
-          <h3 className="text-base font-semibold text-foreground">No submissions yet</h3>
-          <p className="text-sm text-muted-foreground max-w-sm mt-1">
-            Once users start filling out this form layout interface shell, their answers will map
-            safely right here.
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-full min-w-0">
-          {responses.map((resp) => {
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-full min-w-0">
+        {isLoading ? (
+          Array.from({ length: 6 }).map((_, index) => <ResponseCardSkeleton />)
+        ) : hasResponses ? (
+          responses.map((resp) => {
             const preview = fields
               .map((field) => resp.answers.find((ans) => ans.fieldId === field.id))
               .filter((ans) => ans?.value)
-              .slice(0, 2);
+              .slice(0, 1);
 
             return (
               <button
@@ -125,16 +123,18 @@ export default function FormResponsesPage() {
                 className="text-left rounded-xl border border-border/50 bg-card p-4 shadow-sm hover:border-border hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group"
               >
                 <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <Calendar className="h-3 w-3" />
-                    {new Date(resp.submittedAt).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                  <div className="flex items-center gap-2 rounded-full bg-muted/40 px-3 py-1">
+                    <Calendar className="h-3.5 w-3.5 text-primary" />
+
+                    <span className="text-xs font-medium text-muted-foreground">
+                      {new Date(resp.submittedAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </span>
                   </div>
-                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground/60 group-hover:text-foreground transition-colors">
+                  <span className="text-[10px] cursor-pointer uppercase tracking-wider text-muted-foreground/60 group-hover:text-foreground transition-colors">
                     View →
                   </span>
                 </div>
@@ -165,9 +165,20 @@ export default function FormResponsesPage() {
                 )}
               </button>
             );
-          })}
-        </div>
-      )}
+          })
+        ) : (
+          <div className="flex flex-col items-center justify-center text-center p-12 border border-dashed border-border/60 rounded-2xl bg-card/30 min-h-[400px]">
+            <div className="h-12 w-12 rounded-xl bg-muted/50 flex items-center justify-center text-muted-foreground mb-4">
+              <Inbox className="h-6 w-6" />
+            </div>
+            <h3 className="text-base font-semibold text-foreground">No submissions yet</h3>
+            <p className="text-sm text-muted-foreground max-w-sm mt-1">
+              Once users start filling out this form layout interface shell, their answers will map
+              safely right here.
+            </p>
+          </div>
+        )}
+      </div>
 
       <Dialog open={!!selectedResponse} onOpenChange={(open) => !open && setSelectedResponse(null)}>
         <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">

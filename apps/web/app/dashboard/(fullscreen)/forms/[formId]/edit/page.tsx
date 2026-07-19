@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, FileSearch, Loader2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Stepper } from "@/components/dashboard/stepper";
 import { DetailsStep } from "@/components/dashboard/details-step";
@@ -16,6 +16,8 @@ import { FieldModal } from "@/components/dashboard/field-model";
 import { Nav } from "@/components/landing/navbar";
 import { PublishedInline } from "@/components/dashboard/thankyou-screen";
 import { useParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 type StepIdx = 0 | 1 | 2 | 3;
 
@@ -125,16 +127,25 @@ export default function FormEditPage() {
   };
 
   if (isLoading) {
-    return <div>Loading form data...</div>;
-  }
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background px-6">
+        <div className="flex max-w-sm flex-col items-center text-center">
+          <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-muted">
+            <Loader2 className="h-7 w-7 animate-spin text-primary" />
+          </div>
 
-  if (!form) {
-    return <div>Form not found.</div>;
+          <h2 className="text-lg font-semibold tracking-tight">Loading your form</h2>
+
+          <p className="mt-2 text-sm text-muted-foreground">
+            Retrieving your form details and preparing the editor.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Ambient background — same warm zen wash as landing */}
       <div className="pointer-events-none fixed inset-0 -z-10">
         <div className="absolute inset-0 bg-[radial-gradient(60%_40%_at_20%_0%,oklch(0.92_0.03_120/0.6),transparent_60%),radial-gradient(50%_35%_at_80%_10%,oklch(0.9_0.04_75/0.55),transparent_60%)]" />
       </div>

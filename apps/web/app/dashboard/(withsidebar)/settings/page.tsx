@@ -10,7 +10,7 @@ import { useClerk } from "@clerk/nextjs";
 import Image from "next/image";
 
 export default function SettingsPage() {
-  const { me } = useMe();
+  const { me, isLoading } = useMe();
   const { signOut } = useClerk();
 
   const handleLogout = () => {

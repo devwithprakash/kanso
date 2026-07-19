@@ -158,7 +158,7 @@ export default function DashboardPage() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-40">
                       <DropdownMenuItem asChild>
-                        <Link href={`/dashboard/forms/${form.id}/builder`}>
+                        <Link href={`/dashboard/forms/${form.id}/edit`}>
                           <Pencil className="mr-2 h-4 w-4" /> Edit
                         </Link>
                       </DropdownMenuItem>

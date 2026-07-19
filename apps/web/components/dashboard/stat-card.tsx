@@ -3,7 +3,7 @@ import React from "react";
 
 type Stat = {
   label: string;
-  value: number | undefined;
+  value: string | number | undefined;
   color: string;
   icon: React.ElementType;
 };

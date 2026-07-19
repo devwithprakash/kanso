@@ -68,7 +68,6 @@ export function DashboardSidebar() {
           })}
         </nav>
 
-        <CreateFormDialog onSubmit={(title, desc) => submitForm(title, desc, [])} />
 
         <div className="p-4 border-t border-border">
           <div className="flex items-center gap-3">
@@ -86,7 +85,7 @@ export function DashboardSidebar() {
               <p className="text-xs text-muted-foreground truncate">{me?.email}</p>
             </div>
 
-            <Button onClick={handleLogout} variant="ghost" size="icon" className="h-8 w-8">
+            <Button onClick={handleLogout} variant="ghost" size="icon" className="h-8 w-8 cursor-pointer">
               <LogOut className="h-4 w-4 text-muted-foreground" />
             </Button>
           </div>
