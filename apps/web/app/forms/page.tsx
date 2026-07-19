@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import { FormPreview } from "@/components/forms/form-preview"
 
-export const metadata = {
-  title: "Customer Feedback Survey — Kanso",
+export const metadata: Metadata = {
+  title: "Submit a Form — Kanso",
+  description: "Submit your response to a Kanso form. Easy, fast, and secure.",
 }
+
 
 const getFormData = (id: string) => ({
   id,

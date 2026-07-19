@@ -1,8 +1,11 @@
+import type { Metadata } from "next"
 import { FormPreview } from "@/components/forms/form-preview"
 
-export const metadata = {
-  title: "Form Preview — Kanso",
+export const metadata: Metadata = {
+  title: "Form Preview",
+  description: "Preview your form before publishing it. See exactly how respondents will experience your form.",
 }
+
 
 // Mock form data - in real app this would come from database
 const getFormData = (id: string) => ({

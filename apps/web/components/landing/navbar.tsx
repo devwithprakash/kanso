@@ -11,7 +11,6 @@ const DOCS_URL = process.env.NEXT_PUBLIC_API_DOCS_URL ?? "#";
 const navLinks = [
   { href: "/#features", label: "Features" },
   { href: "/explore", label: "Explore" },
-  { href: "/pricing", label: "Pricing" },
 ];
 
 const serif = { fontFamily: "'Fraunces', Georgia, serif" } as const;

@@ -1,13 +1,23 @@
-"use client";
-
-import * as React from "react";
+import type { Metadata } from "next";
 import { Nav } from "@/components/landing/navbar";
 import { Hero } from "@/components/landing/hero-section";
 import { Features } from "@/components/landing/features-grid";
 import { ExploreSection } from "@/components/landing/explore-section";
-import { Pricing } from "@/components/landing/pricing";
 import { CallToAction } from "@/components/landing/call-to-action";
 import { Footer } from "@/components/landing/footer";
+
+export const metadata: Metadata = {
+  title: "Kanso",
+  description:
+    "Create stunning forms with drag-and-drop simplicity. Collect responses, analyze data, and share with anyone. Kanso makes form building effortless.",
+  keywords: ["form builder", "drag and drop", "forms", "survey", "analytics"],
+  openGraph: {
+    title: "Kanso — Build Beautiful Forms in Minutes",
+    description:
+      "Create stunning forms with drag-and-drop simplicity. Collect responses, analyze data, and share with anyone.",
+    type: "website",
+  },
+};
 
 export default function Index() {
   return (
@@ -21,8 +31,6 @@ export default function Index() {
         <Features />
 
         <ExploreSection />
-
-        <Pricing />
 
         <CallToAction />
       </main>

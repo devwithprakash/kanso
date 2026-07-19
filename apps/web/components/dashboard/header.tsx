@@ -1,12 +1,12 @@
 "use client"
 
-import { Bell, Search } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 
 export function DashboardHeader() {
   return (
-    <header className="h-16 border-b border-border bg-card flex items-center justify-between px-6 mt-16 lg:mt-0">
+    <header className="hidden md:flex h-16 border-b border-border bg-card items-center justify-between px-6 lg:mt-0">
+
       <div className="flex items-center gap-4 flex-1">
         <div className="relative max-w-md w-full hidden md:block">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -15,13 +15,6 @@ export function DashboardHeader() {
             className="pl-10 bg-secondary/50 border-0 focus-visible:ring-1 focus-visible:ring-primary"
           />
         </div>
-      </div>
-
-      <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" className="relative">
-          <Bell className="h-5 w-5 text-muted-foreground" />
-          <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-primary" />
-        </Button>
       </div>
     </header>
   )

@@ -2,11 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, FileText, Settings, Plus, LogOut, Blocks } from "lucide-react";
+import { LayoutDashboard, FileText, Settings, Plus, LogOut, Compass } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { CreateFormDialog } from "../form-builder/create-form-dialog";
-import { useCreateForm } from "@/hooks/form/use-forms";
 import { useMe } from "@/hooks/auth/use-me";
 import { useClerk } from "@clerk/nextjs";
 import Image from "next/image";
@@ -14,7 +12,7 @@ import Image from "next/image";
 const navItems = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/dashboard/forms", icon: FileText, label: "Forms" },
-  { href: "/explore", icon: Blocks, label: "Templates" },
+  { href: "/explore", icon: Compass, label: "Explore" },
   { href: "/dashboard/settings", icon: Settings, label: "Settings" },
 ];
 
@@ -28,12 +26,9 @@ export function DashboardSidebar() {
     signOut();
   };
 
-  const { submitForm } = useCreateForm();
-
   return (
     <>
       <aside className="hidden lg:flex fixed inset-y-0 left-0 z-50 w-64 flex-col bg-card border-r border-border">
-        {/* Logo */}
         <div className="flex h-16 items-center gap-2 px-6 border-b border-border">
           <Link href="/" className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
@@ -68,7 +63,6 @@ export function DashboardSidebar() {
           })}
         </nav>
 
-
         <div className="p-4 border-t border-border">
           <div className="flex items-center gap-3">
             <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center">
@@ -85,7 +79,12 @@ export function DashboardSidebar() {
               <p className="text-xs text-muted-foreground truncate">{me?.email}</p>
             </div>
 
-            <Button onClick={handleLogout} variant="ghost" size="icon" className="h-8 w-8 cursor-pointer">
+            <Button
+              onClick={handleLogout}
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 cursor-pointer"
+            >
               <LogOut className="h-4 w-4 text-muted-foreground" />
             </Button>
           </div>
@@ -108,7 +107,7 @@ export function DashboardSidebar() {
         </Link>
       </div>
 
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border flex items-center justify-around py-2">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border flex items-center justify-around pt-2 pb-0">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive =

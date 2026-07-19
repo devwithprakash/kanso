@@ -167,15 +167,21 @@ export default function FormResponsesPage() {
             );
           })
         ) : (
-          <div className="flex flex-col items-center justify-center text-center p-12 border border-dashed border-border/60 rounded-2xl bg-card/30 min-h-[400px]">
-            <div className="h-12 w-12 rounded-xl bg-muted/50 flex items-center justify-center text-muted-foreground mb-4">
-              <Inbox className="h-6 w-6" />
+          <div className="col-span-full">
+            <div className="flex min-h-[400px] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border bg-secondary/20 p-8 text-center">
+              <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                <Inbox className="h-8 w-8 text-primary" />
+              </div>
+
+              <h3 className="mb-2 font-serif text-xl font-semibold text-foreground">
+                No responses yet
+              </h3>
+
+              <p className="max-w-md leading-relaxed text-muted-foreground">
+                This form hasn't received any submissions yet. Once people start filling it out,
+                their responses will appear here automatically.
+              </p>
             </div>
-            <h3 className="text-base font-semibold text-foreground">No submissions yet</h3>
-            <p className="text-sm text-muted-foreground max-w-sm mt-1">
-              Once users start filling out this form layout interface shell, their answers will map
-              safely right here.
-            </p>
           </div>
         )}
       </div>
