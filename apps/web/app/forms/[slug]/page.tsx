@@ -138,43 +138,85 @@ export default function PublicFormPage() {
 
   if (isLoading) {
     return (
-      <div className={`${t.page} items-center`}>
-        <Loader2 className="animate-spin opacity-40 w-6 h-6" />
-      </div>
-    );
-  }
+      <div className={`flex min-h-screen items-center justify-center`}>
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin opacity-60" />
 
-  if (error || !form || form.visibility === "private") {
-    return (
-      <div className={t.page}>
-        <div className="w-full max-w-lg">
-          <div className={`${t.bodyCard} p-10 text-center`}>
-            <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
-              <AlertCircle className="w-5 h-5 text-slate-400" />
-            </div>
-            <p className="font-semibold text-slate-700 mb-1">Form unavailable</p>
-            <p className="text-sm text-slate-400">
-              This form is either private or no longer accepting responses.
-            </p>
+          <div className="space-y-1 text-center">
+            <p className="text-sm font-medium opacity-80">Loading form...</p>
+            <p className="text-xs opacity-50">Please wait a moment</p>
           </div>
         </div>
       </div>
     );
   }
 
+  if (error || !form || form.visibility === "private") {
+    return (
+      <div className={cn(t.page, "items-center")}>
+        {EffectComponent && <EffectComponent />}
+
+        <div className="w-full max-w-md px-6">
+          <div className="w-full max-w-sm">
+            <div className={`${t.bodyCard} px-8 py-8 text-center`}>
+              <div
+                className={`relative mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full ${t.emptyIconWrapper}`}
+              >
+                <AlertCircle className={`h-5 w-5 ${t.emptyIcon}`} />
+              </div>
+
+              <h1 className={`text-xl font-serif font-semibold tracking-tight ${t.emptyTitle}`}>
+                Form unavailable
+              </h1>
+
+              <p className={`mt-2 text-sm leading-6 ${t.emptyDescription}`}>
+                This form has been closed, made private, or is no longer accepting responses.
+              </p>
+
+              <div className={`my-5 h-px ${t.emptyDivider}`} />
+
+              <p className={`text-xs ${t.emptyFooter}`}>
+                Please contact the form owner if you expected access.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
   if (isSubmitted) {
     return (
-      <div className={t.page}>
-        <div className="w-full max-w-lg">
-          <div className={`${t.bodyCard} p-12 text-center`}>
-            <div className="w-16 h-16 rounded-full bg-current/5 flex items-center justify-center mx-auto mb-5">
-              <CheckCircle2 className={`w-8 h-8 ${t.successIcon}`} />
+      <div className={cn(t.page, "items-center")}>
+        {EffectComponent && <EffectComponent />}
+
+        <div className="w-full max-w-md px-6">
+          <div className="w-full max-w-md">
+            <div className={`${t.bodyCard} overflow-hidden`}>
+              <div className="h-1 bg-gradient-to-r from-transparent via-current/30 to-transparent" />
+
+              <div className="px-8 py-9">
+                <div className="mb-6 flex justify-center">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full border border-current/10 bg-current/5">
+                    <CheckCircle2 className={`h-7 w-7 ${t.successIcon}`} />
+                  </div>
+                </div>
+
+                <h1
+                  className={`text-center font-serif text-2xl font-semibold tracking-tight ${t.successTitle}`}
+                >
+                  Thank you for your response
+                </h1>
+
+                <p className={`mt-3 text-center text-sm leading-6 ${t.successSubtitle}`}>
+                  Your response to <span className="font-medium">"{form.title}"</span> has been
+                  submitted successfully.
+                </p>
+
+                <p className="mt-6 text-center text-xs opacity-50">
+                  You can safely close this page.
+                </p>
+              </div>
             </div>
-            <p className={`text-xl font-bold mb-2 ${t.successTitle}`}>Response recorded!</p>
-            <p className={`text-sm ${t.successSubtitle}`}>
-              Thank you for completing <span className="font-medium">{form.title}</span>. Your
-              answers have been saved.
-            </p>
           </div>
         </div>
       </div>
@@ -188,24 +230,25 @@ export default function PublicFormPage() {
     <div className={t.page}>
       {EffectComponent && <EffectComponent />}
       <div className="w-full max-w-xl space-y-4">
-        <div className={t.headerCard}>
-          <div className="h-1 w-full bg-gradient-to-r from-slate-300 via-slate-400 to-slate-300 opacity-40" />
-          <div className="px-8 py-7">
-            <h1 className="text-2xl font-bold tracking-tight leading-tight mb-2">{form.title}</h1>
-            {form.description && (
-              <p className="text-sm leading-relaxed opacity-60">{form.description}</p>
-            )}
-            {requiredCount > 0 && (
-              <p className="mt-4 text-xs opacity-40">
-                Fields marked <span className="text-red-400 font-bold">*</span> are required
-              </p>
-            )}
-          </div>
-        </div>
-
         <form onSubmit={handleSubmit}>
           <div className={`${t.bodyCard} px-8 py-7`}>
-            <div className="space-y-7">
+            <div className="h-1 w-full bg-gradient-to-r from-slate-300 via-slate-400 to-slate-300 opacity-40 -mx-8 -mt-7 mb-7" />
+
+            <h1
+              className={`${t.title} text-2xl font-serif tracking-tight text-center leading-tight mb-2`}
+            >
+              {form.title}
+            </h1>
+
+            {form.description && (
+              <p className={`${t.description} text-sm text-center leading-relaxed opacity-60`}>
+                {form.description}
+              </p>
+            )}
+
+            <hr className={`${t.divider} border-t my-8`} />
+
+            <div className="mt-8 space-y-7">
               {fields.map((field, idx) => (
                 <div key={field.id}>
                   {idx > 0 && <hr className={`${t.divider} border-t mb-7`} />}
@@ -329,15 +372,16 @@ export default function PublicFormPage() {
                               className="flex items-center gap-3 cursor-pointer group"
                             >
                               <span
-                                className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all
-                                  ${
-                                    (formData[field.id] as string) === opt.value
-                                      ? "border-current"
-                                      : "border-current/20 group-hover:border-current/50"
-                                  }`}
+                                className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${
+                                  t.radio
+                                } ${
+                                  (formData[field.id] as string) === opt.value
+                                    ? "data-[checked=true]"
+                                    : ""
+                                }`}
                               >
                                 {(formData[field.id] as string) === opt.value && (
-                                  <span className="w-2 h-2 rounded-full bg-current" />
+                                  <span className={`w-2 h-2 rounded-full ${t.radioDot}`} />
                                 )}
                               </span>
                               <input
@@ -346,7 +390,7 @@ export default function PublicFormPage() {
                                 checked={(formData[field.id] as string) === opt.value}
                                 onChange={() => handleInputChange(field.id, opt.value)}
                               />
-                              <span className="text-sm">{opt.label}</span>
+                              <span className={t.optionText}>{opt.label}</span>
                             </label>
                           ))}
                         </div>
@@ -360,6 +404,7 @@ export default function PublicFormPage() {
                               className="flex items-center gap-3 cursor-pointer"
                             >
                               <Checkbox
+                                className={t.checkbox}
                                 checked={((formData[field.id] as string[]) ?? []).includes(
                                   opt.value,
                                 )}
@@ -367,7 +412,7 @@ export default function PublicFormPage() {
                                   handleCheckboxChange(field.id, opt.value, !!val)
                                 }
                               />
-                              <span className="text-sm">{opt.label}</span>
+                              <span className={t.optionText}>{opt.label}</span>
                             </label>
                           ))}
                         </div>
@@ -392,7 +437,7 @@ export default function PublicFormPage() {
             <div className="mt-8 pt-6 border-t border-current/5">
               <Button
                 type="submit"
-                className={`${t.btn} flex items-center justify-center gap-2`}
+                className={`${t.btn} flex cursor-pointer items-center justify-center gap-2`}
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
@@ -411,7 +456,7 @@ export default function PublicFormPage() {
           </div>
         </form>
 
-        <p className="text-center text-[11px] opacity-30 pb-4">Powered by FormZen</p>
+        <p className="text-center text-[11px] opacity-30 pb-4">Powered by Kanso</p>
       </div>
     </div>
   );
