@@ -11,6 +11,7 @@ export function PublishedInline({ title, slug }: { title: string; slug: string }
 
   const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=8&data=${encodeURIComponent(formURL)}`;
 
+
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(formURL);

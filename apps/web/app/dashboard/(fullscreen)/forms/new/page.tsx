@@ -16,6 +16,7 @@ import { FieldModal } from "@/components/dashboard/field-model";
 import { Nav } from "@/components/landing/navbar";
 import { PublishedInline } from "@/components/dashboard/thankyou-screen";
 import { AnimatePresence, motion } from "framer-motion";
+import { toast } from "sonner";
 
 type StepIdx = 0 | 1 | 2 | 3;
 
@@ -93,7 +94,7 @@ export default function NewFormPage() {
 
   const canNext = step === 0 ? title.trim().length > 0 : step === 1 ? fields.length > 0 : true;
 
-  let formUrl = "";
+  const formUrl = slug ? `https://kanso.prakashjangid.in/${slug}` : "";
 
   const handleCreateForm = async () => {
     if (step === 1) {
@@ -105,18 +106,21 @@ export default function NewFormPage() {
       setVisibility(createdForm.visibility);
       setFields(createdForm.fieldData);
 
-      formUrl = `https://kanso.prakashjangid.in/${slug}`;
       console.log("Result", createdForm);
     }
 
-    if (step === 3) {
-      const updatedForm = await updateForm(formId, title, description, theme, visibility, fields);
-      setFields(updatedForm.formFieldData);
-      console.log("Form updated successfully", updatedForm);
-    }
-    if (step <= 3) {
+    if (step < STEPS.length - 1) {
       setStep((s) => (s + 1) as StepIdx);
     }
+  };
+
+  const handlePublish = async () => {
+    const updatedForm = await updateForm(formId, title, description, theme, visibility, fields);
+
+    toast.success("Form created successfully");
+
+    setFields(updatedForm.formFieldData);
+    setPublished(true);
   };
 
   return (
@@ -237,7 +241,7 @@ export default function NewFormPage() {
               </button>
             ) : (
               <button
-                onClick={() => setPublished(true)}
+                onClick={handlePublish}
                 className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.42_0.045_150/0.5)] hover:-translate-y-px transition-all"
               >
                 <Check className="h-4 w-4" /> Publish form

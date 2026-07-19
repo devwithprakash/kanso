@@ -18,6 +18,7 @@ import { PublishedInline } from "@/components/dashboard/thankyou-screen";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { toast } from "sonner";
 
 type StepIdx = 0 | 1 | 2 | 3;
 
@@ -116,13 +117,19 @@ export default function FormEditPage() {
   let formUrl = "";
 
   const handleUpdateForm = async () => {
-    if (step === 2) {
-      const updatedForm = await updateForm(formId, title, description, theme, visibility, fields);
-      setFields(updatedForm.formFieldData);
-      console.log(updatedForm);
-    }
-    if (step <= 3) {
-      setStep((s) => (s + 1) as StepIdx);
+    try {
+      if (step === 2) {
+        const updatedForm = await updateForm(formId, title, description, theme, visibility, fields);
+
+        toast.success("Forms updated successfully");
+        setFields(updatedForm.formFieldData);
+      }
+
+      if (step < STEPS.length - 1) {
+        setStep((s) => (s + 1) as StepIdx);
+      }
+    } catch (error) {
+      toast.error("Failed to update form");
     }
   };
 

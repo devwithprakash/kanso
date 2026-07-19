@@ -118,7 +118,7 @@ export default function SettingsPage() {
           <Button
             variant="outline"
             onClick={handleLogout}
-            className="text-destructive border-destructive/30 hover:bg-destructive/10"
+            className="text-destructive cursor-pointer border-destructive/30 hover:bg-destructive/10"
           >
             Sign Out
           </Button>

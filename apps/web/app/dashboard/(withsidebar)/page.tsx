@@ -27,6 +27,7 @@ import StatCard from "@/components/dashboard/stat-card";
 import { NoForms } from "@/components/dashboard/no-forms";
 import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
 import { DashboardFormSkeleton } from "@/components/dashboard/dashboard-forms-skeleton";
+import { toast } from "sonner";
 
 export default function DashboardPage() {
   const { data: recentForms, isLoading: formsLoading } = useGetAllForms();
@@ -36,6 +37,7 @@ export default function DashboardPage() {
 
   const handleDeleteForm = async (formId: string) => {
     await deleteMutation.mutateAsync({ formId });
+    toast.success("Form deleted successfully")
   };
 
   const hasForms = recentForms && recentForms?.length > 0;

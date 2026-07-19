@@ -30,6 +30,7 @@ import { useRouter } from "next/navigation";
 import { FormCardSkeleton } from "@/components/dashboard/form-card-skeleton";
 import { NoForms } from "@/components/dashboard/no-forms";
 import FormCard from "@/components/dashboard/form-card.";
+import { toast } from "sonner";
 
 export default function FormsPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -52,9 +53,9 @@ export default function FormsPage() {
   const handleDeleteForm = async (formId: string) => {
     try {
       await deleteMutation.mutateAsync({ formId });
-      router.push("/dashboard/forms");
+      toast.success("Form deleted successfully");
     } catch (error) {
-      console.error("Failed to delete form", error);
+      toast.error("Failed to delete form");
     }
   };
 
@@ -63,8 +64,6 @@ export default function FormsPage() {
 
     await navigator.clipboard.writeText(url);
   };
-
-
 
   const hashForms = forms && forms.length > 0;
 
@@ -113,7 +112,13 @@ export default function FormsPage() {
           Array.from({ length: 6 }).map((_, index) => <FormCardSkeleton key={index} />)
         ) : hashForms ? (
           filteredForms.map((form, index) => (
-            <FormCard form={form} index={index} handleCopyLink={handleCopyLink} handleDeleteForm={handleDeleteForm} key={form.id}/>
+            <FormCard
+              form={form}
+              index={index}
+              handleCopyLink={handleCopyLink}
+              handleDeleteForm={handleDeleteForm}
+              key={form.id}
+            />
           ))
         ) : (
           <div className="col-span-full">

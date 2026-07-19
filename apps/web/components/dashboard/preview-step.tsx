@@ -21,6 +21,8 @@ export function PreviewStep({
   const EffectComponent = themeEffects[themeKey];
   const t = themeStyles[themeKey];
 
+
+  console.log("Hello preview")
   return (
     <div className="relative overflow-hidden">
       {EffectComponent && <EffectComponent />}
