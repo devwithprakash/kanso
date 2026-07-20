@@ -1,3 +1,5 @@
+"use client";
+
 import { container, inputCls, item } from "@/constants/form-builder";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";

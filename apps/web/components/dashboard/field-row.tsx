@@ -1,3 +1,5 @@
+"use client";
+
 import { Reorder, useDragControls } from "framer-motion";
 import { FIELD_META } from "@/constants/form";
 import { Field } from "@/types/form";

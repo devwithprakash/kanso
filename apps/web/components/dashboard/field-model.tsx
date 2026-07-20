@@ -1,3 +1,5 @@
+"use client";
+
 import { FIELD_META, serif } from "@/constants/form";
 import { Field, FieldType } from "@/types/form";
 import { X } from "lucide-react";

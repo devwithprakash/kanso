@@ -1,3 +1,5 @@
+"use client";
+
 import { Reorder } from "framer-motion";
 import { Field } from "@/types/form";
 import { Plus } from "lucide-react";

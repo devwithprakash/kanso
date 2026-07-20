@@ -8,12 +8,11 @@
 }
 
 .hide-scrollbar {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none; 
 }
 
 :root {
-  /* Japanese-inspired color palette */
   --background: #f7f4ef;
   --foreground: #3d3d3d;
   --card: #ffffff;

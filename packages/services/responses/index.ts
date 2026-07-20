@@ -14,9 +14,7 @@ import {
 } from "@repo/database/schema";
 import { throwTRPCError } from "../../trpc/server/utils/trpc-error";
 import { GetFormResponseOutput } from "../../trpc/server/routes/responses/model";
-import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 type ResponseAnswer = InferSelectModel<typeof responseAnswersTable>;
 

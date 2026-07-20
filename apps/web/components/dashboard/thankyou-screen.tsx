@@ -1,3 +1,5 @@
+"use client";
+
 import { CONFETTI_COLORS, serif } from "@/constants/form";
 import { Check, Copy, Download, PartyPopper } from "lucide-react";
 import Link from "next/link";
