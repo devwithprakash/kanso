@@ -15,7 +15,6 @@ const columns = [
       { label: "How it Works", href: "/#how-it-works" },
       { label: "Features", href: "/#features" },
       { label: "Explore Forms", href: "/explore" },
-      { label: "Pricing", href: "/pricing" },
     ],
   },
   {

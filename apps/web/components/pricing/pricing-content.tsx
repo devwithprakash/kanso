@@ -75,7 +75,6 @@ export function PricingContent() {
         </div>
       </section>
 
-      {/* Pricing Cards */}
       <section className="mx-auto max-w-7xl px-6 grid md:grid-cols-3 gap-8">
         {plans.map((plan) => (
           <div
