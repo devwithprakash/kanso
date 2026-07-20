@@ -1,6 +1,16 @@
 "use client";
 
-import { ArrowRight, Sparkles, Check, ChevronDown, GripVertical, Mail, Type, Hash, Calendar } from "lucide-react";
+import {
+  ArrowRight,
+  Sparkles,
+  Check,
+  ChevronDown,
+  GripVertical,
+  Mail,
+  Type,
+  Hash,
+  Calendar,
+} from "lucide-react";
 import { motion } from "framer-motion";
 
 const serif = { fontFamily: "'Fraunces', Georgia, serif" } as const;
@@ -13,7 +23,6 @@ function MockFormCard() {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.7, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
     >
-      {/* Glow halo behind card */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 rounded-3xl bg-primary/20 blur-3xl scale-110 -z-10"
@@ -190,17 +199,36 @@ function FieldChip({
 export function Hero() {
   return (
     <section className="relative overflow-hidden px-4 pt-28 pb-20 md:pt-36 md:pb-28">
-      {/* Background blobs */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute -top-32 left-1/2 h-[700px] w-[700px] -translate-x-1/2 rounded-full bg-primary/10 blur-[130px]" />
         <div className="absolute top-40 -right-24 h-96 w-96 rounded-full bg-secondary/70 blur-[90px]" />
         <div className="absolute bottom-0 -left-24 h-72 w-72 rounded-full bg-primary/8 blur-[90px]" />
       </div>
 
-      <FieldChip label="Text Input" icon={<Type className="h-3 w-3" />} className="top-40 left-8 xl:left-24" delay={1.3} />
-      <FieldChip label="Email" icon={<Mail className="h-3 w-3" />} className="top-64 left-4 xl:left-16" delay={1.5} />
-      <FieldChip label="Number" icon={<Hash className="h-3 w-3" />} className="top-52 right-6 xl:right-20" delay={1.4} />
-      <FieldChip label="Date" icon={<Calendar className="h-3 w-3" />} className="top-80 right-2 xl:right-12" delay={1.6} />
+      <FieldChip
+        label="Text Input"
+        icon={<Type className="h-3 w-3" />}
+        className="top-40 left-8 xl:left-24"
+        delay={1.3}
+      />
+      <FieldChip
+        label="Email"
+        icon={<Mail className="h-3 w-3" />}
+        className="top-64 left-4 xl:left-16"
+        delay={1.5}
+      />
+      <FieldChip
+        label="Number"
+        icon={<Hash className="h-3 w-3" />}
+        className="top-52 right-6 xl:right-20"
+        delay={1.4}
+      />
+      <FieldChip
+        label="Date"
+        icon={<Calendar className="h-3 w-3" />}
+        className="top-80 right-2 xl:right-12"
+        delay={1.6}
+      />
 
       <div className="mx-auto max-w-6xl">
         <div className="flex flex-col items-center gap-16 lg:flex-row lg:items-center lg:gap-12">
@@ -223,8 +251,7 @@ export function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
-              Build forms your{" "}
-              <em className="not-italic text-primary">users love</em> to fill.
+              Build forms your <em className="not-italic text-primary">users love</em> to fill.
             </motion.h1>
 
             <motion.p
@@ -233,8 +260,8 @@ export function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              Create beautiful forms with animated themes, drag-and-drop fields, and
-              real-time analytics — all in one place.
+              Create beautiful forms with animated themes, drag-and-drop fields, and real-time
+              analytics — all in one place.
             </motion.p>
 
             <motion.div
@@ -256,26 +283,6 @@ export function Hero() {
               >
                 See how it works
               </a>
-            </motion.div>
-
-            <motion.div
-              className="mt-8 flex items-center gap-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-            >
-              <div className="flex -space-x-2">
-                {["#5f7d68", "#d4a5a5", "#8fa894", "#e8c5a0"].map((color, i) => (
-                  <span
-                    key={i}
-                    className="inline-block h-7 w-7 rounded-full border-2 border-background"
-                    style={{ background: color }}
-                  />
-                ))}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                <span className="font-semibold text-foreground">2,400+</span> teams already building with Kanso
-              </p>
             </motion.div>
           </div>
 

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
-import { Analytics } from "@vercel/analytics/next";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import { GlobalProviders } from "@/providers/global";
@@ -36,10 +35,7 @@ export default function RootLayout({
       >
         <body className="font-sans antialiased">
           <Toaster />
-          <GlobalProviders>
-            {children}
-            {process.env.NODE_ENV === "production" && <Analytics />}
-          </GlobalProviders>
+          <GlobalProviders>{children}</GlobalProviders>
         </body>
       </html>
     </ClerkProvider>
