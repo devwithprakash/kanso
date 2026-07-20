@@ -130,7 +130,7 @@ export default function PublicFormPage() {
         formId: form.id,
         answer: formattedAnswers,
       });
-      toast.success("Form submitted successfully")
+      toast.success("Form submitted successfully");
       setIsSubmitted(true);
     } catch (err) {
       console.error(err);
@@ -165,21 +165,22 @@ export default function PublicFormPage() {
               <div
                 className={`relative mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full ${t.emptyIconWrapper}`}
               >
-                <AlertCircle className={`h-5 w-5 ${t.emptyIcon}`} />
+                <CheckCircle2 className={`h-5 w-5 ${t.emptyIcon}`} />
               </div>
 
               <h1 className={`text-xl font-serif font-semibold tracking-tight ${t.emptyTitle}`}>
-                Form unavailable
+                Response already submitted
               </h1>
 
               <p className={`mt-2 text-sm leading-6 ${t.emptyDescription}`}>
-                This form has been closed, made private, or is no longer accepting responses.
+                We've already received your response for this form. Since only one submission is
+                allowed, additional responses can't be accepted.
               </p>
 
               <div className={`my-5 h-px ${t.emptyDivider}`} />
 
               <p className={`text-xs ${t.emptyFooter}`}>
-                Please contact the form owner if you expected access.
+                Thank you for taking the time to complete this form.
               </p>
             </div>
           </div>
