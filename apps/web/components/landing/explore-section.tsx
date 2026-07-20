@@ -7,12 +7,13 @@ import Link from "next/link";
 import { useState } from "react";
 import ExploreFormCard from "./explore-form-card";
 import { serif } from "@/constants/form";
+import { ExploreFormCardSkeleton } from "./explore-form-skeleton";
 
 export function ExploreSection() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory] = useState("All");
 
-  const { data: publicForms } = useGetAllPublicForms();
+  const { data: publicForms, isLoading } = useGetAllPublicForms();
 
   const filteredForms = (publicForms ?? []).filter((form) => {
     const matchesSearch =
@@ -64,11 +65,15 @@ export function ExploreSection() {
         </div>
 
         <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <AnimatePresence mode="popLayout">
-            {filteredForms.slice(0, 6).map((form) => (
-              <ExploreFormCard key={form.id} form={form} />
-            ))}
-          </AnimatePresence>
+          {isLoading ? (
+            Array.from({ length: 6 }).map((_, index) => <ExploreFormCardSkeleton key={index} />)
+          ) : (
+            <AnimatePresence mode="popLayout">
+              {filteredForms.slice(0, 6).map((form) => (
+                <ExploreFormCard key={form.id} form={form} />
+              ))}
+            </AnimatePresence>
+          )}
         </div>
       </div>
     </section>

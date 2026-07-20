@@ -16,7 +16,7 @@ export function Features() {
             className="mt-4 text-4xl tracking-[-0.02em] text-foreground md:text-5xl"
             style={serif}
           >
-            Everything you need, nothing you don't
+            Everything you need, nothing you don&apos;t
           </h2>
           <p className="mx-auto mt-4 max-w-md text-sm text-muted-foreground md:text-base">
             Powerful capabilities wrapped in a calm, intuitive interface.
@@ -24,19 +24,34 @@ export function Features() {
         </div>
 
         <div className="mt-14 grid auto-rows-[14rem] grid-cols-1 gap-4 md:grid-cols-3 md:grid-rows-2">
+          {/* 1. Custom Branding (Prioritized, 2 cols) */}
           <div className="group relative col-span-1 row-span-1 overflow-hidden rounded-3xl border border-border bg-card p-7 transition-all duration-500 hover:border-primary/40 md:col-span-2">
             <div className="grid h-10 w-10 place-items-center rounded-xl bg-secondary text-primary">
-              <LayoutGrid className="h-5 w-5" />
+              <Palette className="h-5 w-5" />
             </div>
             <h3 className="mt-5 text-2xl text-foreground" style={serif}>
-              Drag & drop builder
+              Custom branding & themes
             </h3>
             <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
-              Compose beautiful layouts visually. No code. Snap fields, reorder sections, and watch
-              the form come together in real time.
+              Match your identity perfectly with our advanced theme engine. Customize colors, typography, and visual aesthetics.
             </p>
+            <div className="mt-4 flex flex-wrap gap-2 absolute right-7 bottom-7">
+              {[
+                "oklch(0.42 0.045 150)",
+                "oklch(0.94 0.015 95)",
+                "oklch(0.78 0.13 30)",
+                "oklch(0.84 0.13 85)",
+              ].map((c) => (
+                <span
+                  key={c}
+                  className="h-8 w-8 rounded-full border border-border transition-transform duration-300 hover:scale-110 shadow-sm"
+                  style={{ background: c }}
+                />
+              ))}
+            </div>
           </div>
 
+          {/* 2. Live Analytics (Prioritized, 1 col) */}
           <div className="group relative overflow-hidden rounded-3xl border border-border bg-card p-6 transition-colors hover:border-primary/40">
             <div className="grid h-9 w-9 place-items-center rounded-lg bg-secondary text-primary">
               <BarChart3 className="h-4 w-4" />
@@ -53,16 +68,29 @@ export function Features() {
             </div>
           </div>
 
+          {/* 3. Drag & Drop (1 col) */}
+          <div className="group rounded-3xl border border-border bg-card p-6 transition-colors hover:border-primary/40">
+            <div className="grid h-9 w-9 place-items-center rounded-lg bg-secondary text-primary">
+              <LayoutGrid className="h-4 w-4" />
+            </div>
+            <h3 className="mt-4 text-base font-medium text-foreground">Drag & drop</h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              Compose forms visually. No code needed to build complex layouts.
+            </p>
+          </div>
+
+          {/* 4. Smart Logic (1 col) */}
           <div className="group rounded-3xl border border-border bg-card p-6 transition-colors hover:border-primary/40">
             <div className="grid h-9 w-9 place-items-center rounded-lg bg-secondary text-primary">
               <Zap className="h-4 w-4" />
             </div>
             <h3 className="mt-4 text-base font-medium text-foreground">Smart logic</h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Branch by response. Skip, show, hide — without writing a single rule by hand.
+              Branch by response. Skip, show, hide — without writing a single rule.
             </p>
           </div>
 
+          {/* 5. Share Anywhere (1 col) */}
           <div className="group rounded-3xl border border-border bg-card p-6 transition-colors hover:border-primary/40">
             <div className="grid h-9 w-9 place-items-center rounded-lg bg-secondary text-primary">
               <Share2 className="h-4 w-4" />
@@ -71,30 +99,6 @@ export function Features() {
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
               Links, embeds, QR codes. Reach respondents wherever they already are.
             </p>
-          </div>
-
-          <div className="group relative overflow-hidden rounded-3xl border border-border bg-card p-6 transition-colors hover:border-primary/40">
-            <div className="grid h-9 w-9 place-items-center rounded-lg bg-secondary text-primary">
-              <Palette className="h-4 w-4" />
-            </div>
-            <h3 className="mt-4 text-base font-medium text-foreground">Custom branding</h3>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Match your identity perfectly with design themes, typography, and color overrides.
-            </p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {[
-                "oklch(0.42 0.045 150)",
-                "oklch(0.94 0.015 95)",
-                "oklch(0.78 0.13 30)",
-                "oklch(0.84 0.13 85)",
-              ].map((c) => (
-                <span
-                  key={c}
-                  className="h-6 w-6 rounded-full border border-border transition-transform duration-300 hover:scale-110"
-                  style={{ background: c }}
-                />
-              ))}
-            </div>
           </div>
         </div>
       </div>

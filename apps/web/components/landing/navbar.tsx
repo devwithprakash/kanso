@@ -9,6 +9,7 @@ import { useUser, UserButton } from "@clerk/nextjs";
 const DOCS_URL = process.env.NEXT_PUBLIC_API_DOCS_URL ?? "#";
 
 const navLinks = [
+  { href: "/#how-it-works", label: "How it Works" },
   { href: "/#features", label: "Features" },
   { href: "/explore", label: "Explore" },
 ];

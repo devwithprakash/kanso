@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { useMe } from "@/hooks/auth/use-me";
 import { useClerk } from "@clerk/nextjs";
 import Image from "next/image";
+import { serif } from "@/constants/form";
 
 const navItems = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
@@ -30,11 +31,17 @@ export function DashboardSidebar() {
     <>
       <aside className="hidden lg:flex fixed inset-y-0 left-0 z-50 w-64 flex-col bg-card border-r border-border">
         <div className="flex h-16 items-center gap-2 px-6 border-b border-border">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-serif text-lg">F</span>
-            </div>
-            <span className="font-serif text-xl text-foreground">Kanso</span>
+          <Link
+            href="/"
+            className="flex items-center gap-2 pl-2 transition-transform duration-300 hover:scale-105"
+          >
+            <span
+              className="grid h-7 w-7 place-items-center rounded-md bg-primary text-primary-foreground text-[13px] font-semibold transition-transform duration-500 group-hover:rotate-[8deg]"
+              style={serif}
+            >
+              K
+            </span>
+            <span className="text-sm font-medium tracking-tight text-foreground">Kanso</span>
           </Link>
         </div>
 
