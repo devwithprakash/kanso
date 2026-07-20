@@ -6,7 +6,7 @@ const serif = { fontFamily: "'Fraunces', Georgia, serif" } as const;
 
 export function Features() {
   return (
-    <section id="features" className="px-4 pt-24 pb:16 md:pt-32 md:pb:16">
+    <section id="features" className="px-4 pt-24 pb-16 md:pt-32 md:pb-32">
       <div className="mx-auto max-w-6xl">
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
@@ -23,7 +23,7 @@ export function Features() {
           </p>
         </div>
 
-        <div className="mt-14 grid auto-rows-[14rem] grid-cols-1 gap-4 md:grid-cols-3 md:grid-rows-2">
+        <div className="mt-14 grid grid-cols-1 gap-4 md:auto-rows-[14rem] md:grid-cols-3 md:grid-rows-2">
           {/* 1. Custom Branding (Prioritized, 2 cols) */}
           <div className="group relative col-span-1 row-span-1 overflow-hidden rounded-3xl border border-border bg-card p-7 transition-all duration-500 hover:border-primary/40 md:col-span-2">
             <div className="grid h-10 w-10 place-items-center rounded-xl bg-secondary text-primary">
@@ -35,7 +35,7 @@ export function Features() {
             <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
               Match your identity perfectly with our advanced theme engine. Customize colors, typography, and visual aesthetics.
             </p>
-            <div className="mt-4 flex flex-wrap gap-2 absolute right-7 bottom-7">
+            <div className="mt-6 flex flex-wrap gap-2 md:absolute md:bottom-7 md:right-7 md:mt-0">
               {[
                 "oklch(0.42 0.045 150)",
                 "oklch(0.94 0.015 95)",
