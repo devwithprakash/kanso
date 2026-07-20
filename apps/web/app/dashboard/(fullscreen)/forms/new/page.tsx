@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Stepper } from "@/components/dashboard/stepper";
 import { DetailsStep } from "@/components/dashboard/details-step";
@@ -84,17 +84,17 @@ export default function NewFormPage() {
     });
   };
 
+  const FROTNEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL as string;
+
   const copyLink = async () => {
     try {
-      await navigator.clipboard.writeText(`https://kanso.prakashjangid.in/${slug}`);
+      await navigator.clipboard.writeText(`${FROTNEND_URL}/forms/${slug}`);
       setCopied(true);
       setTimeout(() => setCopied(false), 1400);
     } catch {}
   };
 
   const canNext = step === 0 ? title.trim().length > 0 : step === 1 ? fields.length > 0 : true;
-
-  const formUrl = slug ? `https://kanso.prakashjangid.in/${slug}` : "";
 
   const handleCreateForm = async () => {
     if (step === 1) {
@@ -105,8 +105,6 @@ export default function NewFormPage() {
       setTheme(createdForm.theme);
       setVisibility(createdForm.visibility);
       setFields(createdForm.fieldData);
-
-      console.log("Result", createdForm);
     }
 
     if (step < STEPS.length - 1) {
@@ -176,7 +174,6 @@ export default function NewFormPage() {
                 {step === 2 && (
                   <ConfigureStep
                     slug={slug}
-                    formUrl={formUrl}
                     theme={theme}
                     setTheme={setTheme}
                     visibility={visibility}
@@ -242,7 +239,7 @@ export default function NewFormPage() {
             ) : (
               <button
                 onClick={handlePublish}
-                className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.42_0.045_150/0.5)] hover:-translate-y-px transition-all"
+                className="inline-flex items-center cursor-pointer gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.42_0.045_150/0.5)] hover:-translate-y-px transition-all"
               >
                 <Check className="h-4 w-4" /> Publish form
               </button>

@@ -14,13 +14,27 @@ import {
 } from "@repo/database/schema";
 import { throwTRPCError } from "../../trpc/server/utils/trpc-error";
 import { GetFormResponseOutput } from "../../trpc/server/routes/responses/model";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 type ResponseAnswer = InferSelectModel<typeof responseAnswersTable>;
 
 const createResponse = async (payload: SubmitResponseInputType) => {
-  const { formId, ipAddress, answer } = await submitResponseInput.parseAsync(payload);
+  const { formId, ipAddress, answer } =
+    await submitResponseInput.parseAsync(payload);
 
-  console.log(answer);
+  const [form] = await db
+    .select({
+      title: formsTable.title,
+      description: formsTable.description,
+    })
+    .from(formsTable)
+    .where(eq(formsTable.id, formId));
+
+  if (!form) {
+    throwTRPCError("NOT_FOUND", "Form not found");
+  }
 
   const [existingResponse] = await db
     .select()
@@ -30,6 +44,7 @@ const createResponse = async (payload: SubmitResponseInputType) => {
   if (existingResponse) {
     throwTRPCError("BAD_REQUEST", "You have already submitted this response for this form.");
   }
+
   const [insertedResponse] = await db
     .insert(formResponsesTable)
     .values({

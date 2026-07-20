@@ -1,6 +1,7 @@
 import { trpc } from "@/trpc/client";
 import type { FormRecord, Field } from "@/types/form";
 import { ThemeKey } from "@/types/theme";
+import { toast } from "sonner";
 
 type Visibility = "public" | "unlisted" | "private";
 
@@ -12,6 +13,7 @@ export const useCreateForm = () => {
       utils.form.invalidate();
     },
     onError: (err) => {
+      toast.error("Failed to create form")
       console.error("Failed to create form:", err.message);
     },
   });
@@ -67,6 +69,7 @@ export const useUpdateForm = () => {
     },
 
     onError: (error) => {
+      toast.error("Failed to update form")
       console.error("Failed to update form:", error.message);
     },
   });

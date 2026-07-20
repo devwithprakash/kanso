@@ -89,14 +89,6 @@ export default function FormCard({ form, index, handleCopyLink, handleDeleteForm
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link
-                href={`/forms/${form.id}/preview`}
-                className="flex items-center gap-2 cursor-pointer"
-              >
-                <Eye className="h-4 w-4 opacity-70" /> Preview
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link
                 href={`/dashboard/forms/${form.id}/analytics`}
                 className="flex items-center gap-2 cursor-pointer"
               >

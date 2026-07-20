@@ -16,8 +16,6 @@ import { FieldModal } from "@/components/dashboard/field-model";
 import { Nav } from "@/components/landing/navbar";
 import { PublishedInline } from "@/components/dashboard/thankyou-screen";
 import { useParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { toast } from "sonner";
 
 type StepIdx = 0 | 1 | 2 | 3;
@@ -46,7 +44,6 @@ export default function FormEditPage() {
 
   useEffect(() => {
     if (form) {
-      console.log("form", form);
       setTitle(form.title);
       setDescription(form.description);
       setTheme(form.theme);
@@ -104,9 +101,11 @@ export default function FormEditPage() {
     });
   };
 
+  const FROTNEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL as string;
+
   const copyLink = async () => {
     try {
-      await navigator.clipboard.writeText(`https://kanso.prakashjangid.in/${slug}`);
+      await navigator.clipboard.writeText(`${FROTNEND_URL}/forms/${slug}`);
       setCopied(true);
       setTimeout(() => setCopied(false), 1400);
     } catch {}
@@ -114,7 +113,6 @@ export default function FormEditPage() {
 
   const canNext = step === 0 ? title.trim().length > 0 : step === 1 ? fields.length > 0 : true;
 
-  let formUrl = "";
 
   const handleUpdateForm = async () => {
     try {
@@ -194,7 +192,6 @@ export default function FormEditPage() {
             {step === 2 && (
               <ConfigureStep
                 slug={slug}
-                formUrl={formUrl}
                 theme={theme}
                 setTheme={setTheme}
                 visibility={visibility}

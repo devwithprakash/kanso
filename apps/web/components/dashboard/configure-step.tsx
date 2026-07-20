@@ -8,7 +8,6 @@ import { serif } from "@/constants/form";
 
 export function ConfigureStep(props: {
   slug: string;
-  formUrl: string;
   theme: ThemeKey;
   setTheme: (t: ThemeKey) => void;
   visibility: "public" | "unlisted" | "private";
@@ -20,7 +19,10 @@ export function ConfigureStep(props: {
   onCopy: () => void;
   copied: boolean;
 }) {
-  const formUrl = `https://localhost:3000/forms/${props.slug}`;
+  const FROTNEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL as string;
+
+  const formUrl = `${FROTNEND_URL}/forms/${props.slug}`;
+
   return (
     <motion.div variants={container} initial="hidden" animate="show" className="space-y-10">
       <motion.div variants={item}>
@@ -47,9 +49,7 @@ export function ConfigureStep(props: {
                 style={{ transition: "border-color 150ms ease, background-color 150ms ease" }}
               >
                 {active && (
-                  <div
-                    className="pointer-events-none absolute inset-0 rounded-2xl ring-2 ring-primary/20"
-                  />
+                  <div className="pointer-events-none absolute inset-0 rounded-2xl ring-2 ring-primary/20" />
                 )}
                 <div className={cn("h-14 w-full rounded-xl", t.bg, "grid place-items-center")}>
                   <div className={cn("h-2 w-8 rounded-full", t.swatch)} />
@@ -86,9 +86,7 @@ export function ConfigureStep(props: {
                 style={{ transition: "border-color 150ms ease, background-color 150ms ease" }}
               >
                 {active && (
-                  <div
-                    className="pointer-events-none absolute inset-0 rounded-2xl ring-2 ring-primary/20"
-                  />
+                  <div className="pointer-events-none absolute inset-0 rounded-2xl ring-2 ring-primary/20" />
                 )}
                 <div className="text-sm font-medium text-foreground">{o.label}</div>
                 <div className="mt-0.5 text-xs text-muted-foreground">{o.desc}</div>

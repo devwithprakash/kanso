@@ -59,7 +59,6 @@ export function PublishedInline({ title, slug }: { title: string; slug: string }
         }
       `}</style>
 
-      {/* Confetti overlay — page-wide but non-blocking */}
       <div className="pointer-events-none fixed inset-0 z-30 overflow-hidden">
         {pieces.map((p, i) => (
           <span

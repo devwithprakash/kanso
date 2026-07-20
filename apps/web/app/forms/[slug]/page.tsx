@@ -24,6 +24,7 @@ import { themeStyles } from "@/constants/theme";
 import { buildFormSchema } from "@/lib/form-response-validation";
 import { cn } from "@/lib/utils";
 import { Field } from "@/types/form";
+import { toast } from "sonner";
 
 type FieldValue = string | number | boolean | string[] | null;
 
@@ -129,9 +130,11 @@ export default function PublicFormPage() {
         formId: form.id,
         answer: formattedAnswers,
       });
+      toast.success("Form submitted successfully")
       setIsSubmitted(true);
     } catch (err) {
       console.error(err);
+      toast.error("Failed to submit form");
       setValidationError(formResponseError?.message || "Failed to submit form. Please try again.");
     }
   };
@@ -224,7 +227,6 @@ export default function PublicFormPage() {
   }
 
   const fields = (form.formFields ?? []) as Field[];
-  const requiredCount = fields.filter((f) => f.required).length;
 
   return (
     <div className={t.page}>
@@ -434,7 +436,7 @@ export default function PublicFormPage() {
               </div>
             )}
 
-            <div className="mt-8 pt-6 border-t border-current/5">
+            <div className="mt-2 pt-6 border-t border-current/5">
               <Button
                 type="submit"
                 className={`${t.btn} flex cursor-pointer items-center justify-center gap-2`}

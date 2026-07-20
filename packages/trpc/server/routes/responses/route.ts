@@ -48,11 +48,11 @@ export const responseRouter = router({
     .output(getFormResponseOutputModel)
     .query(async ({ input, ctx }) => {
       const { formId } = input;
-      const {userId} = ctx
+      const { userId } = ctx;
 
       const result = await responseService.getFormResponse({
         formId,
-        userId
+        userId,
       });
 
       return result;

@@ -32,7 +32,6 @@ export function FieldModal({
     existing?.maxLength ? String(existing.maxLength) : "",
   );
 
-  console.log("existing:", existing);
 
   const [optionsText, setOptionsText] = React.useState(
     existing?.fieldOptions?.map((option) => option.label).join("\n") ?? "",

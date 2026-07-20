@@ -2,17 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import {
   Search,
   Filter,
-  MoreHorizontal,
-  FileText,
-  Eye,
-  Users,
-  Trash2,
-  ExternalLink,
-  BarChart3,
   Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -26,7 +18,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useDeleteForm, useGetAllForms } from "@/hooks/form/use-forms";
-import { useRouter } from "next/navigation";
 import { FormCardSkeleton } from "@/components/dashboard/form-card-skeleton";
 import { NoForms } from "@/components/dashboard/no-forms";
 import FormCard from "@/components/dashboard/form-card.";
@@ -36,7 +27,6 @@ export default function FormsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL;
-  const router = useRouter();
 
   const { data: forms, isLoading } = useGetAllForms();
   const { deleteMutation } = useDeleteForm();
