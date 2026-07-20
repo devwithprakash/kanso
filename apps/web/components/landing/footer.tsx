@@ -37,11 +37,10 @@ const columns = [
 
 const socials = [
   { icon: Github, label: "GitHub", href: "https://github.com/devwithprakash/kanso" },
-  { icon: Twitter, label: "Twitter / X", href: "https://twitter.com" },
-  { icon: Linkedin, label: "LinkedIn", href: "https://linkedin.com" },
+  { icon: Twitter, label: "Twitter / X", href: "https://x.com/risewithprakash" },
+  { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/in/devwithprakash/" },
 ];
 
-/** Renders a single link, external or internal */
 function FooterLink({
   href,
   label,
@@ -72,7 +71,6 @@ function FooterLink({
 export function Footer() {
   return (
     <footer className="relative overflow-hidden border-t border-border">
-      {/* ── Subtle top glow ── */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent"
@@ -83,9 +81,7 @@ export function Footer() {
       />
 
       <div className="mx-auto max-w-6xl px-4">
-        {/* ── Upper block ── */}
         <div className="grid grid-cols-2 gap-10 pt-16 pb-12 md:grid-cols-[2fr_1fr_1fr_1fr] md:gap-8">
-          {/* Brand column */}
           <motion.div
             className="col-span-2 md:col-span-1"
             initial={{ opacity: 0, y: 12 }}
@@ -93,7 +89,6 @@ export function Footer() {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            {/* Logo */}
             <Link href="/" className="inline-flex items-center gap-2.5 group">
               <span
                 className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground text-sm font-semibold shadow-md shadow-primary/25 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3"
@@ -108,7 +103,6 @@ export function Footer() {
               Beautiful, opinionated forms — crafted for teams that care about every detail.
             </p>
 
-            {/* Social icons */}
             <div className="mt-6 flex items-center gap-2">
               {socials.map(({ icon: Icon, label, href }) => (
                 <a
@@ -125,7 +119,6 @@ export function Footer() {
             </div>
           </motion.div>
 
-          {/* Nav columns */}
           {columns.map((col, ci) => (
             <motion.div
               key={col.heading}
@@ -148,15 +141,12 @@ export function Footer() {
           ))}
         </div>
 
-        {/* ── Divider ── */}
         <div className="h-px w-full bg-border" />
 
-        {/* ── Bottom bar ── */}
         <div className="flex flex-col items-center justify-between gap-3 py-6 text-xs text-muted-foreground sm:flex-row">
           <p>© {new Date().getFullYear()} Kanso. All rights reserved.</p>
 
           <div className="flex items-center gap-1.5">
-            {/* Tiny animated status dot */}
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-50" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-primary/80" />
