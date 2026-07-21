@@ -10,6 +10,7 @@ import {
   CalendarDays,
   Clock3,
   BarChart3,
+  ArrowLeft,
 } from "lucide-react";
 import {
   Select,
@@ -25,6 +26,7 @@ import StatCard from "@/components/dashboard/stat-card";
 import { useState } from "react";
 import { StatsCardsSkeleton } from "@/components/dashboard/stats-cards-skeleton";
 import { ChartSkeleton } from "@/components/dashboard/chart-skeleton";
+import Link from "next/link";
 
 export default function AnalyticsPage() {
   const params = useParams();
@@ -78,7 +80,14 @@ export default function AnalyticsPage() {
   return (
     <div className="space-y-8 pb-12 animate-in fade-in duration-300">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
+        <div className="space-y-1">
+          <Link
+            href="/dashboard/forms"
+            className="group flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-0.5 transition-transform" />
+            Back to Forms
+          </Link>
           <h1 className="font-serif text-2xl sm:text-3xl text-foreground">Workspace Analytics</h1>
           <p className="text-muted-foreground mt-1">
             Cross-form historical insights and telemetry maps.

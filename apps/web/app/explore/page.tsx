@@ -66,9 +66,12 @@ export default function ExplorePage() {
               Array.from({ length: 6 }).map((_, index) => <ExploreFormCardSkeleton key={index} />)
             ) : hashForms ? (
               <AnimatePresence mode="popLayout">
-                {filteredForms.map((form) => (
-                  <ExploreFormCard key={form.id} form={form} />
-                ))}
+                {filteredForms
+                  .slice()
+                  .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                  .map((form) => (
+                    <ExploreFormCard key={form.id} form={form} />
+                  ))}
               </AnimatePresence>
             ) : (
               <div className="col-span-full">

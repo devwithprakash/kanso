@@ -2,11 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import {
-  Search,
-  Filter,
-  Plus,
-} from "lucide-react";
+import { Search, Filter, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -101,15 +97,18 @@ export default function FormsPage() {
         {isLoading ? (
           Array.from({ length: 6 }).map((_, index) => <FormCardSkeleton key={index} />)
         ) : hashForms ? (
-          filteredForms.map((form, index) => (
-            <FormCard
-              form={form}
-              index={index}
-              handleCopyLink={handleCopyLink}
-              handleDeleteForm={handleDeleteForm}
-              key={form.id}
-            />
-          ))
+          filteredForms
+            .slice()
+            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+            .map((form, index) => (
+              <FormCard
+                form={form}
+                index={index}
+                handleCopyLink={handleCopyLink}
+                handleDeleteForm={handleDeleteForm}
+                key={form.id}
+              />
+            ))
         ) : (
           <div className="col-span-full">
             <NoForms />
